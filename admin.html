@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>لوحة التحكم</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f2f2f2;
+text-align:center;
+padding:20px;
+}
+
+.box{
+background:white;
+padding:20px;
+border-radius:10px;
+max-width:500px;
+margin:auto;
+}
+
+input,button{
+width:100%;
+padding:12px;
+margin:7px 0;
+}
+
+button{
+background:#0066cc;
+color:white;
+border:0;
+border-radius:8px;
+font-size:17px;
+}
+
+.product{
+background:#eee;
+padding:10px;
+margin:10px 0;
+border-radius:8px;
+}
+
+.delete{
+background:#d9534f;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>لوحة تحكم رحلة تجارة من الصفر</h2>
+
+<div id="login">
+
+<input id="password" type="password" placeholder="كلمة المرور">
+
+<button onclick="login()">دخول</button>
+
+</div>
+
+
+<div id="panel" style="display:none">
+
+<h3>إضافة منتج</h3>
+
+<input id="name" placeholder="اسم المنتج">
+
+<input id="price" placeholder="السعر">
+
+<input id="city" placeholder="المدينة">
+
+<input id="phone" placeholder="رقم الهاتف">
+
+<input id="image" placeholder="رابط الصورة">
+
+<button onclick="saveProduct()">حفظ المنتج</button>
+
+
+<h3>المنتجات</h3>
+
+<div id="products"></div>
+
+</div>
+
+</div>
+
+
+<script type="module">
+
+import { initializeApp } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import { 
+getDatabase,
+ref,
+push,
+set,
+onValue,
+remove
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",
+
+authDomain: "rehlattejarah.firebaseapp.com",
+
+databaseURL:"https://rehlattejarah-default-rtdb.firebaseio.com",
+
+projectId:"rehlattejarah",
+
+storageBucket:"rehlattejarah.firebasestorage.app",
+
+messagingSenderId:"56157415045",
+
+appId:"1:56157415045:web:d1c496a5cdc4d5f81e2bec"
+
+};
+
+
+const app=initializeApp(firebaseConfig);
+
+const db=getDatabase(app);
+
+
+function login(){
+
+let pass=document.getElementById("password").value;
+
+if(pass=="123456"){
+
+document.getElementById("login").style.display="none";
+
+document.getElementById("panel").style.display="block";
+
+loadProducts();
+
+}else{
+
+alert("كلمة المرور خطأ");
+
+}
+
+}
+
+
+window.login=login;
+
+
+window.saveProduct=function(){
+
+let productRef=push(ref(db,"products"));
+
+set(productRef,{
+
+name:document.getElementById("name").value,
+
+price:document.getElementById("price").value,
+
+city:document.getElementById("city").value,
+
+phone:document.getElementById("phone").value,
+
+image:document.getElementById("image").value
+
+});
+
+
+alert("تم حفظ المنتج");
+
+};
+
+
+function loadProducts(){
+
+onValue(ref(db,"products"),(snapshot)=>{
+
+let box=document.getElementById("products");
+
+box.innerHTML="";
+
+
+snapshot.forEach((item)=>{
+
+let p=item.val();
+
+box.innerHTML+=`
+
+<div class="product">
+
+<h3>${p.name}</h3>
+
+<p>${p.price}</p>
+
+<p>${p.city}</p>
+
+<button class="delete" onclick="deleteProduct('${item.key}')">
+
+حذف
+
+</button>
+
+</div>
+
+`;
+
+});
+
+});
+
+}
+
+
+window.deleteProduct=function(id){
+
+remove(ref(db,"products/"+id));
+
+};
+
+
+</script>
+
+</body>
+</html>
