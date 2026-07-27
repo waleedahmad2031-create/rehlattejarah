@@ -1,10 +1,10 @@
-
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>رحلة تجارة من الصفر</title>
@@ -13,64 +13,91 @@
 
 body{
 margin:0;
-background:#f3f5f7;
-font-family:Tahoma,Arial;
+padding:0;
+background:#f2f2f2;
+font-family:Arial;
 }
 
 header{
 background:#0066cc;
 color:white;
-padding:25px;
+padding:20px;
+font-size:28px;
 text-align:center;
+font-weight:bold;
 }
 
 .container{
-padding:15px;
+width:95%;
+max-width:700px;
+margin:auto;
+margin-top:20px;
 }
 
 .card{
 background:white;
-padding:20px;
-margin:15px 0;
-border-radius:18px;
-box-shadow:0 3px 10px #ccc;
+padding:15px;
+margin-bottom:15px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,.15);
 }
 
 input{
 width:100%;
-padding:14px;
-margin:7px 0;
-border-radius:10px;
-border:1px solid #ddd;
+padding:12px;
+margin-top:8px;
+margin-bottom:8px;
 font-size:16px;
+border:1px solid #ccc;
+border-radius:6px;
+box-sizing:border-box;
 }
 
 button{
 width:100%;
-padding:14px;
-margin-top:8px;
-border:0;
-border-radius:10px;
-background:#008000;
+padding:12px;
+background:#0066cc;
 color:white;
-font-size:17px;
+border:none;
+border-radius:6px;
+font-size:18px;
+cursor:pointer;
+}
+
+button:hover{
+background:#004fa3;
+}
+
+.product{
+background:white;
+padding:12px;
+margin-top:15px;
+border-radius:10px;
+box-shadow:0 0 8px rgba(0,0,0,.1);
+}
+
+.product img{
+width:100%;
+border-radius:8px;
+margin-bottom:10px;
+}
+
+.action{
+margin-top:10px;
+display:flex;
+gap:10px;
+}
+
+.action button{
+flex:1;
 }
 
 .delete{
-background:#d00000;
+background:#d9534f;
 }
 
-img{
-width:100%;
-height:220px;
-object-fit:cover;
-border-radius:15px;
-}
-
-.price{
-font-size:22px;
-font-weight:bold;
-color:#d35400;
+.edit{
+background:#198754;
 }
 
 </style>
@@ -81,15 +108,11 @@ color:#d35400;
 
 <header>
 
-<h1>رحلة تجارة من الصفر</h1>
-
-<p>سوق المنتجات والأسعار</p>
+رحلة تجارة من الصفر
 
 </header>
 
-
 <div class="container">
-
 
 <div class="card">
 
@@ -101,248 +124,241 @@ color:#d35400;
 
 <input id="city" placeholder="المدينة">
 
-<input id="image" placeholder="رابط صورة المنتج">
+<input id="phone" placeholder="رقم الهاتف">
 
+<input id="image" placeholder="رابط الصورة">
 
-<button id="save">
+<button id="saveBtn">
+
 حفظ المنتج
-</button>
 
+</button>
 
 </div>
 
+<div class="card">
 
+<h2>البحث</h2>
 
-<div id="list"></div>
+<input id="search" placeholder="ابحث عن منتج">
 
+</div>
+
+<div class="card">
+
+<h2>المنتجات</h2>
+
+<div id="products">
+
+جاري تحميل المنتجات...
+
+</div>
+
+</div>
 
 </div>
 <script type="module">
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
-
 getFirestore,
 collection,
 addDoc,
 getDocs,
+deleteDoc,
 doc,
-updateDoc,
-deleteDoc
-
-}
-
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
+updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
 
-apiKey:"AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",
+apiKey: "AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",
 
-authDomain:"rehlattejarah.firebaseapp.com",
+authDomain: "rehlattejarah.firebaseapp.com",
 
-projectId:"rehlattejarah",
+projectId: "rehlattejarah",
 
-storageBucket:"rehlattejarah.firebasestorage.app",
+storageBucket: "rehlattejarah.firebasestorage.app",
 
-messagingSenderId:"56157415045",
+messagingSenderId: "56157415045",
 
-appId:"1:56157415045:web:b009334b4ce5d5331e2bec"
+appId: "1:56157415045:web:b009334b4ce5d5331e2bec"
 
 };
-
-
 
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
+let editId = null;
+async function loadProducts(){
 
+const products=document.getElementById("products");
+products.innerHTML="";
 
-document.getElementById("save").onclick = async()=>{
+const querySnapshot=await getDocs(collection(db,"products"));
 
+querySnapshot.forEach((item)=>{
 
-let name=document.getElementById("name").value;
+const data=item.data();
 
-let price=document.getElementById("price").value;
+products.innerHTML+=`
 
-let city=document.getElementById("city").value;
+<div class="product">
 
-let image=document.getElementById("image").value;
+<img src="${data.image}" onerror="this.style.display='none'">
 
+<h3>${data.name}</h3>
 
-await addDoc(collection(db,"prices"),{
+<p>💰 السعر: ${data.price}</p>
 
-name,
-price,
-city,
-image,
-phone:"966550496391"
+<p>📍 المدينة: ${data.city}</p>
 
-});
+<p>📞 الهاتف: ${data.phone}</p>
 
+<div class="action">
 
-alert("تم حفظ المنتج");
+<button class="edit"
+onclick="editProduct('${item.id}',
+'${data.name}',
+'${data.price}',
+'${data.city}',
+'${data.phone}',
+'${data.image}')">
 
-showProducts();
-
-};
-
-
-
-async function showProducts(){
-
-
-let list=document.getElementById("list");
-
-list.innerHTML="";
-
-
-let data=await getDocs(collection(db,"prices"));
-
-
-
-data.forEach((item)=>{
-
-
-let p=item.data();
-
-let id=item.id;
-
-
-
-list.innerHTML += `
-
-
-<div class="card">
-
-
-<img src="${p.image}">
-
-
-<h2>${p.name}</h2>
-
-
-<p class="price">
-
-السعر: ${p.price}
-
-</p>
-
-
-<p>
-
-📍 ${p.city}
-
-</p>
-
-
-<a href="https://wa.me/${p.phone}" target="_blank">
-
-<button>
-
-تواصل واتساب
+تعديل
 
 </button>
 
-</a>
+<button class="delete"
+onclick="deleteProduct('${item.id}')">
 
-
-
-<button onclick="editProduct('${id}')">
-
-تعديل المنتج
+حذف
 
 </button>
-
-
-
-<button class="delete" onclick="deleteProduct('${id}')">
-
-حذف المنتج
-
-</button>
-
-
 
 </div>
 
+</div>
 
 `;
 
-
-
 });
-
 
 }
 
+document.getElementById("saveBtn").onclick=async()=>{
 
+const name=document.getElementById("name").value;
 
-window.editProduct = async function(id){
+const price=document.getElementById("price").value;
 
+const city=document.getElementById("city").value;
 
-let name=prompt("اسم المنتج الجديد");
+const phone=document.getElementById("phone").value;
 
-let price=prompt("السعر الجديد");
+const image=document.getElementById("image").value;
 
-let city=prompt("المدينة الجديدة");
+if(name==""||price==""){
+alert("أدخل اسم المنتج والسعر");
+return;
+}
 
-let image=prompt("رابط الصورة الجديد");
+if(editId==null){
 
-
-await updateDoc(doc(db,"prices",id),{
+await addDoc(collection(db,"products"),{
 
 name,
 price,
 city,
+phone,
 image
 
 });
 
+}else{
 
-alert("تم التعديل");
+await updateDoc(doc(db,"products",editId),{
 
-showProducts();
+name,
+price,
+city,
+phone,
+image
 
+});
 
-}
+editId=null;
 
-
-
-
-window.deleteProduct = async function(id){
-
-
-let ok=confirm("هل تريد حذف المنتج؟");
-
-
-if(ok){
-
-await deleteDoc(doc(db,"prices",id));
-
-
-alert("تم الحذف");
-
-showProducts();
+document.getElementById("saveBtn").innerHTML="حفظ المنتج";
 
 }
 
+loadProducts();
+
+document.getElementById("name").value="";
+document.getElementById("price").value="";
+document.getElementById("city").value="";
+document.getElementById("phone").value="";
+document.getElementById("image").value="";
+
+};
+document.getElementById("search").onkeyup=function(){
+
+let value=this.value.toLowerCase();
+
+let items=document.getElementsByClassName("product");
+
+for(let i=0;i<items.length;i++){
+
+if(items[i].innerText.toLowerCase().includes(value)){
+
+items[i].style.display="block";
+
+}else{
+
+items[i].style.display="none";
 
 }
 
+}
 
+}
 
-showProducts();
+window.deleteProduct=async function(id){
 
+if(confirm("هل تريد حذف المنتج؟")){
+
+await deleteDoc(doc(db,"products",id));
+
+loadProducts();
+
+}
+
+}
+
+window.editProduct=function(id,name,price,city,phone,image){
+
+editId=id;
+
+document.getElementById("name").value=name;
+
+document.getElementById("price").value=price;
+
+document.getElementById("city").value=city;
+
+document.getElementById("phone").value=phone;
+
+document.getElementById("image").value=image;
+
+document.getElementById("saveBtn").innerHTML="حفظ التعديل";
+
+}
+
+loadProducts();
 
 </script>
 
-
 </body>
-
 </html>
