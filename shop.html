@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>رحلة تجارة من الصفر</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f2f2f2;
+padding:20px;
+}
+
+h1{
+text-align:center;
+color:#0066cc;
+}
+
+#search{
+width:100%;
+padding:12px;
+font-size:18px;
+border-radius:8px;
+border:1px solid #ccc;
+margin-bottom:20px;
+}
+
+.product{
+background:white;
+padding:15px;
+margin:15px 0;
+border-radius:10px;
+box-shadow:0 0 5px #aaa;
+}
+
+.product img{
+width:200px;
+max-width:100%;
+border-radius:8px;
+}
+
+.name{
+font-size:22px;
+font-weight:bold;
+color:green;
+}
+
+.info{
+line-height:2;
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<h1>رحلة تجارة من الصفر</h1>
+
+
+<input id="search" placeholder="أبحث عن منتج">
+
+
+<div id="products">
+جاري تحميل المنتجات...
+</div>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import { 
+getFirestore,
+collection,
+getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+// ضع بيانات Firebase الحقيقية هنا
+
+const firebaseConfig = {
+
+apiKey: "ضع apiKey هنا",
+
+authDomain: "ضع authDomain هنا",
+
+projectId: "ضع projectId هنا",
+
+storageBucket: "ضع storageBucket هنا",
+
+messagingSenderId: "ضع messagingSenderId هنا",
+
+appId: "ضع appId هنا"
+
+};
+
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+let box = document.getElementById("products");
+
+
+async function loadProducts(){
+
+
+try{
+
+
+box.innerHTML="";
+
+
+const snapshot = await getDocs(collection(db,"products"));
+
+
+
+if(snapshot.empty){
+
+box.innerHTML="لا توجد منتجات";
+
+return;
+
+}
+
+
+
+snapshot.forEach((doc)=>{
+
+
+let p = doc.data();
+
+
+
+box.innerHTML += `
+
+
+<div class="product">
+
+
+<div class="name">
+${p.name || "بدون اسم"}
+</div>
+
+
+${p.image ? `<img src="${p.image}">` : ""}
+
+
+
+<div class="info">
+
+رقم المستند: ${doc.id}
+
+<br>
+
+المدينة: ${p.city || ""}
+
+<br>
+
+الهاتف: ${p.phone || ""}
+
+<br>
+
+السعر: ${p.price || ""}
+
+
+</div>
+
+
+</div>
+
+
+`;
+
+
+
+});
+
+
+}
+
+catch(error){
+
+box.innerHTML="حدث خطأ في تحميل البيانات";
+
+console.log(error);
+
+}
+
+
+}
+
+
+
+loadProducts();
+
+
+
+
+document.getElementById("search").onkeyup=function(){
+
+
+let text=this.value.toLowerCase();
+
+
+let items=document.getElementsByClassName("product");
+
+
+for(let i=0;i<items.length;i++){
+
+
+if(items[i].innerText.toLowerCase().includes(text)){
+
+
+items[i].style.display="block";
+
+
+}else{
+
+
+items[i].style.display="none";
+
+
+}
+
+
+}
+
+
+};
+
+
+
+</script>
+</body>
+
+</html>
