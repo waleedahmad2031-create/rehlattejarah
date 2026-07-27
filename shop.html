@@ -1,46 +1,47 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>رحلة تجارة من الصفر</title>
 
 <style>
-
 body{
-font-family: Arial;
+font-family:Arial,sans-serif;
 background:#f2f2f2;
+margin:0;
 padding:20px;
 }
 
 h1{
 text-align:center;
-color:#0066cc;
+color:#0b63ce;
 }
 
 #search{
 width:100%;
 padding:12px;
 font-size:18px;
-border-radius:8px;
 border:1px solid #ccc;
+border-radius:8px;
 margin-bottom:20px;
+box-sizing:border-box;
 }
 
 .product{
-background:white;
-padding:15px;
-margin:15px 0;
+background:#fff;
 border-radius:10px;
-box-shadow:0 0 5px #aaa;
+padding:15px;
+margin-bottom:15px;
+box-shadow:0 0 5px rgba(0,0,0,.2);
 }
 
 .product img{
-width:200px;
-max-width:100%;
+width:100%;
+max-width:250px;
+display:block;
+margin:auto;
 border-radius:8px;
 }
 
@@ -48,43 +49,29 @@ border-radius:8px;
 font-size:22px;
 font-weight:bold;
 color:green;
+margin-bottom:10px;
 }
 
 .info{
 line-height:2;
 }
-
 </style>
-
 </head>
-
 
 <body>
 
-
 <h1>رحلة تجارة من الصفر</h1>
 
-
-<input id="search" placeholder="أبحث عن منتج">
-
+<input type="text" id="search" placeholder="أبحث عن منتج">
 
 <div id="products">
 جاري تحميل المنتجات...
 </div>
+
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-getFirestore,
-collection,
-getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-// ضع بيانات Firebase الحقيقية هنا
-
-
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",
@@ -95,131 +82,80 @@ const firebaseConfig = {
   appId: "1:56157415045:web:d1c496a5cdc4d5f81e2bec"
 };
 
-
 const app = initializeApp(firebaseConfig);
-
 const db = getFirestore(app);
 
-
-let box = document.getElementById("products");
-
-
-async function loadProducts(){
-
+const box = document.getElementById("products");
+  async function loadProducts(){
 
 try{
 
-
 box.innerHTML="";
-
 
 const snapshot = await getDocs(collection(db,"products"));
 
-
 if(snapshot.empty){
-
 box.innerHTML="لا توجد منتجات";
-
 return;
-
 }
-
 
 snapshot.forEach((doc)=>{
 
-
-let p = doc.data();
-
+const p = doc.data();
 
 box.innerHTML += `
 
-
 <div class="product">
 
+<div class="name">${p["اسم"] || ""}</div>
 
-<div class="name">
+${p["صورة"] ? `<img src="${p["صورة"]}" alt="صورة المنتج">` : ""}
 
-${p["اسم"] || "بدون اسم"}
+<div class="info">
+📍 المدينة: ${p["مدينة"] || ""}<br>
+📞 الهاتف: ${p["هاتف"] || ""}<br>
+💰 السعر: ${p["سعر"] || ""}
+</div>
 
 </div>
 
-
-${p["صورة"] ? `<img src="${p["صورة">` : ""}
-
-
-
-<div class="info">
-
-
-المدينة: ${p["مدينة"] || ""}
-
-<br>
-
-الهاتف: ${p["هاتف"] || ""}
-
-<: ${p["سعر"]
-
-
-</div>div</div>
-
-
 `;
-
 
 });
 
-
-}
-
-catch(error){
+}catch(error){
 
 box.innerHTML="حدث خطأ في تحميل البيانات";
-
 console.log(error);
 
 }
 
-
 }
 
-
 loadProducts();
-  document.getElementById("search").onkeyup=function(){
+  document.getElementById("search").onkeyup = function(){
 
+let text = this.value.toLowerCase();
 
-let text=this.value.toLowerCase();
+let items = document.getElementsByClassName("product");
 
-
-let items=document.getElementsByClassName("product");
-
-
-for(let i=0;i<items.length;i++){
-
+for(let i = 0; i < items.length; i++){
 
 if(items[i].innerText.toLowerCase().includes(text)){
 
-
-items[i].style.display="block";
-
+items[i].style.display = "block";
 
 }else{
 
-
-items[i].style.display="none";
-
+items[i].style.display = "none";
 
 }
 
-
 }
-
 
 };
 
-
 </script>
 
-
 </body>
-
 </html>
