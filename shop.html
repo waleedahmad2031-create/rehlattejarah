@@ -4,6 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>رحلة تجارة من الصفر</title>
@@ -27,18 +28,19 @@ width:90%;
 max-width:400px;
 padding:10px;
 font-size:18px;
-margin:20px 0;
+margin:20px auto;
+display:block;
 border:1px solid #ccc;
 border-radius:8px;
 }
 
 .product{
 background:#fff;
-margin:15px auto;
 padding:15px;
+margin:15px auto;
+max-width:450px;
 border-radius:10px;
 box-shadow:0 0 5px #bbb;
-max-width:450px;
 }
 
 .product img{
@@ -68,7 +70,9 @@ font-size:18px;
 
 <h1>رحلة تجارة من الصفر</h1>
 
-<input id="search" placeholder="ابحث عن منتج">
+<input
+id="search"
+placeholder="ابحث عن منتج">
 
 <div id="products">
 جاري تحميل المنتجات...
@@ -84,17 +88,34 @@ getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-
 apiKey: "AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",
 authDomain: "rehlattejarah.firebaseapp.com",
 projectId: "rehlattejarah",
 storageBucket: "rehlattejarah.firebasestorage.app",
 messagingSenderId: "56157415045",
 appId: "1:56157415045:web:d1c496a5cdc4d5f81e2bec"
-
 };
 
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const box = document.getElementById("products");
+
+async function loadProducts(){
+
+try{
+
+box.innerHTML="";
+
+const snapshot = await getDocs(collection(db,"products"));
+
+if(snapshot.empty){
+
+box.innerHTML="لا توجد منتجات";
+
+return;
+
+}
   snapshot.forEach((doc)=>{
 
 const p = doc.data();
@@ -127,6 +148,8 @@ ${(p.صورة || p.image) ? `
 
 });
 
+  
+
 }catch(error){
 
 box.innerHTML="حدث خطأ في تحميل البيانات";
@@ -135,26 +158,6 @@ console.log(error);
 
 }
 
-  }
-const db = getFirestore(app);
-
-const box = document.getElementById("products");
-
-async function loadProducts(){
-
-try{
-
-box.innerHTML="";
-
-const snapshot = await getDocs(collection(db,"products"));
-
-if(snapshot.empty){
-
-box.innerHTML="لا توجد منتجات";
-
-return;
-
-  
 }
   loadProducts();
 
