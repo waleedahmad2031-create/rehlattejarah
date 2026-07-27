@@ -96,14 +96,14 @@ const snapshot = await getDocs(collection(db,"products"));
 
 if(snapshot.empty){
 box.innerHTML="لا توجد منتجات";
-return;
-}
 
 snapshot.forEach((doc)=>{
 
 const p = doc.data();
-console.log(p);
+
 box.innerHTML += `
+
+<div class="product">
 
 <div class="name">${p.اسم || p.name || ""}</div>
 
@@ -115,6 +115,11 @@ ${(p.صورة || p.image) ? `<img src="${p.صورة || p.image}" alt="">` : ""}
 💰 السعر: ${p.سعر || p.price || ""}
 </div>
 
+</div>
+
+`;
+
+});
 }catch(error){
 
 box.innerHTML="حدث خطأ في تحميل البيانات";
