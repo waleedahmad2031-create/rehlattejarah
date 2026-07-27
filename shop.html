@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>رحلة تجارة من الصفر</title>
+
+<style>
+body{
+    font-family: Arial;
+    background:#f2f2f2;
+    margin:0;
+    padding:20px;
+}
+
+h1{
+    text-align:center;
+    color:#0066cc;
+}
+
+#search{
+    width:100%;
+    padding:12px;
+    font-size:18px;
+    margin-bottom:20px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+.product{
+    background:white;
+    padding:15px;
+    margin-bottom:15px;
+    border-radius:10px;
+    box-shadow:0 0 5px #aaa;
+}
+
+.product img{
+    max-width:200px;
+    border-radius:8px;
+}
+
+.title{
+    font-size:22px;
+    font-weight:bold;
+    color:#009933;
+}
+
+.info{
+    margin-top:8px;
+    line-height:1.8;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>رحلة تجارة من الصفر</h1>
+
+<input id="search" placeholder="ابحث عن منتج...">
+
+<div id="products">
+جاري تحميل المنتجات...
+</div>
+<script type="module">
+
+// Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import { 
+getFirestore,
+collection,
+getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+// إعدادات Firebase الخاصة بك
+const firebaseConfig = {
+
+apiKey: "ضع apiKey الخاص بك هنا",
+
+authDomain: "ضع authDomain الخاص بك هنا",
+
+projectId: "ضع projectId الخاص بك هنا",
+
+storageBucket: "ضع storageBucket الخاص بك هنا",
+
+messagingSenderId: "ضع messagingSenderId الخاص بك هنا",
+
+appId: "ضع appId الخاص بك هنا"
+
+};
+
+
+// تشغيل Firebase
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+// مكان عرض المنتجات
+
+let productsDiv = document.getElementById("products");
+
+
+// تحميل المنتجات من مجموعة منتجات
+
+async function loadProducts(){
+
+productsDiv.innerHTML="";
+
+const querySnapshot = await getDocs(collection(db,"منتجات"));
+
+
+if(querySnapshot.empty){
+
+productsDiv.innerHTML="لا توجد منتجات";
+
+return;
+
+}
+
+
+querySnapshot.forEach((doc)=>{
+
+
+let data = doc.data();
+
+
+productsDiv.innerHTML += `
+
+<div class="product">
+
+
+<div class="title">
+${data.name || "بدون اسم"}
+</div>
+
+
+<img src="${data.image || ''}">
+
+
+<div class="info">
+
+<b>رقم المستند:</b> ${doc.id}
+<br>
+
+<b>المدينة:</b> ${data.city || ""}
+<br>
+
+<b>الهاتف:</b> ${data.phone || ""}
+<br>
+
+<b>السعر:</b> ${data.price || ""}
+
+</div>
+
+
+</div>
+
+`;
+
+
+});
+
+
+}
+
+
+loadProducts();
+
+
+// البحث
+
+document.getElementById("search").onkeyup=function(){
+
+
+let value=this.value.toLowerCase();
+
+
+let items=document.getElementsByClassName("product");
+
+
+for(let i=0;i<items.length;i++){
+
+
+if(items[i].innerText.toLowerCase().includes(value)){
+
+
+items[i].style.display="block";
+
+
+}else{
+
+
+items[i].style.display="none";
+
+
+}
+
+
+}
+
+
+};
+
+
+</script>
+</body>
+</html>
