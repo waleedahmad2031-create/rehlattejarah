@@ -98,17 +98,13 @@ appId: "ضع appId الخاص بك هنا"
 
 const app = initializeApp(firebaseConfig);
 
-const db = getFirestore(app);
+const querySnapshot = await getDocs(collection(db,"products"));
 
 
-// مكان عرض المنتجات
-
-let productsDiv = document.getElementById("products");
 
 
-// تحميل المنتجات من مجموعة منتجات
 
-async function loadProducts(){
+async function loadProducts()
 
 productsDiv.innerHTML="";
 
