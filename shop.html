@@ -105,23 +105,15 @@ const p = doc.data();
 console.log(p);
 box.innerHTML += `
 
-<div class="product">
+<div class="name">${p.اسم || p.name || ""}</div>
 
-<div class="name">${p.اسم || ""}</div>
-
-${p.صورة ? `<img src="${p.صورة}" alt="صورة المنتج">` : ""}
+${(p.صورة || p.image) ? `<img src="${p.صورة || p.image}" alt="">` : ""}
 
 <div class="info">
-📍 المدينة: ${p.مدينة || ""}<br>
-📞 الهاتف: ${p.هاتف || ""}<br>
-💰 السعر: ${p.سعر || ""}
+📍 المدينة: ${p.مدينة || p.city || ""}<br>
+📞 الهاتف: ${p.هاتف || p.phone || ""}<br>
+💰 السعر: ${p.سعر || p.price || ""}
 </div>
-
-</div>
-
-`;
-
-});
 
 }catch(error){
 
