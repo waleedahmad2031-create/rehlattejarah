@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
 
 <meta charset="UTF-8">
@@ -57,6 +58,7 @@ line-height:2;
 
 </head>
 
+
 <body>
 
 
@@ -73,7 +75,7 @@ line-height:2;
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import { 
+import {
 getFirestore,
 collection,
 getDocs
@@ -99,7 +101,6 @@ appId: "ضع appId هنا"
 };
 
 
-
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
@@ -120,7 +121,6 @@ box.innerHTML="";
 const snapshot = await getDocs(collection(db,"products"));
 
 
-
 if(snapshot.empty){
 
 box.innerHTML="لا توجد منتجات";
@@ -130,12 +130,10 @@ return;
 }
 
 
-
 snapshot.forEach((doc)=>{
 
 
 let p = doc.data();
-
 
 
 box.innerHTML += `
@@ -145,29 +143,28 @@ box.innerHTML += `
 
 
 <div class="name">
-${p.name || "بدون اسم"}
+
+${p["اسم"] || "بدون اسم"}
+
 </div>
 
 
-${p.image ? `<img src="${p.image}">` : ""}
+${p["صور"] ? `<img src="${p["صور"]}">` : ""}
 
 
 
 <div class="info">
 
-رقم المستند: ${doc.id}
+
+المدينة: ${p["مدينة"] || ""}
 
 <br>
 
-المدينة: ${p.city || ""}
+الهاتف: ${p["هاتف"] || ""}
 
 <br>
 
-الهاتف: ${p.phone || ""}
-
-<br>
-
-السعر: ${p.price || ""}
+السعر: ${p["السعر"] || ""}
 
 
 </div>
@@ -177,7 +174,6 @@ ${p.image ? `<img src="${p.image}">` : ""}
 
 
 `;
-
 
 
 });
@@ -197,13 +193,8 @@ console.log(error);
 }
 
 
-
 loadProducts();
-
-
-
-
-document.getElementById("search").onkeyup=function(){
+  document.getElementById("search").onkeyup=function(){
 
 
 let text=this.value.toLowerCase();
@@ -236,8 +227,9 @@ items[i].style.display="none";
 };
 
 
-
 </script>
+
+
 </body>
 
 </html>
