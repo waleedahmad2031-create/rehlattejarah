@@ -1,48 +1,51 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>رحلة تجارة من الصفر</title>
 
 <style>
+
 body{
-font-family:Arial,sans-serif;
-background:#f2f2f2;
+font-family:Tahoma;
+background:#f5f5f5;
 margin:0;
 padding:20px;
+text-align:center;
 }
 
 h1{
-text-align:center;
-color:#0b63ce;
+color:green;
 }
 
 #search{
-width:100%;
-padding:12px;
+width:90%;
+max-width:400px;
+padding:10px;
 font-size:18px;
+margin:20px 0;
 border:1px solid #ccc;
 border-radius:8px;
-margin-bottom:20px;
-box-sizing:border-box;
 }
 
 .product{
 background:#fff;
-border-radius:10px;
+margin:15px auto;
 padding:15px;
-margin-bottom:15px;
-box-shadow:0 0 5px rgba(0,0,0,.2);
+border-radius:10px;
+box-shadow:0 0 5px #bbb;
+max-width:450px;
 }
 
 .product img{
-width:100%;
-max-width:250px;
-display:block;
-margin:auto;
+width:200px;
+max-width:100%;
 border-radius:8px;
+margin-bottom:10px;
 }
 
 .name{
@@ -54,39 +57,90 @@ margin-bottom:10px;
 
 .info{
 line-height:2;
+font-size:18px;
 }
+
 </style>
+
 </head>
 
 <body>
 
 <h1>رحلة تجارة من الصفر</h1>
 
-<input type="text" id="search" placeholder="أبحث عن منتج">
+<input id="search" placeholder="ابحث عن منتج">
 
 <div id="products">
 جاري تحميل المنتجات...
 </div>
-
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import {
+getFirestore,
+collection,
+getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",
-  authDomain: "rehlattejarah.firebaseapp.com",
-  projectId: "rehlattejarah",
-  storageBucket: "rehlattejarah.firebasestorage.app",
-  messagingSenderId: "56157415045",
-  appId: "1:56157415045:web:d1c496a5cdc4d5f81e2bec"
+
+apiKey: "AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",
+authDomain: "rehlattejarah.firebaseapp.com",
+projectId: "rehlattejarah",
+storageBucket: "rehlattejarah.firebasestorage.app",
+messagingSenderId: "56157415045",
+appId: "1:56157415045:web:d1c496a5cdc4d5f81e2bec"
+
 };
 
 const app = initializeApp(firebaseConfig);
+  snapshot.forEach((doc)=>{
+
+const p = doc.data();
+
+box.innerHTML += `
+
+<div class="product">
+
+<div class="name">
+${p.اسم || p.name || ""}
+</div>
+
+${(p.صورة || p.image) ? `
+<img src="${p.صورة || p.image}" alt="صورة المنتج">
+` : ""}
+
+<div class="info">
+
+📍 المدينة: ${p.مدينة || p.city || ""}<br>
+
+📞 الهاتف: ${p.هاتف || p.phone || ""}<br>
+
+💰 السعر: ${p.سعر || p.price || ""}
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}catch(error){
+
+box.innerHTML="حدث خطأ في تحميل البيانات";
+
+console.log(error);
+
+}
+
+  }
 const db = getFirestore(app);
 
 const box = document.getElementById("products");
-  async function loadProducts(){
+
+async function loadProducts(){
 
 try{
 
@@ -95,56 +149,30 @@ box.innerHTML="";
 const snapshot = await getDocs(collection(db,"products"));
 
 if(snapshot.empty){
+
 box.innerHTML="لا توجد منتجات";
 
-snapshot.forEach((doc)=>{
+return;
 
-const p = doc.data();
-
-box.innerHTML += `
-
-<div class="product">
-
-<div class="name">${p.اسم || p.name || ""}</div>
-
-${(p.صورة || p.image) ? `<img src="${p.صورة || p.image}" alt="">` : ""}
-
-<div class="info">
-📍 المدينة: ${p.مدينة || p.city || ""}<br>
-📞 الهاتف: ${p.هاتف || p.phone || ""}<br>
-💰 السعر: ${p.سعر || p.price || ""}
-</div>
-
-</div>
-
-`;
-
-});
-}catch(error){
-
-box.innerHTML="حدث خطأ في تحميل البيانات";
-console.log(error);
-
+  
 }
+  loadProducts();
 
-}
-
-loadProducts();
-  document.getElementById("search").onkeyup = function(){
+document.getElementById("search").onkeyup = function(){
 
 let text = this.value.toLowerCase();
 
 let items = document.getElementsByClassName("product");
 
-for(let i = 0; i < items.length; i++){
+for(let i=0;i<items.length;i++){
 
 if(items[i].innerText.toLowerCase().includes(text)){
 
-items[i].style.display = "block";
+items[i].style.display="block";
 
 }else{
 
-items[i].style.display = "none";
+items[i].style.display="none";
 
 }
 
@@ -155,4 +183,5 @@ items[i].style.display = "none";
 </script>
 
 </body>
+
 </html>
