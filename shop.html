@@ -4,7 +4,6 @@
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>رحلة تجارة من الصفر</title>
@@ -70,13 +69,12 @@ font-size:18px;
 
 <h1>رحلة تجارة من الصفر</h1>
 
-<input
-id="search"
-placeholder="ابحث عن منتج">
+<input id="search" placeholder="ابحث عن منتج">
 
 <div id="products">
 جاري تحميل المنتجات...
 </div>
+
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -84,39 +82,45 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import {
 getFirestore,
 collection,
-getDocs
+onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
+
 apiKey: "AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",
+
 authDomain: "rehlattejarah.firebaseapp.com",
+
 projectId: "rehlattejarah",
+
 storageBucket: "rehlattejarah.firebasestorage.app",
+
 messagingSenderId: "56157415045",
+
 appId: "1:56157415045:web:d1c496a5cdc4d5f81e2bec"
+
 };
 
 const app = initializeApp(firebaseConfig);
+
 const db = getFirestore(app);
 
 const box = document.getElementById("products");
+box.innerHTML = "جاري تحميل المنتجات...";
 
-async function loadProducts(){
+onSnapshot(collection(db,"products"), (snapshot)=>{
 
-try{
-
-box.innerHTML="";
-
-const snapshot = await getDocs(collection(db,"products"));
+box.innerHTML = "";
 
 if(snapshot.empty){
 
-box.innerHTML="لا توجد منتجات";
+box.innerHTML = "لا توجد منتجات";
 
 return;
 
 }
-  snapshot.forEach((doc)=>{
+
+snapshot.forEach((doc)=>{
 
 const p = doc.data();
 
@@ -125,11 +129,15 @@ box.innerHTML += `
 <div class="product">
 
 <div class="name">
+
 ${p.اسم || p.name || ""}
+
 </div>
 
 ${(p.صورة || p.image) ? `
+
 <img src="${p.صورة || p.image}" alt="صورة المنتج">
+
 ` : ""}
 
 <div class="info">
@@ -148,20 +156,14 @@ ${(p.صورة || p.image) ? `
 
 });
 
-  
+}, (error)=>{
 
-}catch(error){
-
-box.innerHTML="حدث خطأ في تحميل البيانات";
+box.innerHTML = "تعذر الاتصال بقاعدة البيانات";
 
 console.log(error);
 
-}
-
-}
-  loadProducts();
-
-document.getElementById("search").onkeyup = function(){
+});
+  document.getElementById("search").onkeyup = function(){
 
 let text = this.value.toLowerCase();
 
@@ -182,8 +184,7 @@ items[i].style.display="none";
 }
 
 };
-
-</script>
+  </script>
 
 </body>
 
