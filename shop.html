@@ -146,9 +146,7 @@ ${(p.صورة || p.image) ? `
 📞 الهاتف: ${p.هاتف || p.phone || ""}<br>
 
 💰 السعر: ${p.سعر || p.price || ""}
-<p>${p.phone}</p>
-
-<a href="https://api.whatsapp.com/send?phone=${p.phone}&text=السلام عليكم، أريد طلب ${p.name}" target="_blank">
+<a href="https://wa.me/${p.phone}?text=السلام عليكم أريد طلب ${p.name}" target="_blank">
 <button>🛒 اطلب الآن</button>
 </a>
 
