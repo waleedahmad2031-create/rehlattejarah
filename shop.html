@@ -146,7 +146,7 @@ ${(p.صورة || p.image) ? `
 📞 الهاتف: ${p.هاتف || p.phone || ""}<br>
 
 💰 السعر: ${p.سعر || p.price || ""}
-<a href="https://wa.me/${p.هاتف}?text=السلام عليكم أريد طلب ${p.اسم}" target="_blank">
+<a href="https://wa.me/${p.هاتف || p.phone}?text=السلام عليكم أريد طلب ${p.اسم || p.name}" target="_blank">
 <button>🛒 اطلب الآن</button>
 </a>
 
