@@ -1,36 +1,32 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>سوق مباشر</title>
-<style>
-body{font-family:Tahoma;background:#f5f5f5;text-align:center;margin:0;padding:20px}
-#search{width:90%;max-width:400px;padding:10px}
-#cats button{margin:4px;padding:8px 12px;background:green;color:#fff;border:0;border-radius:8px}
-.product{background:#fff;margin:15px auto;padding:15px;max-width:430px;border-radius:10px;box-shadow:0 0 5px #bbb}
-.product img{width:180px;max-width:100%}
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>سوق مباشر</title><style>
+body{font-family:Tahoma;background:#f5f5f5;margin:0;padding:16px}
+h1{text-align:center;color:#198754}
+#search{width:100%;padding:12px;border-radius:10px;border:1px solid #ccc;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+.card{background:#fff;padding:16px;border-radius:12px;text-align:center;font-weight:bold;cursor:pointer;box-shadow:0 0 4px #ccc}
+.product{background:#fff;padding:12px;border-radius:12px;margin:12px 0;box-shadow:0 0 4px #ccc}
+.product img{width:150px;display:block;margin:auto}
+button{background:#198754;color:#fff;border:0;padding:10px 14px;border-radius:8px}
 </style></head><body>
 <h1>🛒 سوق مباشر</h1>
 <input id="search" placeholder="ابحث عن منتج">
-<div id="cats">
-<button data-c="">الكل</button>
-<button data-c="عطور">🌸 عطور</button>
-<button data-c="زيوت">🛢️ زيوت</button>
-<button data-c="توصيلات">🔌 توصيلات</button>
-<button data-c="قطع غيار">⚙️ قطع غيار</button>
-<button data-c="أخرى">📦 أخرى</button>
-</div>
+<div class="grid" id="cats"></div>
 <div id="products"></div>
 <script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getFirestore,collection,getDocs} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const firebaseConfig={apiKey:"AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",authDomain:"rehlattejarah.firebaseapp.com",projectId:"rehlattejarah",storageBucket:"rehlattejarah.firebasestorage.app",messagingSenderId:"56157415045",appId:"1:56157415045:web:d1c496a5cdc4d5f81e2bec"};
-const db=getFirestore(initializeApp(firebaseConfig));
-const box=document.getElementById("products");
-let all=[],cat="";
-const v=(p,e,a)=>p[e]??p[a]??"";
-function draw(list){box.innerHTML="";list.forEach(p=>{let n=v(p,"name","اسم"),pr=v(p,"price","السعر"),ci=v(p,"city","المدينة"),ph=v(p,"phone","الهاتف"),im=v(p,"image","الصورة"),de=v(p,"description","الوصف"),ca=v(p,"category","القسم")||"أخرى";box.innerHTML+=`<div class="product"><img src="${im}"><h2>${n}</h2><p>💰 ${pr}</p><p>📍 ${ci}</p><p>📦 ${ca}</p><p>${de}</p><a target="_blank" href="https://wa.me/${ph}?text=${encodeURIComponent("السلام عليكم، أريد طلب "+n)}"><button>اطلب الآن</button></a></div>`})}
-async function load(){const s=await getDocs(collection(db,"products"));all=[];s.forEach(d=>all.push(d.data()));filter();}
-function filter(){let t=search.value.toLowerCase();draw(all.filter(p=>{let c=v(p,"category","القسم")||"أخرى";if(cat&&c!=cat)return false;return JSON.stringify(p).toLowerCase().includes(t)}))}
-search.oninput=filter;
-document.querySelectorAll("#cats button").forEach(b=>b.onclick=()=>{cat=b.dataset.c;filter();});
-load();
-</script></body></html>
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getFirestore,collection,getDocs}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const cfg={apiKey:"AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",authDomain:"rehlattejarah.firebaseapp.com",projectId:"rehlattejarah",storageBucket:"rehlattejarah.firebasestorage.app",messagingSenderId:"56157415045",appId:"1:56157415045:web:d1c496a5cdc4d5f81e2bec"};
+const db=getFirestore(initializeApp(cfg));
+const categories=["الكل","عطور","جوالات","مواد غذائية","أدوات منزلية","خضروات وفواكه","خدمات أخرى"];
+const emojis={"الكل":"📦","عطور":"🌸","جوالات":"📱","مواد غذائية":"🛒","أدوات منزلية":"🏠","خضروات وفواكه":"🥬","خدمات أخرى":"🛠️"};
+let all=[],current="الكل";
+const val=(p,e,a)=>p[e]??p[a]??"";
+cats.innerHTML=categories.map(c=>`<div class='card' onclick="window.sel('${c}')">${emojis[c]}<br>${c}</div>`).join("");
+window.sel=c=>{current=c;draw()};
+async function load(){const s=await getDocs(collection(db,"products"));all=[];s.forEach(d=>all.push(d.data()));draw();}
+function draw(){const t=search.value.toLowerCase();products.innerHTML="";
+all.filter(p=>{const c=val(p,"category","القسم")||"أخرى";if(current!="الكل"&&c!=current)return false;return JSON.stringify(p).toLowerCase().includes(t)}).forEach(p=>{
+const n=val(p,"name","اسم"),pr=val(p,"price","السعر"),ci=val(p,"city","المدينة"),ph=val(p,"phone","الهاتف"),im=val(p,"image","الصورة"),de=val(p,"description","الوصف"),ca=val(p,"category","القسم");
+products.innerHTML+=`<div class="product"><img src="${im}"><h3>${n}</h3><p>💰 ${pr}</p><p>📍 ${ci}</p><p>📦 ${ca}</p><p>${de}</p><a target="_blank" href="https://wa.me/${ph}?text=${encodeURIComponent("السلام عليكم، أريد طلب "+n)}"><button>اطلب الآن</button></a></div>`})}
+search.oninput=draw;load();
+</script></body></html
