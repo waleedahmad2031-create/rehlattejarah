@@ -135,16 +135,22 @@ box.innerHTML += `
 <div class="product">
 
 <div class="name">
-
 ${p.اسم || p.name || ""}
-
 </div>
 
+<p>
+${p.description || p.الوصف || ""}
+</p>
+
 ${(p.صورة || p.image) ? `
-
 <img src="${p.صورة || p.image}" alt="صورة المنتج">
-
 ` : ""}
+
+
+
+
+
+
 
 <div class="info">
 
