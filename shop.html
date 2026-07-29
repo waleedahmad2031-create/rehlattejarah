@@ -1,69 +1,36 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>سوق مباشر</title>
 <style>
-body{font-family:Tahoma;background:#f5f5f5;margin:0;padding:20px;text-align:center}
-#search{width:90%;max-width:400px;padding:10px;font-size:18px}
-.product{background:#fff;margin:15px auto;padding:15px;max-width:450px;border-radius:10px;box-shadow:0 0 5px #bbb}
-.product img{width:200px;max-width:100%}
-button{background:green;color:#fff;border:0;padding:10px 20px;border-radius:8px}
-</style>
-</head>
-<body>
+body{font-family:Tahoma;background:#f5f5f5;text-align:center;margin:0;padding:20px}
+#search{width:90%;max-width:400px;padding:10px}
+#cats button{margin:4px;padding:8px 12px;background:green;color:#fff;border:0;border-radius:8px}
+.product{background:#fff;margin:15px auto;padding:15px;max-width:430px;border-radius:10px;box-shadow:0 0 5px #bbb}
+.product img{width:180px;max-width:100%}
+</style></head><body>
 <h1>🛒 سوق مباشر</h1>
 <input id="search" placeholder="ابحث عن منتج">
+<div id="cats">
+<button data-c="">الكل</button>
+<button data-c="عطور">🌸 عطور</button>
+<button data-c="زيوت">🛢️ زيوت</button>
+<button data-c="توصيلات">🔌 توصيلات</button>
+<button data-c="قطع غيار">⚙️ قطع غيار</button>
+<button data-c="أخرى">📦 أخرى</button>
+</div>
 <div id="products"></div>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore,collection,getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const firebaseConfig={
-apiKey:"AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",
-authDomain:"rehlattejarah.firebaseapp.com",
-projectId:"rehlattejarah",
-storageBucket:"rehlattejarah.firebasestorage.app",
-messagingSenderId:"56157415045",
-appId:"1:56157415045:web:d1c496a5cdc4d5f81e2bec"
-};
-const app=initializeApp(firebaseConfig);
-const db=getFirestore(app);
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,collection,getDocs} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",authDomain:"rehlattejarah.firebaseapp.com",projectId:"rehlattejarah",storageBucket:"rehlattejarah.firebasestorage.app",messagingSenderId:"56157415045",appId:"1:56157415045:web:d1c496a5cdc4d5f81e2bec"};
+const db=getFirestore(initializeApp(firebaseConfig));
 const box=document.getElementById("products");
-let allProducts=[];
-function val(p,en,ar){return p[en]??p[ar]??"";}
-function render(list){
- box.innerHTML="";
- list.forEach(p=>{
- const name=val(p,"name","اسم");
- const price=val(p,"price","السعر");
- const city=val(p,"city","المدينة");
- const phone=val(p,"phone","الهاتف");
- const image=val(p,"image","الصورة");
- const desc=val(p,"description","الوصف");
- const cat=val(p,"category","القسم")||"أخرى";
- box.innerHTML+=`<div class="product">
- <img src="${image}">
- <h2>${name}</h2>
- <p>💰 السعر: ${price}</p>
- <p>📍 المدينة: ${city}</p>
- <p>📦 القسم: ${cat}</p>
- <p>${desc}</p>
- <a target="_blank" href="https://wa.me/${phone}?text=${encodeURIComponent("السلام عليكم، أريد طلب "+name)}"><button>اطلب الآن</button></a>
- </div>`;
- });
-}
-async function load(){
- const s=await getDocs(collection(db,"products"));
- allProducts=[];
- s.forEach(d=>allProducts.push(d.data()));
- render(allProducts);
-}
-document.getElementById("search").addEventListener("input",e=>{
- const t=e.target.value.toLowerCase();
- render(allProducts.filter(p=>JSON.stringify(p).toLowerCase().includes(t)));
-});
+let all=[],cat="";
+const v=(p,e,a)=>p[e]??p[a]??"";
+function draw(list){box.innerHTML="";list.forEach(p=>{let n=v(p,"name","اسم"),pr=v(p,"price","السعر"),ci=v(p,"city","المدينة"),ph=v(p,"phone","الهاتف"),im=v(p,"image","الصورة"),de=v(p,"description","الوصف"),ca=v(p,"category","القسم")||"أخرى";box.innerHTML+=`<div class="product"><img src="${im}"><h2>${n}</h2><p>💰 ${pr}</p><p>📍 ${ci}</p><p>📦 ${ca}</p><p>${de}</p><a target="_blank" href="https://wa.me/${ph}?text=${encodeURIComponent("السلام عليكم، أريد طلب "+n)}"><button>اطلب الآن</button></a></div>`})}
+async function load(){const s=await getDocs(collection(db,"products"));all=[];s.forEach(d=>all.push(d.data()));filter();}
+function filter(){let t=search.value.toLowerCase();draw(all.filter(p=>{let c=v(p,"category","القسم")||"أخرى";if(cat&&c!=cat)return false;return JSON.stringify(p).toLowerCase().includes(t)}))}
+search.oninput=filter;
+document.querySelectorAll("#cats button").forEach(b=>b.onclick=()=>{cat=b.dataset.c;filter();});
 load();
-</script>
-</body>
-</html>
+</script></body></html>
