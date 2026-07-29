@@ -1,303 +1,69 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-
 <title>سوق مباشر</title>
-
 <style>
-
-body{
-font-family:Tahoma;
-background:#f5f5f5;
-margin:0;
-padding:20px;
-text-align:center;
-}
-
-h1{
-color:green;
-}
-
-#search{
-width:90%;
-max-width:400px;
-padding:10px;
-font-size:18px;
-margin:15px auto;
-display:block;
-border:1px solid #ccc;
-border-radius:8px;
-}
-
-.categories{
-margin:15px 0;
-}
-
-.categories button{
-background:green;
-color:white;
-border:none;
-padding:8px 15px;
-margin:4px;
-border-radius:8px;
-cursor:pointer;
-font-size:16px;
-}
-
-.product{
-background:white;
-padding:15px;
-margin:15px auto;
-max-width:450px;
-border-radius:10px;
-box-shadow:0 0 5px #bbb;
-}
-
-.product img{
-width:200px;
-max-width:100%;
-border-radius:8px;
-margin-bottom:10px;
-}
-
-.name{
-font-size:22px;
-font-weight:bold;
-color:green;
-margin-bottom:10px;
-}
-
-.info{
-line-height:2;
-font-size:18px;
-}
-
-.order{
-background:green;
-color:white;
-border:none;
-padding:10px 20px;
-border-radius:8px;
-font-size:18px;
-cursor:pointer;
-}
-
+body{font-family:Tahoma;background:#f5f5f5;margin:0;padding:20px;text-align:center}
+#search{width:90%;max-width:400px;padding:10px;font-size:18px}
+.product{background:#fff;margin:15px auto;padding:15px;max-width:450px;border-radius:10px;box-shadow:0 0 5px #bbb}
+.product img{width:200px;max-width:100%}
+button{background:green;color:#fff;border:0;padding:10px 20px;border-radius:8px}
 </style>
-
 </head>
-
 <body>
-
 <h1>🛒 سوق مباشر</h1>
-
-<input
-type="text"
-id="search"
-placeholder="ابحث عن منتج...">
-
-<div class="categories">
-
-<button onclick="filterCategory('')">الكل</button>
-
-<button onclick="filterCategory('عطور')">🌸 عطور</button>
-
-<button onclick="filterCategory('زيوت')">🛢️ زيوت</button>
-
-<button onclick="filterCategory('توصيلات')">🔌 توصيلات</button>
-
-<button onclick="filterCategory('قطع غيار')">⚙️ قطع غيار</button>
-
-<button onclick="filterCategory('أخرى')">📦 أخرى</button>
-
-</div>
-
+<input id="search" placeholder="ابحث عن منتج">
 <div id="products"></div>
-
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-getFirestore,
-collection,
-getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-const firebaseConfig = {
-
-apiKey: "AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",
-
-authDomain: "rehlattejarah.firebaseapp.com",
-
-projectId: "rehlattejarah",
-
-storageBucket: "rehlattejarah.firebasestorage.app",
-
-messagingSenderId: "56157415045",
-
-appId: "1:56157415045:web:d1c496a5cdc4d5f81e2bec"
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore,collection,getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig={
+apiKey:"AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",
+authDomain:"rehlattejarah.firebaseapp.com",
+projectId:"rehlattejarah",
+storageBucket:"rehlattejarah.firebasestorage.app",
+messagingSenderId:"56157415045",
+appId:"1:56157415045:web:d1c496a5cdc4d5f81e2bec"
 };
-
-
-const app = initializeApp(firebaseConfig);
-
-const db = getFirestore(app);
-
-const box = document.getElementById("products");
-
-let allProducts = [];
-
-let currentCategory = "";
-
-
-async function loadProducts(){
-
-box.innerHTML = "";
-
-allProducts = [];
-
-const snapshot = await getDocs(collection(db,"products"));
-
-snapshot.forEach((item)=>{
-
-let p = item.data();
-
-p.id = item.id;
-
-
-// يدعم العربي والإنجليزي
-p.name = p.name || p["اسم"] || "";
-
-p.price = p.price || p["السعر"] || "";
-
-p.city = p.city || p["المدينة"] || "";
-
-p.phone = p.phone || p["الهاتف"] || "";
-
-p.image = p.image || p["الصورة"] || "";
-
-p.description = p.description || p["الوصف"] || "";
-
-p.category = p.category || p["القسم"] || "أخرى";
-
-allProducts.push(p);
-
-});
-
-showProducts(allProducts);
-  
-function showProducts(products){
-
-box.innerHTML = "";
-
-products.forEach((p)=>{
-
-box.innerHTML += `
-
-<div class="product">
-
-<img src="${p.image}" alt="${p.name}">
-
-<div class="name">
-
-${p.name}
-
-</div>
-
-<div class="info">
-
-💰 السعر: ${p.price}
-
-<br>
-
-📍 المدينة: ${p.city}
-
-<br>
-
-📂 القسم: ${p.category}
-
-<br>
-
-📝 الوصف: ${p.description}
-
-</div>
-
-<br>
-
-<a href="https://wa.me/${p.phone}?text=السلام عليكم، أريد طلب ${p.name}" target="_blank">
-
-<button class="order">
-
-🛒 اطلب الآن
-
-</button>
-
-</a>
-
-</div>
-
-`;
-
-});
-
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+const box=document.getElementById("products");
+let allProducts=[];
+function val(p,en,ar){return p[en]??p[ar]??"";}
+function render(list){
+ box.innerHTML="";
+ list.forEach(p=>{
+ const name=val(p,"name","اسم");
+ const price=val(p,"price","السعر");
+ const city=val(p,"city","المدينة");
+ const phone=val(p,"phone","الهاتف");
+ const image=val(p,"image","الصورة");
+ const desc=val(p,"description","الوصف");
+ const cat=val(p,"category","القسم")||"أخرى";
+ box.innerHTML+=`<div class="product">
+ <img src="${image}">
+ <h2>${name}</h2>
+ <p>💰 السعر: ${price}</p>
+ <p>📍 المدينة: ${city}</p>
+ <p>📦 القسم: ${cat}</p>
+ <p>${desc}</p>
+ <a target="_blank" href="https://wa.me/${phone}?text=${encodeURIComponent("السلام عليكم، أريد طلب "+name)}"><button>اطلب الآن</button></a>
+ </div>`;
+ });
 }
-
-
-window.filterCategory = function(category){
-
-currentCategory = category;
-
-let result = allProducts.filter((p)=>{
-
-if(category=="") return true;
-
-return p.category == category;
-
+async function load(){
+ const s=await getDocs(collection(db,"products"));
+ allProducts=[];
+ s.forEach(d=>allProducts.push(d.data()));
+ render(allProducts);
+}
+document.getElementById("search").addEventListener("input",e=>{
+ const t=e.target.value.toLowerCase();
+ render(allProducts.filter(p=>JSON.stringify(p).toLowerCase().includes(t)));
 });
-
-showProducts(result);
-  // البحث
-
-document.getElementById("search").addEventListener("keyup",function(){
-
-let text = this.value.toLowerCase();
-
-let result = allProducts.filter((p)=>{
-
-let data = (
-(p.name || "") +
-(p.price || "") +
-(p.city || "") +
-(p.description || "") +
-(p.category || "")
-).toLowerCase();
-
-let searchOk = data.includes(text);
-
-let categoryOk = currentCategory=="" || p.category==currentCategory;
-
-return searchOk && categoryOk;
-
-});
-
-showProducts(result);
-
-});
-
-
-loadProducts();
-
+load();
 </script>
-
 </body>
-
 </html>
-
-};
-}
