@@ -124,13 +124,15 @@ box.innerHTML = "لا توجد منتجات";
 
 return;
 
-}
+  {
 
 snapshot.forEach((doc)=>{
 
 const p = doc.data();
 
 box.innerHTML += `
+
+<div class="product">
 
 <div class="product">
 
@@ -141,6 +143,8 @@ ${p.اسم || p.name || ""}
 <p>
 ${p.description || p.الوصف || ""}
 </p>
+
+<p>📂 القسم: ${p.category || p.القسم || ""}</p>
 
 ${(p.صورة || p.image) ? `
 <img src="${p.صورة || p.image}" alt="صورة المنتج">
