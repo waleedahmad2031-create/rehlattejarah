@@ -27,14 +27,24 @@ width:90%;
 max-width:400px;
 padding:10px;
 font-size:18px;
-margin:20px auto;
-display:block;
-border:1px solid #ccc;
 border-radius:8px;
+border:1px solid #ccc;
 }
 
+
+.category{
+margin:10px;
+padding:10px;
+background:green;
+color:white;
+border-radius:8px;
+display:inline-block;
+cursor:pointer;
+}
+
+
 .product{
-background:#fff;
+background:white;
 padding:15px;
 margin:15px auto;
 max-width:450px;
@@ -42,28 +52,41 @@ border-radius:10px;
 box-shadow:0 0 5px #bbb;
 }
 
+
 .product img{
 width:200px;
 max-width:100%;
 border-radius:8px;
-margin-bottom:10px;
 }
+
 
 .name{
 font-size:22px;
 font-weight:bold;
 color:green;
-margin-bottom:10px;
 }
 
+
 .info{
+font-size:18px;
 line-height:2;
+}
+
+
+button{
+background:green;
+color:white;
+border:0;
+padding:10px;
+border-radius:8px;
 font-size:18px;
 }
+
 
 </style>
 
 </head>
+
 
 <body>
 
@@ -72,11 +95,7 @@ font-size:18px;
 
 🛒 أهلاً بكم في سوق مباشر  
 <br>
-Welcome to Direct Market  
-<br>
-نوصل طلباتكم إلى باب المنزل  
-<br>
-We deliver your orders to your door
+Welcome to Direct Market
 
 </p>
 
@@ -86,48 +105,80 @@ We deliver your orders to your door
 </h1>
 
 
-<input type="text" id="search" placeholder="ابحث عن منتج... Search product">
+<input id="search" placeholder="ابحث عن منتج... Search">
+
+
+<br><br>
+
+
+<div class="category" onclick="filterCategory('')">
+الكل
+</div>
+
+<div class="category" onclick="filterCategory('عطور')">
+🌸 عطور
+</div>
+
+<div class="category" onclick="filterCategory('زيوت')">
+🛢️ زيوت
+</div>
+
+<div class="category" onclick="filterCategory('توصيلات')">
+🔌 توصيلات
+</div>
+
+<div class="category" onclick="filterCategory('قطع غيار')">
+⚙️ قطع غيار
+</div>
 
 
 <div id="products"></div>
 
 
 <script type="module">
-  
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { initializeApp } from 
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 
 import {
 getFirestore,
 collection,
 getDocs
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+} from 
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-// ضع بيانات Firebase الخاصة بك هنا
 
 const firebaseConfig = {
 
-apiKey: "ضع apiKey هنا",
+apiKey: "ضع بياناتك هنا",
 
-authDomain: "ضع authDomain هنا",
+authDomain: "ضع بياناتك هنا",
 
-projectId: "ضع projectId هنا",
+projectId: "ضع بياناتك هنا",
 
-storageBucket: "ضع storageBucket هنا",
+storageBucket: "ضع بياناتك هنا",
 
-messagingSenderId: "ضع messagingSenderId هنا",
+messagingSenderId: "ضع بياناتك هنا",
 
-appId: "ضع appId هنا"
+appId: "ضع بياناتك هنا"
 
 };
 
 
+
 const app = initializeApp(firebaseConfig);
+
 
 const db = getFirestore(app);
 
 
-let productsBox = document.getElementById("products");
+
+let box = document.getElementById("products");
+
+
+let allProducts = [];
+
 
 
 async function loadProducts(){
@@ -142,7 +193,31 @@ snapshot.forEach((item)=>{
 let p = item.data();
 
 
-productsBox.innerHTML += `
+allProducts.push(p);
+
+
+});
+
+
+showProducts(allProducts);
+
+
+}
+
+
+
+
+function showProducts(products){
+
+
+box.innerHTML="";
+
+
+products.forEach((p)=>{
+
+
+box.innerHTML += `
+
 
 <div class="product">
 
@@ -159,6 +234,7 @@ ${p.name}
 
 <div class="info">
 
+
 💰 السعر: ${p.price}
 
 <br>
@@ -167,7 +243,12 @@ ${p.name}
 
 <br>
 
-📞 الهاتف: ${p.phone}
+📦 القسم: ${p.category || "أخرى"}
+
+<br>
+
+📝 الوصف: ${p.description || ""}
+
 
 </div>
 
@@ -178,7 +259,7 @@ ${p.name}
 <a href="https://wa.me/${p.phone}?text=السلام عليكم، أريد طلب ${p.name}" target="_blank">
 
 
-<button style="background:green;color:white;padding:10px;border:0;border-radius:8px;font-size:18px">
+<button>
 
 🛒 اطلب الآن | Order Now
 
@@ -193,42 +274,97 @@ ${p.name}
 
 `;
 
+
+
 });
 
 
 }
 
 
+
 loadProducts();
-  // البحث عن المنتجات
-document.getElementById("search").addEventListener("keyup", function(){
-
-let value = this.value.toLowerCase();
-
-let products = document.getElementsByClassName("product");
+  let currentCategory = "";
 
 
-for(let i = 0; i < products.length; i++){
+// فلترة حسب القسم
 
-let text = products[i].innerText.toLowerCase();
+window.filterCategory = function(category){
+
+currentCategory = category;
 
 
-if(text.includes(value)){
+let result = allProducts.filter((p)=>{
 
-products[i].style.display = "block";
 
-}else{
+if(category==""){
 
-products[i].style.display = "none";
+return true;
+
+}
+
+
+return p.category == category;
+
+
+});
+
+
+showProducts(result);
+
+
+};
+
+
+
+
+// البحث
+
+document.getElementById("search").addEventListener("keyup",function(){
+
+
+let text = this.value.toLowerCase();
+
+
+
+let result = allProducts.filter((p)=>{
+
+
+let data = (
+
+p.name +
+p.price +
+p.city +
+p.description +
+p.category
+
+).toLowerCase();
+
+
+
+let searchOk = data.includes(text);
+
+
+
+let categoryOk = currentCategory=="" || p.category==currentCategory;
+
+
+
+return searchOk && categoryOk;
+
+
+});
+
+
+
+showProducts(result);
+
+
+
+});
   </script>
 
 
 </body>
 
 </html>
-
-}
-
-}
-
-});
