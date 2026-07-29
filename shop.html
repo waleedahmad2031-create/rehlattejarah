@@ -1,11 +1,12 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>سوق مباشر</title>
+
+<title>سوق مباشر | Direct Market</title>
 
 <style>
 
@@ -66,33 +67,58 @@ font-size:18px;
 
 <body>
 
+
 <p style="background:green;color:white;padding:12px;border-radius:8px;font-size:20px;font-weight:bold;">
-🛒 أهلاً بكم في سوق مباشر – نوصل طلباتكم إلى باب المنزل
+
+🛒 أهلاً بكم في سوق مباشر  
+<br>
+Welcome to Direct Market  
+<br>
+نوصل طلباتكم إلى باب المنزل  
+<br>
+We deliver your orders to your door
+
 </p>
 
-<h1>سوق مباشر</h1>
 
-<input type="text" id="search" placeholder="ابحث عن منتج...">
+<h1>
+سوق مباشر | Direct Market
+</h1>
+
+
+<input type="text" id="search" placeholder="ابحث عن منتج... Search product">
+
 
 <div id="products"></div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
-import { 
+<script type="module">
+  
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+import {
 getFirestore,
 collection,
 getDocs
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 
+// ضع بيانات Firebase الخاصة بك هنا
+
 const firebaseConfig = {
+
 apiKey: "ضع apiKey هنا",
+
 authDomain: "ضع authDomain هنا",
+
 projectId: "ضع projectId هنا",
+
 storageBucket: "ضع storageBucket هنا",
+
 messagingSenderId: "ضع messagingSenderId هنا",
+
 appId: "ضع appId هنا"
+
 };
 
 
@@ -106,45 +132,64 @@ let productsBox = document.getElementById("products");
 
 async function loadProducts(){
 
+
 let snapshot = await getDocs(collection(db,"products"));
 
 
-snapshot.forEach((doc)=>{
+snapshot.forEach((item)=>{
 
-let p = doc.data();
+
+let p = item.data();
 
 
 productsBox.innerHTML += `
 
 <div class="product">
 
+
 <img src="${p.image}">
 
-<div class="name">${p.name}</div>
+
+<div class="name">
+
+${p.name}
+
+</div>
+
 
 <div class="info">
 
-💰 السعر: ${p.price}<br>
+💰 السعر: ${p.price}
 
-📍 المدينة: ${p.city}<br>
+<br>
+
+📍 المدينة: ${p.city}
+
+<br>
 
 📞 الهاتف: ${p.phone}
 
 </div>
 
+
 <br>
+
 
 <a href="https://wa.me/${p.phone}?text=السلام عليكم، أريد طلب ${p.name}" target="_blank">
 
+
 <button style="background:green;color:white;padding:10px;border:0;border-radius:8px;font-size:18px">
 
-🛒 اطلب الآن
+🛒 اطلب الآن | Order Now
 
 </button>
 
+
 </a>
 
+
 </div>
+
 
 `;
 
@@ -156,7 +201,6 @@ productsBox.innerHTML += `
 
 loadProducts();
   // البحث عن المنتجات
-
 document.getElementById("search").addEventListener("keyup", function(){
 
 let value = this.value.toLowerCase();
@@ -176,15 +220,15 @@ products[i].style.display = "block";
 }else{
 
 products[i].style.display = "none";
-  
+  </script>
+
+
+</body>
+
+</html>
 
 }
 
 }
 
 });
-  </script>
-
-</body>
-
-</html>
