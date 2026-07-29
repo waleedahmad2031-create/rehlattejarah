@@ -111,28 +111,23 @@ Welcome to Direct Market
 <br><br>
 
 
-<div class="category" onclick="filterCategory('')">
-الكل
+<div class="info">
+
+💰 السعر: ${p.price}
+
+<br>
+
+📍 المدينة: ${p.city}
+
+<br>
+
+📦 القسم: ${p.category || "أخرى"}
+
+<br>
+
+📝 الوصف: ${p.description || ""}
+
 </div>
-
-<div class="category" onclick="filterCategory('عطور')">
-🌸 عطور
-</div>
-
-<div class="category" onclick="filterCategory('زيوت')">
-🛢️ زيوت
-</div>
-
-<div class="category" onclick="filterCategory('توصيلات')">
-🔌 توصيلات
-</div>
-
-<div class="category" onclick="filterCategory('قطع غيار')">
-⚙️ قطع غيار
-</div>
-
-
-<div id="products"></div>
 
 
 <script type="module">
