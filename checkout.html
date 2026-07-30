@@ -94,9 +94,7 @@ serverTimestamp
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
 
 
 document.getElementById("send").onclick = async function(){
@@ -134,18 +132,27 @@ let price = Number(p.price || 0);
 
 let qty = Number(p.qty || 1);
 
+
 total += price * qty;
+
 
 items += "- " + p.name + " : " + price + " ريال\n";
 
+
 });
-  if(total < 100){
+
+
+
+// الحد الأدنى
+
+if(total < 100){
 
 alert("الحد الأدنى للطلب هو 100 ريال");
 
 return;
 
-  }
+}
+
 
 
 let orderNumber = "SM-" + Date.now();
@@ -153,17 +160,11 @@ let orderNumber = "SM-" + Date.now();
 
 
 try{
-if(total < 100){
 
-alert("الحد الأدنى للطلب هو 100 ريال");
-
-return;
-
-  }
 
 await addDoc(collection(db,"orders"),{
 
-orderNumber: orderNumber,
+orderNumber:orderNumber,
 
 name:name,
 
@@ -203,28 +204,28 @@ ${items}
 
 
 
-let whatsapp = "966550496391";
-
-
-let url =
-"https://wa.me/" + whatsapp +
-"?text=" + encodeURIComponent(message);
-
+let whatsapp="966550496391";
 
 
 localStorage.removeItem("cart");
 
 
-window.location.assign("whatsapp://send?phone=" + whatsapp + "&text=" + encodeURIComponent(message));
+
+window.location.assign(
+"whatsapp://send?phone="+whatsapp+
+"&text="+encodeURIComponent(message)
+);
+
 
 
 }
 
 catch(error){
 
-alert("خطأ: " + error.message);
+alert("خطأ: "+error.message);
 
 }
+
 
 
 };
