@@ -135,7 +135,13 @@ total += Number(p.price);
 items += "- " + p.name + " : " + p.price + " ريال\n";
 
 });
+if(total < 100){
 
+alert("الحد الأدنى للطلب هو 100 ريال");
+
+return;
+
+}
 
 
 let orderNumber = "SM-" + Date.now();
