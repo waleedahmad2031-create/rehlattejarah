@@ -118,6 +118,8 @@ const db = getFirestore(app);
 
 document.getElementById("sendOrder").onclick = async ()=>{
 
+alert("تم الضغط على الزر");
+
 const name=document.getElementById("name").value.trim();
 const phone=document.getElementById("phone").value.trim();
 const city=document.getElementById("city").value;
