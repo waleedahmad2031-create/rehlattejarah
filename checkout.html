@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
 
 <meta charset="UTF-8">
@@ -44,15 +43,11 @@ button{
 width:100%;
 padding:14px;
 background:#198754;
-color:white;
+color:#fff;
 border:0;
 border-radius:8px;
 font-size:18px;
 cursor:pointer;
-}
-
-button:hover{
-background:#157347;
 }
 
 </style>
@@ -87,16 +82,13 @@ background:#157347;
 
 <script type="module">
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
 getFirestore,
 collection,
 addDoc
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig = {
 
 apiKey:"AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",
@@ -116,9 +108,7 @@ appId:"1:56157415045:web:d1c496a5cdc4d5f81e2bec"
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-document.getElementById("sendOrder").onclick = async ()=>{
-
-alert("تم الضغط على الزر");
+document.getElementById("sendOrder").addEventListener("click", async ()=>{
 
 const name=document.getElementById("name").value.trim();
 const phone=document.getElementById("phone").value.trim();
@@ -132,7 +122,7 @@ return;
 
 }
 
-let cart=JSON.parse(localStorage.getItem("cart"))||[];
+const cart=JSON.parse(localStorage.getItem("cart"))||[];
 
 if(cart.length===0){
 
@@ -144,46 +134,93 @@ return;
 let total=0;
 
 cart.forEach(p=>{
-
 total+=Number(p.price)*(p.qty||1);
+});
+
+if(total<100){
+
+alert("الحد الأدنى للطلب هو 100 ريال");
+return;
+
+}
+
+const orderNo="SM-"+Date.now();
+try{
+
+await addDoc(collection(db,"orders"),{
+
+orderNo:orderNo,
+
+name:name,
+
+phone:phone,
+
+city:city,
+
+address:address,
+
+products:cart,
+
+total:total,
+
+status:"تم استلام الطلب",
+
+createdAt:new Date().toISOString()
 
 });
 
-const orderNo="SM-"+Date.now();
+let message=`🛒 طلب جديد - سوق مباشر
 
-  try{
+🔢 رقم الطلب: ${orderNo}
 
-    // رقم واتساب (بدون + أو أصفار)
-let adminPhone = "966550496391";
+👤 الاسم: ${name}
 
-let whatsapp =
-"https://wa.me/" + adminPhone +
-"?text=" + encodeURIComponent(message);
+📱 الجوال: ${phone}
 
-// حفظ رقم آخر طلب
-localStorage.setItem("lastOrder", orderNo);
+🏙️ المدينة: ${city}
 
-// حذف السلة
+📍 العنوان: ${address}
+
+🛍️ المنتجات:
+`;
+
+cart.forEach(p=>{
+
+message+=`
+• ${p.name}
+الكمية: ${p.qty||1}
+السعر: ${p.price} ريال
+`;
+
+});
+
+message+=`
+
+💰 الإجمالي: ${total} ريال
+`;
+
+const adminPhone="966550496391";
+
+const whatsappUrl=
+`https://wa.me/${adminPhone}?text=${encodeURIComponent(message)}`;
+
+localStorage.setItem("lastOrder",orderNo);
+
 localStorage.removeItem("cart");
 
-// فتح واتساب
-location.href = whatsapp;
+window.location.href=whatsappUrl;
+}catch(error){
 
-// رسالة نجاح
-alert("✅ تم حفظ الطلب بنجاح\nرقم الطلب: " + orderNo);
+console.error(error);
 
-}catch(e){
+alert("حدث خطأ أثناء حفظ الطلب:\n" + error.message);
 
-console.error(e);
+}
 
-alert("حدث خطأ أثناء إرسال الطلب");
-    };
+});
 
 </script>
 
 </body>
 
-</html>
-
-  }
-    
+</html
