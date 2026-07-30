@@ -130,19 +130,15 @@ let items = "";
 
 cart.forEach(p=>{
 
-total += Number(p.price) * (p.qty || 1);
+let price = Number(p.price || 0);
 
-items += "- " + p.name + " : " + p.price + " ريال\n";
+let qty = Number(p.qty || 1);
+
+total += price * qty;
+
+items += "- " + p.name + " : " + price + " ريال\n";
 
 });
-
-if(total < 100){
-
-alert("الحد الأدنى للطلب هو 100 ريال");
-
-return;
-
-}
 
 
 let orderNumber = "SM-" + Date.now();
