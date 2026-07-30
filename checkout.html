@@ -48,64 +48,54 @@ color:white;
 border:0;
 border-radius:8px;
 font-size:18px;
+cursor:pointer;
+}
+
+button:hover{
+background:#157347;
 }
 
 </style>
 
 </head>
 
-
 <body>
-
 
 <div class="box">
 
 <h2>📦 إتمام الطلب</h2>
 
-
 <input id="name" placeholder="الاسم الكامل">
 
 <input id="phone" placeholder="رقم الجوال">
 
-
 <select id="city">
-
 <option value="">اختر المدينة</option>
 <option>الرياض</option>
 <option>جدة</option>
 <option>مكة</option>
 <option>الدمام</option>
-
 </select>
 
-
 <textarea id="address" placeholder="العنوان بالتفصيل"></textarea>
-
 
 <button id="sendOrder">
 تأكيد الطلب
 </button>
 
-
 </div>
-
-
 
 <script type="module">
 
-
-import { initializeApp } 
+import { initializeApp }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-
-import { 
+import {
 getFirestore,
 collection,
 addDoc
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
 
 const firebaseConfig = {
 
@@ -123,177 +113,75 @@ appId:"1:56157415045:web:d1c496a5cdc4d5f81e2bec"
 
 };
 
-
 const app = initializeApp(firebaseConfig);
-
 const db = getFirestore(app);
-
-
 
 document.getElementById("sendOrder").onclick = async ()=>{
 
-
 const name=document.getElementById("name").value.trim();
-
 const phone=document.getElementById("phone").value.trim();
-
 const city=document.getElementById("city").value;
-
 const address=document.getElementById("address").value.trim();
-
-
 
 if(!name || !phone || !city || !address){
 
 alert("يرجى تعبئة جميع البيانات");
-
 return;
 
 }
 
-
-
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
+let cart=JSON.parse(localStorage.getItem("cart"))||[];
 
 if(cart.length===0){
 
 alert("السلة فارغة");
-
 return;
 
 }
-
-
 
 let total=0;
 
 cart.forEach(p=>{
 
-total += Number(p.price) * (p.qty || 1);
+total+=Number(p.price)*(p.qty||1);
 
 });
-
-
 
 const orderNo="SM-"+Date.now();
 
+  try{
 
-
-try{
-
-
-await addDoc(collection(db,"orders"),{
-
-
-orderNo:orderNo,
-
-name:name,
-
-phone:phone,
-
-city:city,
-
-address:address,
-
-products:cart,
-
-total:total,
-
-status:"تم استلام الطلب",
-
-createdAt:new Date().toISOString()
-
-
-});
-
-
-
-// رسالة واتساب
-
-let message = `
-🛒 طلب جديد - سوق مباشر
-
-🔢 رقم الطلب:
-${orderNo}
-
-👤 الاسم:
-${name}
-
-📱 الجوال:
-${phone}
-
-🏙️ المدينة:
-${city}
-
-📍 العنوان:
-${address}
-
-🛍️ المنتجات:
-`;
-
-
-cart.forEach(p=>{
-
-message += `
-- ${p.name}
-السعر: ${p.price} ريال
-`;
-
-});
-
-
-message += `
-💰 المجموع:
-${total} ريال
-`;
-
-
-
-// رقم واتسابك
-
-let adminPhone="966550496391";
-
+    // رقم واتساب (بدون + أو أصفار)
+let adminPhone = "966550496391";
 
 let whatsapp =
-"https://wa.me/"+adminPhone+
-"?text="+encodeURIComponent(message);
+"https://wa.me/" + adminPhone +
+"?text=" + encodeURIComponent(message);
 
+// حفظ رقم آخر طلب
+localStorage.setItem("lastOrder", orderNo);
 
-
-localStorage.setItem("lastOrder",orderNo);
-
+// حذف السلة
 localStorage.removeItem("cart");
 
-
 // فتح واتساب
+location.href = whatsapp;
 
-window.open(whatsapp,"_blank");
-
-
-
-alert("✅ تم إرسال الطلب بنجاح\nرقم الطلب: "+orderNo);
-
-
-location.href="orders.html";
-
-
+// رسالة نجاح
+alert("✅ تم حفظ الطلب بنجاح\nرقم الطلب: " + orderNo);
 
 }catch(e){
 
-console.log(e);
+console.error(e);
 
 alert("حدث خطأ أثناء إرسال الطلب");
-
-}
-
-
-};
-
+    };
 
 </script>
-
 
 </body>
 
 </html>
+
+  }
+    
