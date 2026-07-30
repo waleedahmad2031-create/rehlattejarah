@@ -13,16 +13,14 @@
 body{
 font-family:Tahoma;
 background:#f5f5f5;
-margin:0;
 padding:20px;
 }
 
 .box{
-max-width:600px;
-margin:auto;
-background:#fff;
-padding:20px;
+background:white;
+padding:15px;
 border-radius:12px;
+margin-bottom:15px;
 box-shadow:0 0 5px #ccc;
 }
 
@@ -31,14 +29,11 @@ text-align:center;
 color:#198754;
 }
 
-.order{
-
-background:#f8f8f8;
-padding:15px;
-margin:15px 0;
-border-radius:10px;
-border:1px solid #ddd;
-
+.product{
+background:#eee;
+padding:8px;
+border-radius:8px;
+margin:5px 0;
 }
 
 </style>
@@ -49,19 +44,11 @@ border:1px solid #ddd;
 <body>
 
 
-<div class="box">
-
-
 <h2>📦 إدارة الطلبات</h2>
 
 
 <div id="orders">
-
 جاري تحميل الطلبات...
-
-</div>
-
-
 </div>
 
 
@@ -74,17 +61,11 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
 import {
-
 getFirestore,
-
 collection,
-
 getDocs
-
 }
-
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 
 
 
@@ -106,59 +87,92 @@ appId:"1:56157415045:web:d1c496a5cdc4d5f81e2bec"
 
 
 
+const db=getFirestore(initializeApp(firebaseConfig));
 
-const app = initializeApp(firebaseConfig);
 
-
-const db = getFirestore(app);
-
+const box=document.getElementById("orders");
 
 
 
 async function loadOrders(){
 
 
-const snap = await getDocs(collection(db,"orders"));
+box.innerHTML="";
 
 
-let html="";
-
-
-
-snap.forEach((doc)=>{
-
-
-const o = doc.data();
+const snap=await getDocs(collection(db,"orders"));
 
 
 
-html += `
-
-<div class="order">
+snap.forEach(doc=>{
 
 
-<h3>📦 رقم الطلب</h3>
-
-<p><b>${o.orderNo}</b></p>
+let o=doc.data();
 
 
-<p>👤 الاسم: ${o.name}</p>
 
-<p>📞 الجوال: ${o.phone}</p>
-
-<p>🏙️ المدينة: ${o.city}</p>
-
-<p>🏠 العنوان: ${o.address}</p>
+let products="";
 
 
-<p>📍 الحالة:
+if(o.products){
 
-<b>${o.status}</b>
 
-</p>
+o.products.forEach(p=>{
+
+
+products += `
+
+<div class="product">
+
+🛒 ${p.name}
+<br>
+الكمية: ${p.qty}
+<br>
+السعر: ${p.price} ريال
+
+</div>
+
+`;
+
+
+});
+
+
+}
+
+
+
+box.innerHTML += `
+
+
+<div class="box">
+
+
+<h3>📦 ${o.orderNo}</h3>
+
+
+<p>👤 ${o.name}</p>
+
+<p>📞 ${o.phone}</p>
+
+<p>📍 ${o.city}</p>
+
+<p>🏠 ${o.address}</p>
+
+
+<h4>المنتجات:</h4>
+
+${products}
+
+
+<h3>💰 الإجمالي: ${o.total || 0} ريال</h3>
+
+
+<p>📌 الحالة: ${o.status}</p>
 
 
 </div>
+
 
 `;
 
@@ -167,31 +181,10 @@ html += `
 });
 
 
-
-if(html==""){
-
-
-document.getElementById("orders").innerHTML=
-
-"❌ لا توجد طلبات";
-
-
-}else{
-
-
-document.getElementById("orders").innerHTML=html;
-
-
 }
-
-
-
-}
-
 
 
 loadOrders();
-
 
 
 </script>
