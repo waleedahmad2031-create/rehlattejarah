@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>إتمام الطلب</title>
+
+<style>
+
+body{
+font-family:Tahoma;
+background:#f5f5f5;
+padding:20px;
+}
+
+.box{
+background:white;
+padding:20px;
+border-radius:12px;
+max-width:500px;
+margin:auto;
+}
+
+h1{
+text-align:center;
+color:#198754;
+}
+
+input,textarea{
+width:100%;
+padding:12px;
+margin:8px 0;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:16px;
+box-sizing:border-box;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#198754;
+color:white;
+border:0;
+border-radius:8px;
+font-size:18px;
+margin-top:10px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="box">
+
+<h1>📦 إتمام الطلب</h1>
+
+
+<input id="name" placeholder="الاسم">
+
+<input id="phone" placeholder="رقم الجوال">
+
+<input id="city" placeholder="المدينة">
+
+<textarea id="address" placeholder="العنوان"></textarea>
+
+
+<button id="send">
+إرسال الطلب عبر واتساب
+</button>
+
+
+</div>
+
+
+
+<script type="module">
+
+import { db } from "./firebase.js";
+
+
+import {
+collection,
+addDoc,
+serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+
+
+document.getElementById("send").onclick = async function(){
+
+
+let name = document.getElementById("name").value.trim();
+
+let phone = document.getElementById("phone").value.trim();
+
+let city = document.getElementById("city").value.trim();
+
+let address = document.getElementById("address").value.trim();
+
+
+
+if(name=="" || phone==""){
+
+alert("اكتب الاسم ورقم الجوال");
+
+return;
+
+}
+
+
+
+let total = 0;
+
+let items = "";
+
+
+
+cart.forEach(p=>{
+
+total += Number(p.price);
+
+items += "- " + p.name + " : " + p.price + " ريال\n";
+
+});
+
+
+
+let orderNumber = "SM-" + Date.now();
+
+
+
+try{
+
+
+await addDoc(collection(db,"orders"),{
+
+orderNumber: orderNumber,
+
+name:name,
+
+phone:phone,
+
+city:city,
+
+address:address,
+
+items:items,
+
+total:total,
+
+date:serverTimestamp()
+
+});
+
+
+
+let message =
+`السلام عليكم
+طلب جديد من سوق مباشر
+
+رقم الطلب: ${orderNumber}
+
+${items}
+
+المجموع: ${total} ريال
+
+الاسم: ${name}
+
+الجوال: ${phone}
+
+المدينة: ${city}
+
+العنوان: ${address}`;
+
+
+
+let whatsapp = "966550496391";
+
+
+let url =
+"https://wa.me/" + whatsapp +
+"?text=" + encodeURIComponent(message);
+
+
+
+localStorage.removeItem("cart");
+
+
+window.location.assign("whatsapp://send?phone=" + whatsapp + "&text=" + encodeURIComponent(message));
+
+
+}
+
+catch(error){
+
+alert("خطأ: " + error.message);
+
+}
+
+
+};
+
+
+</script>
+
+
+</body>
+</html>
