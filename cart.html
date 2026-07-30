@@ -57,7 +57,7 @@ margin:20px 0;
 display:block;
 text-align:center;
 background:#ff9800;
-color:#fff;
+color:white;
 padding:15px;
 border-radius:10px;
 text-decoration:none;
@@ -99,6 +99,7 @@ const cartItems = document.getElementById("cartItems");
 
 const total = document.getElementById("total");
 
+
 let cartTotal = 0;
 
 
@@ -132,7 +133,7 @@ const minimumOrder = 100;
 if(cartTotal < minimumOrder){
 
 
-alert("⚠️ الحد الأدنى للطلب هو " + minimumOrder + 100);
+alert("⚠️ الحد الأدنى للطلب هو 100 ريال");
 
 return false;
 
@@ -154,12 +155,11 @@ function renderCart(){
 
 cartItems.innerHTML = "";
 
-
 cartTotal = 0;
 
 
 
-if(cart.length===0){
+if(cart.length === 0){
 
 
 cartItems.innerHTML="<h3>🛒 السلة فارغة</h3>";
@@ -176,7 +176,7 @@ return;
 cart.forEach(p=>{
 
 
-cartTotal += Number(p.price) * p.qty;
+cartTotal += Number(p.price) * Number(p.qty);
 
 
 
@@ -191,10 +191,10 @@ cartItems.innerHTML += `
 <h3>${p.name}</h3>
 
 
-<p>السعر: ${p.price} ريال</p>
+<p>💰 السعر: ${p.price} ريال</p>
 
 
-<p>الكمية: ${p.qty}</p>
+<p>🔢 الكمية: ${p.qty}</p>
 
 
 <button onclick="removeItem('${p.id}')">
@@ -207,6 +207,7 @@ cartItems.innerHTML += `
 </div>
 
 `;
+
 
 
 });
