@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>سلة المشتريات</title>
+
+<style>
+
+body{
+font-family:Tahoma;
+background:#f5f5f5;
+margin:0;
+padding:20px;
+}
+
+h1{
+text-align:center;
+color:#198754;
+}
+
+.item{
+background:#fff;
+padding:15px;
+margin:10px 0;
+border-radius:10px;
+box-shadow:0 0 5px #ccc;
+}
+
+.item img{
+width:100px;
+display:block;
+margin:auto;
+}
+
+button{
+background:#198754;
+color:#fff;
+border:0;
+padding:10px;
+border-radius:8px;
+cursor:pointer;
+margin-top:10px;
+}
+
+#total{
+font-size:22px;
+font-weight:bold;
+text-align:center;
+margin:20px 0;
+}
+
+.checkout{
+display:block;
+text-align:center;
+background:#ff9800;
+color:#fff;
+padding:15px;
+border-radius:10px;
+text-decoration:none;
+font-size:18px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>🛒 سلة المشتريات</h1>
+
+
+<div id="cartItems"></div>
+
+
+<div id="total">
+الإجمالي: 0 ريال
+</div>
+
+
+<a class="checkout" href="checkout.html" onclick="return checkMinimum()">
+📦 إتمام الطلب
+</a>
+
+
+
+<script>
+
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+
+const cartItems = document.getElementById("cartItems");
+
+const total = document.getElementById("total");
+
+let cartTotal = 0;
+
+
+
+function saveCart(){
+
+localStorage.setItem("cart", JSON.stringify(cart));
+
+}
+
+
+
+function removeItem(id){
+
+cart = cart.filter(p => p.id !== id);
+
+saveCart();
+
+renderCart();
+
+}
+
+
+
+function checkMinimum(){
+
+
+const minimumOrder = 50;
+
+
+if(cartTotal < minimumOrder){
+
+
+alert("⚠️ الحد الأدنى للطلب هو " + minimumOrder + " ريال");
+
+return false;
+
+
+}
+
+
+return true;
+
+
+}
+
+
+
+
+
+function renderCart(){
+
+
+cartItems.innerHTML = "";
+
+
+cartTotal = 0;
+
+
+
+if(cart.length===0){
+
+
+cartItems.innerHTML="<h3>🛒 السلة فارغة</h3>";
+
+total.innerHTML="الإجمالي: 0 ريال";
+
+return;
+
+
+}
+
+
+
+cart.forEach(p=>{
+
+
+cartTotal += Number(p.price) * p.qty;
+
+
+
+cartItems.innerHTML += `
+
+<div class="item">
+
+
+<img src="${p.image}">
+
+
+<h3>${p.name}</h3>
+
+
+<p>السعر: ${p.price} ريال</p>
+
+
+<p>الكمية: ${p.qty}</p>
+
+
+<button onclick="removeItem('${p.id}')">
+
+🗑 حذف
+
+</button>
+
+
+</div>
+
+`;
+
+
+});
+
+
+
+total.innerHTML="الإجمالي: "+cartTotal+" ريال";
+
+
+}
+
+
+
+renderCart();
+
+
+</script>
+
+
+</body>
+
+</html>
