@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>إدارة الطلبات</title>
+
+<style>
+
+body{
+font-family:Tahoma;
+background:#f5f5f5;
+padding:20px;
+}
+
+.box{
+background:white;
+padding:15px;
+border-radius:12px;
+margin-bottom:15px;
+box-shadow:0 0 5px #ccc;
+}
+
+h2{
+text-align:center;
+color:#198754;
+}
+
+.item{
+background:#eee;
+padding:8px;
+border-radius:8px;
+margin:5px 0;
+}
+
+button{
+background:#d32f2f;
+color:white;
+border:0;
+padding:10px;
+border-radius:8px;
+}
+
+select{
+padding:8px;
+border-radius:8px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h2>📦 إدارة الطلبات</h2>
+
+
+<div id="orders">
+جاري تحميل الطلبات...
+</div>
+
+
+
+<script type="module">
+
+
+import {initializeApp}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+import {
+getFirestore,
+collection,
+getDocs,
+deleteDoc,
+doc,
+updateDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+const firebaseConfig={
+
+apiKey:"AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",
+
+authDomain:"rehlattejarah.firebaseapp.com",
+
+projectId:"rehlattejarah",
+
+storageBucket:"rehlattejarah.firebasestorage.app",
+
+messagingSenderId:"56157415045",
+
+appId:"1:56157415045:web:d1c496a5cdc4d5f81e2bec"
+
+};
+
+
+
+const db=getFirestore(initializeApp(firebaseConfig));
+
+
+const box=document.getElementById("orders");
+
+
+
+async function loadOrders(){
+
+
+box.innerHTML="";
+
+
+const snap=await getDocs(collection(db,"orders"));
+
+
+
+snap.forEach((d)=>{
+
+
+let o=d.data();
+
+
+let products="";
+
+
+if(o.products){
+
+
+o.products.forEach(p=>{
+
+
+products += `
+
+<div class="item">
+
+🛒 ${p.name}
+<br>
+الكمية: ${p.qty}
+<br>
+السعر: ${p.price} ريال
+
+</div>
+
+`;
+
+});
+
+
+}
+
+
+
+box.innerHTML += `
+
+<div class="box">
+
+
+<h3>📦 ${o.orderNo}</h3>
+
+
+<p>👤 ${o.name}</p>
+
+<p>📞 ${o.phone}</p>
+
+<p>📍 ${o.city}</p>
+
+<p>🏠 ${o.address}</p>
+
+
+<h4>المنتجات:</h4>
+
+${products || "لا توجد منتجات"}
+
+
+<p>💰 الإجمالي: ${o.total || 0} ريال</p>
+
+
+
+<select onchange="changeStatus('${d.id}',this.value)">
+
+<option>${o.status}</option>
+
+<option>جاري التجهيز</option>
+
+<option>تم الشحن</option>
+
+<option>تم التسليم</option>
+
+</select>
+
+
+<br><br>
+
+
+<button onclick="removeOrder('${d.id}')">
+
+🗑 حذف الطلب
+
+</button>
+
+
+</div>
+
+`;
+
+});
+
+
+}
+
+
+
+window.changeStatus=async(id,status)=>{
+
+await updateDoc(doc(db,"orders",id),{
+
+status:status
+
+});
+
+alert("تم تحديث حالة الطلب");
+
+loadOrders();
+
+};
+
+
+
+window.removeOrder=async(id)=>{
+
+
+if(confirm("هل تريد حذف الطلب؟")){
+
+
+await deleteDoc(doc(db,"orders",id));
+
+
+loadOrders();
+
+
+}
+
+
+};
+
+
+
+loadOrders();
+
+
+</script>
+
+
+</body>
+
+</html>
