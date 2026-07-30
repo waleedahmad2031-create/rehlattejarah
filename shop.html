@@ -27,7 +27,19 @@ width:100%;
 padding:12px;
 border-radius:10px;
 border:1px solid #ccc;
-margin-bottom:16px
+margin-bottom:10px
+}
+
+.cartBtn{
+display:block;
+background:#ff9800;
+color:white;
+padding:12px;
+border-radius:10px;
+text-align:center;
+text-decoration:none;
+font-size:18px;
+margin-bottom:15px;
 }
 
 .grid{
@@ -68,7 +80,6 @@ color:#fff;
 border:0;
 padding:10px 14px;
 border-radius:8px;
-margin:5px;
 font-size:16px
 }
 
@@ -89,6 +100,11 @@ font-size:16px
 
 
 <input id="search" placeholder="ابحث عن منتج">
+
+
+<a class="cartBtn" href="cart.html">
+🛒 عرض السلة وإتمام الطلب
+</a>
 
 
 <div class="grid" id="cats"></div>
@@ -113,7 +129,6 @@ getDocs
 from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-
 const cfg={
 
 apiKey:"AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",
@@ -131,9 +146,7 @@ appId:"1:56157415045:web:d1c496a5cdc4d5f81e2bec"
 };
 
 
-
 const db=getFirestore(initializeApp(cfg));
-
 
 
 const categories=[
@@ -147,9 +160,7 @@ const categories=[
 ];
 
 
-
 const emojis={
-
 "الكل":"📦",
 "عطور":"🌸",
 "جوالات":"📱",
@@ -157,9 +168,7 @@ const emojis={
 "أدوات منزلية":"🏠",
 "خضروات وفواكه":"🥬",
 "خدمات أخرى":"🛠️"
-
 };
-
 
 
 let all=[];
@@ -167,18 +176,14 @@ let all=[];
 let current="الكل";
 
 
-
 const val=(p,e,a)=>p[e]??p[a]??"";
-
 
 
 cats.innerHTML=categories.map(c=>`
 
 <div class="card" onclick="window.sel('${c}')">
 
-${emojis[c]}
-<br>
-${c}
+${emojis[c]}<br>${c}
 
 </div>
 
@@ -196,7 +201,6 @@ draw();
 
 
 
-
 async function load(){
 
 const s=await getDocs(collection(db,"products"));
@@ -206,15 +210,11 @@ all=[];
 s.forEach(d=>{
 
 all.push({
-
 id:d.id,
-
 ...d.data()
-
 });
 
 });
-
 
 draw();
 
@@ -222,36 +222,25 @@ draw();
 
 
 
-
-
 function draw(){
 
-
 const t=search.value.toLowerCase();
-
 
 products.innerHTML="";
 
 
-
 all.filter(p=>{
-
 
 const c=val(p,"category","القسم")||"أخرى";
 
-
 if(current!="الكل" && c!=current)
-
 return false;
-
 
 
 return JSON.stringify(p).toLowerCase().includes(t);
 
 
-
 }).forEach(p=>{
-
 
 
 const n=val(p,"name","اسم");
@@ -270,39 +259,26 @@ const ca=val(p,"category","القسم");
 
 products.innerHTML+=`
 
-
 <div class="product">
-
 
 <img src="${im}">
 
-
 <h3>${n}</h3>
-
 
 <p>💰 السعر: ${pr} ريال</p>
 
-
 <p>📍 ${ci}</p>
 
-
 <p>📦 ${ca}</p>
-
 
 <p>${de}</p>
 
 
-
 <button onclick='addToCart(${JSON.stringify({
-
 id:p.id,
-
 name:n,
-
 price:pr,
-
 image:im
-
 })})'>
 
 🛒 أضف إلى السلة
@@ -310,21 +286,14 @@ image:im
 </button>
 
 
-
 </div>
 
-
 `;
-
-
 
 });
 
 
 }
-
-
-
 
 
 
@@ -334,19 +303,14 @@ window.addToCart=function(product){
 let cart=JSON.parse(localStorage.getItem("cart")) || [];
 
 
-
 let old=cart.find(p=>p.id==product.id);
-
 
 
 if(old){
 
-
 old.qty++;
 
-
 }else{
-
 
 cart.push({
 
@@ -362,9 +326,7 @@ qty:1
 
 });
 
-
 }
-
 
 
 localStorage.setItem("cart",JSON.stringify(cart));
@@ -377,12 +339,10 @@ alert("✅ تم إضافة المنتج إلى السلة");
 
 
 
-
 search.oninput=draw;
 
 
 load();
-
 
 
 </script>
@@ -391,3 +351,6 @@ load();
 </body>
 
 </html>
+
+
+
