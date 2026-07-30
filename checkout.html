@@ -62,9 +62,11 @@ font-size:18px;
 
 <h2>📦 إتمام الطلب</h2>
 
+
 <input id="name" placeholder="الاسم الكامل">
 
 <input id="phone" placeholder="رقم الجوال">
+
 
 <select id="city">
 
@@ -75,6 +77,7 @@ font-size:18px;
 <option>الدمام</option>
 
 </select>
+
 
 <textarea id="address" placeholder="العنوان بالتفصيل"></textarea>
 
@@ -121,12 +124,9 @@ appId:"1:56157415045:web:d1c496a5cdc4d5f81e2bec"
 };
 
 
-
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
-
-
 
 
 
@@ -153,9 +153,35 @@ return;
 
 
 
+// جلب السلة
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+
+
+if(cart.length===0){
+
+alert("السلة فارغة");
+
+return;
+
+}
+
+
+
+// حساب المجموع
+
+let total=0;
+
+cart.forEach(p=>{
+
+total += Number(p.price) * p.qty;
+
+});
+
+
 
 const orderNo="SM-"+Date.now();
-
 
 
 
@@ -163,6 +189,7 @@ try{
 
 
 await addDoc(collection(db,"orders"),{
+
 
 orderNo:orderNo,
 
@@ -174,9 +201,18 @@ city:city,
 
 address:address,
 
+
+products:cart,
+
+
+total:total,
+
+
 status:"تم استلام الطلب",
 
+
 createdAt:new Date().toISOString()
+
 
 });
 
@@ -185,6 +221,12 @@ createdAt:new Date().toISOString()
 // حفظ رقم الطلب
 
 localStorage.setItem("lastOrder",orderNo);
+
+
+
+// تنظيف السلة
+
+localStorage.removeItem("cart");
 
 
 
@@ -206,7 +248,6 @@ alert("حدث خطأ أثناء إرسال الطلب");
 
 
 };
-
 
 
 </script>
