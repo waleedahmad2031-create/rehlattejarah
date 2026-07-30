@@ -139,7 +139,13 @@ total += price * qty;
 items += "- " + p.name + " : " + price + " ريال\n";
 
 });
-  alert("المجموع = " + total);
+  if(total < 100){
+
+alert("الحد الأدنى للطلب هو 100 ريال");
+
+return;
+
+  }
 
 
 let orderNumber = "SM-" + Date.now();
