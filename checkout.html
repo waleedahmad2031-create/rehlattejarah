@@ -153,10 +153,7 @@ return;
 
 
 
-// جلب السلة
-
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
 
 
 if(cart.length===0){
@@ -169,13 +166,11 @@ return;
 
 
 
-// حساب المجموع
-
 let total=0;
 
 cart.forEach(p=>{
 
-total += Number(p.price) * p.qty;
+total += Number(p.price) * (p.qty || 1);
 
 });
 
@@ -201,15 +196,11 @@ city:city,
 
 address:address,
 
-
 products:cart,
-
 
 total:total,
 
-
 status:"تم استلام الطلب",
-
 
 createdAt:new Date().toISOString()
 
@@ -218,20 +209,70 @@ createdAt:new Date().toISOString()
 
 
 
-// حفظ رقم الطلب
+// رسالة واتساب
+
+let message = `
+🛒 طلب جديد - سوق مباشر
+
+🔢 رقم الطلب:
+${orderNo}
+
+👤 الاسم:
+${name}
+
+📱 الجوال:
+${phone}
+
+🏙️ المدينة:
+${city}
+
+📍 العنوان:
+${address}
+
+🛍️ المنتجات:
+`;
+
+
+cart.forEach(p=>{
+
+message += `
+- ${p.name}
+السعر: ${p.price} ريال
+`;
+
+});
+
+
+message += `
+💰 المجموع:
+${total} ريال
+`;
+
+
+
+// رقم واتسابك
+
+let adminPhone="966550496391";
+
+
+let whatsapp =
+"https://wa.me/"+adminPhone+
+"?text="+encodeURIComponent(message);
+
+
 
 localStorage.setItem("lastOrder",orderNo);
-
-
-
-// تنظيف السلة
 
 localStorage.removeItem("cart");
 
 
+// فتح واتساب
+
+window.open(whatsapp,"_blank");
+
+
 
 alert("✅ تم إرسال الطلب بنجاح\nرقم الطلب: "+orderNo);
-
 
 
 location.href="orders.html";
