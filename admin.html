@@ -195,8 +195,27 @@ alert(e.message);
 }
 
 };
+loginBtn.onclick = async()=>{
 
-logoutBtn.onclick = async()=>{
+alert("تم الضغط على زر الدخول");
+
+try{
+
+await signInWithEmailAndPassword(
+auth,
+email.value,
+password.value
+);
+
+alert("تم الدخول بنجاح");
+
+}catch(e){
+
+alert(e.message);
+
+}
+
+};
 
 await signOut(auth);
 
