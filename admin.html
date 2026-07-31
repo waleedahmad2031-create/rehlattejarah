@@ -132,13 +132,9 @@ display:none;
 import {db,auth} from "./firebase.js";
 catch(e){
 
-console.log(e);
 
-$("msg").innerHTML=e.message;
 
-}
-
-import {
+import 
 collection,
 getDocs,
 addDoc,
@@ -187,9 +183,13 @@ $("msg").innerHTML="تم الدخول بنجاح";
 
 catch(e){
 
-$("msg").innerHTML="البريد أو كلمة المرور خطأ";
+console.log(e);
+
+$("msg").innerHTML=e.message;
 
 }
+
+
 
 };
 
