@@ -28,7 +28,7 @@ gap:15px;
 }
 
 .card{
-background:white;
+background:#fff;
 border-radius:12px;
 padding:15px;
 box-shadow:0 2px 8px #ccc;
@@ -78,26 +78,32 @@ import { db } from "./firebase.js";
 import {
 collection,
 getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
 
-const box=document.getElementById("products");
+const box = document.getElementById("products");
 
 
 async function loadProducts(){
 
+try{
+
+const snap = await getDocs(collection(db,"products"));
+
 box.innerHTML="";
 
-const snap=await getDocs(collection(db,"products"));
 
+snap.forEach((doc)=>{
 
 let p = doc.data();
 
-let name = p.name || p["اسم"] || "";
-let city = p.city || p["مدينة"] || "";
-let image = p.image || p["صوره"] || p["الصورة"] || "";
-let price = p.price || p["السعر"] || "";
-let qty = p.qty || p["الكميه"] || p["الكمية"] || "";
+
+let name = p.name || "";
+let city = p.city || "";
+let image = p.image || "";
+let price = p.price || "";
+let qty = p.qty || "";
+
 
 box.innerHTML += `
 
@@ -105,37 +111,63 @@ box.innerHTML += `
 
 <img src="${image || 'https://via.placeholder.com/300'}">
 
+
 <h3>${name}</h3>
 
-<p class="price">${price} ريال</p>
 
-<p>📍 ${city}</p>
+<p class="price">
+${price} ريال
+</p>
 
-<p>الكمية: ${qty}</p>
+
+<p>
+📍 ${city}
+</p>
+
+
+<p>
+الكمية: ${qty}
+</p>
+
+
+<button onclick="order('${name}')">
+اطلب الآن
+</button>
+
 
 </div>
-
-
 
 `;
 
 });
 
 
+}catch(error){
+
+box.innerHTML="حدث خطأ: "+error.message;
+
+console.log(error);
+
 }
+
+}
+
 
 
 window.order=function(name){
 
-let msg="السلام عليكم أريد طلب المنتج: "+name;
-
 let phone="966500000000";
 
+let text="السلام عليكم أريد طلب المنتج: "+name;
+
+
 window.open(
-"https://wa.me/"+phone+"?text="+encodeURIComponent(msg)
+"https://wa.me/"+phone+"?text="+encodeURIComponent(text)
 );
 
+
 }
+
 
 
 loadProducts();
@@ -145,4 +177,5 @@ loadProducts();
 
 
 </body>
+
 </html>
