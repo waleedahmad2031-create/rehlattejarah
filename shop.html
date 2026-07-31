@@ -21,6 +21,17 @@ text-align:center;
 color:#198754;
 }
 
+.cart{
+display:block;
+background:#198754;
+color:white;
+padding:12px;
+border-radius:10px;
+text-align:center;
+text-decoration:none;
+margin-bottom:15px;
+}
+
 #products{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
@@ -28,7 +39,7 @@ gap:15px;
 }
 
 .card{
-background:#fff;
+background:white;
 border-radius:12px;
 padding:15px;
 box-shadow:0 2px 8px #ccc;
@@ -52,7 +63,7 @@ button{
 background:#198754;
 color:white;
 border:0;
-padding:10px 15px;
+padding:10px;
 border-radius:8px;
 cursor:pointer;
 }
@@ -65,6 +76,11 @@ cursor:pointer;
 <body>
 
 <h1>🛒 سوق مباشر</h1>
+
+<a class="cart" href="cart.html">
+🛒 السلة
+</a>
+
 
 <div id="products">
 جاري تحميل المنتجات...
@@ -81,57 +97,50 @@ getDocs
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
 
-const box = document.getElementById("products");
+const box=document.getElementById("products");
 
 
 async function loadProducts(){
 
 try{
 
-const snap = await getDocs(collection(db,"products"));
+const snap=await getDocs(collection(db,"products"));
 
 box.innerHTML="";
 
 
 snap.forEach((doc)=>{
 
-let p = doc.data();
+
+let p=doc.data();
 
 
-let name = p.name || "";
-let city = p.city || "";
-let image = p.image || "";
-let price = p.price || "";
-let qty = p.qty || "";
+let name=p.name || "";
+let city=p.city || "";
+let image=p.image || "";
+let price=p.price || "";
+let qty=p.qty || "";
 
 
-box.innerHTML += `
+box.innerHTML+=`
 
 <div class="card">
 
 <img src="${image || 'https://via.placeholder.com/300'}">
 
-
 <h3>${name}</h3>
-
 
 <p class="price">
 ${price} ريال
 </p>
 
+<p>📍 ${city}</p>
 
-<p>
-📍 ${city}
-</p>
-
-
-<p>
-الكمية: ${qty}
-</p>
+<p>الكمية: ${qty}</p>
 
 
-<button onclick="order('${name}')">
-اطلب الآن
+<button onclick="addCart('${name}','${price}')">
+أضف للسلة
 </button>
 
 
@@ -142,11 +151,9 @@ ${price} ريال
 });
 
 
-}catch(error){
+}catch(e){
 
-box.innerHTML="حدث خطأ: "+error.message;
-
-console.log(error);
+box.innerHTML="خطأ: "+e.message;
 
 }
 
@@ -154,16 +161,24 @@ console.log(error);
 
 
 
-window.order=function(name){
-
-let phone="966500000000";
-
-let text="السلام عليكم أريد طلب المنتج: "+name;
+window.addCart=function(name,price){
 
 
-window.open(
-"https://wa.me/"+phone+"?text="+encodeURIComponent(text)
-);
+let cart=JSON.parse(localStorage.getItem("cart")) || [];
+
+
+cart.push({
+
+name:name,
+price:Number(price)
+
+});
+
+
+localStorage.setItem("cart",JSON.stringify(cart));
+
+
+alert("تمت إضافة المنتج للسلة");
 
 
 }
