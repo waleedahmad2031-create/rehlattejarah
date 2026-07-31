@@ -1,87 +1,90 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>إدارة المنتجات</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة إدارة سوق مباشر</title>
 
 <style>
-
 body{
-font-family:Tahoma;
+font-family:Tahoma,Arial,sans-serif;
 background:#f5f5f5;
 margin:0;
 padding:20px;
 }
 
-.box{
+.container{
 max-width:700px;
 margin:auto;
 background:#fff;
 padding:20px;
 border-radius:12px;
+box-shadow:0 0 10px rgba(0,0,0,.1);
 }
 
-input,select,button{
+h1,h2{
+text-align:center;
+color:#198754;
+}
+
+input{
 width:100%;
-padding:10px;
+padding:12px;
 margin:8px 0;
+border:1px solid #ccc;
+border-radius:8px;
+box-sizing:border-box;
 }
 
 button{
+width:100%;
+padding:12px;
+margin-top:10px;
+background:#198754;
+color:#fff;
+border:none;
+border-radius:8px;
+font-size:16px;
 cursor:pointer;
 }
 
-.item{
-border:1px solid #ddd;
-padding:10px;
-margin-top:10px;
+button:hover{
+background:#157347;
 }
 
-img{
-width:100px;
-height:100px;
-object-fit:cover;
-}
-
-#admin{
+#adminBox{
 display:none;
 }
 
+.product{
+border:1px solid #ddd;
+padding:10px;
+margin-top:10px;
+border-radius:8px;
+}
 </style>
 
 </head>
 
 <body>
 
+<div class="container">
 
-<div class="box">
+<h1>لوحة إدارة سوق مباشر</h1>
 
+<div id="loginBox">
 
-<div id="login">
+<input type="email" id="email" placeholder="البريد الإلكتروني">
 
-<h2>دخول الإدارة</h2>
-
-<input id="email" type="email" placeholder="البريد الإلكتروني">
-
-<input id="password" type="password" placeholder="كلمة المرور">
+<input type="password" id="password" placeholder="كلمة المرور">
 
 <button id="loginBtn">تسجيل الدخول</button>
 
-<p id="msg"></p>
-
 </div>
 
+<div id="adminBox">
 
-
-<div id="admin">
-
-<h2>لوحة إدارة سوق مباشر</h2>
-
-<button id="logout">تسجيل الخروج</button>
+<h2>إضافة منتج</h2>
 
 <input id="name" placeholder="اسم المنتج">
 
@@ -89,52 +92,181 @@ display:none;
 
 <input id="city" placeholder="المدينة">
 
-<input id="qty" placeholder="الكمية">
+<input id="category" placeholder="القسم">
 
 <input id="image" placeholder="رابط الصورة">
 
+<input id="qty" type="number" placeholder="الكمية">
 
-<select id="category">
+<button id="saveBtn">حفظ المنتج</button>
 
-<option value="">اختر القسم</option>
+<button id="logoutBtn">تسجيل الخروج</button>
 
-<option>مواد غذائية</option>
-
-<option>خضروات وفواكه</option>
-
-<option>زيوت</option>
-
-<option>عطور</option>
-
-<option>أخرى</option>
-
-</select>
-
-
-<button id="save">حفظ المنتج</button>
-
+<hr>
 
 <div id="products"></div>
 
+</div>
 
 </div>
 
-
-</div>
 <script type="module">
 
-...
+import { auth, db } from "./firebase.js";
 
-// هنا ضع كود الحفظ
+import {
+signInWithEmailAndPassword,
+signOut,
+onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
 
+import {
+collection,
+addDoc,
+getDocs,
+deleteDoc,
+doc
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
+const productsRef = collection(db,"products");
+
+const loginBox = document.getElementById("loginBox");
+const adminBox = document.getElementById("adminBox");
+
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+
+const name = document.getElementById("name");
+const price = document.getElementById("price");
+const city = document.getElementById("city");
+const category = document.getElementById("category");
+const image = document.getElementById("image");
+const qty = document.getElementById("qty");
+
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const saveBtn = document.getElementById("saveBtn");
+const products = document.getElementById("products");
+
+loginBtn.onclick = async () => {
+
+try{
+
+await signInWithEmailAndPassword(
+auth,
+email.value,
+password.value
+);
+
+}catch(e){
+
+alert(e.message);
+
+}
+
+};
+
+logoutBtn.onclick = async()=>{
+
+await signOut(auth);
+
+};
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+loginBox.style.display="none";
+adminBox.style.display="block";
+
+loadProducts();
+
+}else{
+
+loginBox.style.display="block";
+adminBox.style.display="none";
+
+}
+
+});
+async function loadProducts(){
+
+products.innerHTML="";
+
+const snap = await getDocs(productsRef);
+
+snap.forEach((d)=>{
+
+const data = d.data();
+
+products.innerHTML += `
+<div class="product">
+<b>${data.name}</b><br>
+السعر: ${data.price}<br>
+المدينة: ${data.city}<br>
+القسم: ${data.category}<br>
+الكمية: ${data.qty}<br><br>
+
+<button onclick="deleteProduct('${d.id}')">
+حذف
+</button>
+
+</div>
+`;
+
+});
+
+}
+
+saveBtn.onclick = async()=>{
+
+try{
+
+await addDoc(productsRef,{
+
+name:name.value,
+
+price:Number(price.value),
+
+city:city.value,
+
+category:category.value,
+
+image:image.value,
+
+qty:Number(qty.value)
+
+});
+
+alert("تم حفظ المنتج");
+
+name.value="";
+price.value="";
+city.value="";
+category.value="";
+image.value="";
+qty.value="";
+
+loadProducts();
+
+}catch(e){
+
+alert(e.message);
+
+}
+
+};
+
+window.deleteProduct = async(id)=>{
+
+if(!confirm("حذف المنتج؟")) return;
+
+await deleteDoc(doc(db,"products",id));
+
+loadProducts();
+
+};
 </script>
 
-
-
-
-
-
-
 </body>
-
 </html>
