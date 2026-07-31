@@ -127,3 +127,287 @@ display:none;
 
 
 </div>
+  <script type="module">
+
+import {db,auth} from "./firebase.js";
+
+
+import {
+collection,
+getDocs,
+addDoc,
+updateDoc,
+deleteDoc,
+doc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+import {
+signInWithEmailAndPassword,
+signOut,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+
+const ref = collection(db,"products");
+
+let editId = null;
+
+
+const $ = id => document.getElementById(id);
+
+
+
+// تسجيل الدخول
+
+$("loginBtn").onclick = async()=>{
+
+try{
+
+await signInWithEmailAndPassword(
+auth,
+$("email").value,
+$("password").value
+);
+
+
+$("msg").innerHTML="تم الدخول بنجاح";
+
+
+}
+
+catch(e){
+
+$("msg").innerHTML="البريد أو كلمة المرور خطأ";
+
+}
+
+};
+
+
+
+
+// متابعة حالة المستخدم
+
+onAuthStateChanged(auth,(user)=>{
+
+
+if(user){
+
+
+$("login").style.display="none";
+
+$("admin").style.display="block";
+
+
+load();
+
+
+}else{
+
+
+$("login").style.display="block";
+
+$("admin").style.display="none";
+
+
+}
+
+
+});
+
+
+
+
+// تسجيل الخروج
+
+$("logout").onclick=()=>{
+
+signOut(auth);
+
+};
+
+
+
+
+// عرض المنتجات
+
+async function load(){
+
+
+const box=$("products");
+
+
+box.innerHTML="";
+
+
+const snap=await getDocs(ref);
+
+
+
+snap.forEach(d=>{
+
+
+const p=d.data();
+
+
+
+const div=document.createElement("div");
+
+
+div.className="item";
+
+
+
+div.innerHTML=`
+
+<img src="${p.image || ""}">
+
+<h3>${p.name || ""}</h3>
+
+<p>${p.price || 0} ريال</p>
+
+<p>${p.city || ""}</p>
+
+<p>${p["الكميه"] || ""}</p>
+
+<button class="e">تعديل</button>
+
+<button class="x">حذف</button>
+
+`;
+
+
+
+div.querySelector(".e").onclick=()=>{
+
+
+editId=d.id;
+
+
+$("name").value=p.name || "";
+
+$("price").value=p.price || "";
+
+$("city").value=p.city || "";
+
+$("qty").value=p["الكميه"] || "";
+
+$("image").value=p.image || "";
+
+$("category").value=p.category || "";
+
+
+};
+
+
+
+div.querySelector(".x").onclick=async()=>{
+
+
+if(confirm("حذف المنتج؟")){
+
+
+await deleteDoc(doc(db,"products",d.id));
+
+
+load();
+
+
+}
+
+
+};
+
+
+
+box.appendChild(div);
+  
+
+
+
+});
+
+  
+// حفظ المنتج
+
+$("save").onclick = async()=>{
+
+
+const data = {
+
+name: $("name").value,
+
+price: Number($("price").value),
+
+city: $("city").value,
+
+category: $("category").value,
+
+image: $("image").value,
+
+"الكميه": $("qty").value
+
+};
+
+
+
+if(editId){
+
+
+await updateDoc(
+
+doc(db,"products",editId),
+
+data
+
+);
+
+
+editId = null;
+
+
+
+}else{
+
+
+await addDoc(ref,data);
+
+
+}
+
+
+
+
+$("name").value="";
+
+$("price").value="";
+
+$("city").value="";
+
+$("qty").value="";
+
+$("image").value="";
+
+$("category").value="";
+
+
+
+load();
+
+
+};
+
+
+
+</script>
+
+
+</body>
+
+</html>
+
+}
