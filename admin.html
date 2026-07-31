@@ -33,12 +33,17 @@ margin:8px 0;
 
 button{
 cursor:pointer;
+background:#198754;
+color:white;
+border:0;
+border-radius:8px;
 }
 
 .item{
 border:1px solid #ddd;
 padding:10px;
 margin-top:10px;
+border-radius:8px;
 }
 
 img{
@@ -62,8 +67,6 @@ display:none;
 <div class="box">
 
 
-<!-- تسجيل الدخول -->
-
 <div id="login">
 
 <h2>دخول الإدارة</h2>
@@ -79,8 +82,6 @@ display:none;
 </div>
 
 
-
-<!-- لوحة الإدارة -->
 
 <div id="admin">
 
@@ -130,11 +131,9 @@ display:none;
   <script type="module">
 
 import {db,auth} from "./firebase.js";
-catch(e){
 
 
-
-import 
+import {
 collection,
 getDocs,
 addDoc,
@@ -156,6 +155,7 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const ref = collection(db,"products");
 
+
 let editId = null;
 
 
@@ -167,12 +167,18 @@ const $ = id => document.getElementById(id);
 
 $("loginBtn").onclick = async()=>{
 
+
 try{
 
+
 await signInWithEmailAndPassword(
+
 auth,
+
 $("email").value,
+
 $("password").value
+
 );
 
 
@@ -183,12 +189,11 @@ $("msg").innerHTML="تم الدخول بنجاح";
 
 catch(e){
 
-console.log(e);
 
-$("msg").innerHTML=e.message;
+$("msg").innerHTML="البريد أو كلمة المرور خطأ";
+
 
 }
-
 
 
 };
@@ -196,7 +201,7 @@ $("msg").innerHTML=e.message;
 
 
 
-// متابعة حالة المستخدم
+// مراقبة تسجيل الدخول
 
 onAuthStateChanged(auth,(user)=>{
 
@@ -232,14 +237,16 @@ $("admin").style.display="none";
 
 $("logout").onclick=()=>{
 
+
 signOut(auth);
+
 
 };
 
 
 
 
-// عرض المنتجات
+// تحميل المنتجات
 
 async function load(){
 
@@ -254,7 +261,7 @@ const snap=await getDocs(ref);
 
 
 
-snap.forEach(d=>{
+snap.forEach((d)=>{
 
 
 const p=d.data();
@@ -274,11 +281,11 @@ div.innerHTML=`
 
 <h3>${p.name || ""}</h3>
 
-<p>${p.price || 0} ريال</p>
+<p>السعر: ${p.price || 0} ريال</p>
 
-<p>${p.city || ""}</p>
+<p>المدينة: ${p.city || ""}</p>
 
-<p>${p["الكميه"] || ""}</p>
+<p>الكمية: ${p["الكميه"] || ""}</p>
 
 <button class="e">تعديل</button>
 
@@ -331,31 +338,31 @@ load();
 
 
 box.appendChild(div);
-  
-
-
-
-});
-
-  
-// حفظ المنتج
+  // حفظ المنتج
 
 $("save").onclick = async()=>{
 
 
 const data = {
 
-name: $("name").value,
 
-price: Number($("price").value),
+name:$("name").value,
 
-city: $("city").value,
 
-category: $("category").value,
+price:Number($("price").value),
 
-image: $("image").value,
 
-"الكميه": $("qty").value
+city:$("city").value,
+
+
+category:$("category").value,
+
+
+image:$("image").value,
+
+
+"الكميه":$("qty").value
+
 
 };
 
@@ -373,8 +380,7 @@ data
 );
 
 
-editId = null;
-
+editId=null;
 
 
 }else{
@@ -387,6 +393,7 @@ await addDoc(ref,data);
 
 
 
+// تفريغ الحقول
 
 $("name").value="";
 
@@ -415,5 +422,11 @@ load();
 </body>
 
 </html>
+
+
+});
+
+
+}
 
 
