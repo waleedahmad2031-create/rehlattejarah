@@ -91,35 +91,31 @@ box.innerHTML="";
 const snap=await getDocs(collection(db,"products"));
 
 
-snap.forEach(doc=>{
+let p = doc.data();
 
-let p=doc.data();
+let name = p.name || p["اسم"] || "";
+let city = p.city || p["مدينة"] || "";
+let image = p.image || p["صوره"] || p["الصورة"] || "";
+let price = p.price || p["السعر"] || "";
+let qty = p.qty || p["الكميه"] || p["الكمية"] || "";
 
-
-box.innerHTML+=`
+box.innerHTML += `
 
 <div class="card">
 
-<img src="${p.image || 'https://via.placeholder.com/300'}">
+<img src="${image || 'https://via.placeholder.com/300'}">
 
+<h3>${name}</h3>
 
-<h3>${p.name}</h3>
+<p class="price">${price} ريال</p>
 
-<p class="price">
-${p.price} ريال
-</p>
+<p>📍 ${city}</p>
 
-<p>📍 ${p.city || ""}</p>
-
-<p>الكمية: ${p["الكميه"] || ""}</p>
-
-
-<button onclick="order('${p.name}')">
-اطلب الآن
-</button>
-
+<p>الكمية: ${qty}</p>
 
 </div>
+
+
 
 `;
 
