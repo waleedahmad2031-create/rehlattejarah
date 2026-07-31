@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>لوحة إدارة سوق مباشر</title>
 
 <style>
+
 body{
-font-family:Tahoma,Arial,sans-serif;
+font-family:Tahoma,Arial;
 background:#f5f5f5;
 margin:0;
 padding:20px;
@@ -16,10 +20,10 @@ padding:20px;
 .container{
 max-width:700px;
 margin:auto;
-background:#fff;
+background:white;
 padding:20px;
 border-radius:12px;
-box-shadow:0 0 10px rgba(0,0,0,.1);
+box-shadow:0 0 10px #ccc;
 }
 
 h1,h2{
@@ -27,116 +31,147 @@ text-align:center;
 color:#198754;
 }
 
-input{
+input,select{
+
 width:100%;
 padding:12px;
 margin:8px 0;
 border:1px solid #ccc;
 border-radius:8px;
 box-sizing:border-box;
+
 }
 
 button{
+
 width:100%;
 padding:12px;
 margin-top:10px;
-background:#198754;
-color:#fff;
 border:none;
 border-radius:8px;
+background:#198754;
+color:white;
 font-size:16px;
-cursor:pointer;
+
 }
-  select{
-width:100%;
-padding:12px;
-margin:8px 0;
-border:1px solid #ccc;
-border-radius:8px;
-box-sizing:border-box;
-  }
-
-
 
 #adminBox{
+
 display:none;
+
 }
 
 .product{
+
 border:1px solid #ddd;
 padding:10px;
 margin-top:10px;
 border-radius:8px;
+
 }
+
 </style>
 
 </head>
 
+
 <body>
+
 
 <div class="container">
 
+
 <h1>لوحة إدارة سوق مباشر</h1>
+
 
 <div id="loginBox">
 
-<input type="email" id="email" placeholder="البريد الإلكتروني">
 
-<input type="password" id="password" placeholder="كلمة المرور">
+<input id="email" type="email" placeholder="البريد الإلكتروني">
 
-<button id="loginBtn">تسجيل الدخول</button>
+
+<input id="password" type="password" placeholder="كلمة المرور">
+
+
+<button id="loginBtn">
+
+تسجيل الدخول
+
+</button>
+
 
 </div>
+
+
 
 <div id="adminBox">
 
+
 <h2>إضافة منتج</h2>
+
 
 <input id="name" placeholder="اسم المنتج">
 
+
 <input id="price" type="number" placeholder="السعر">
+
 
 <input id="city" placeholder="المدينة">
 
+
 <select id="category">
 
-<option value="مواد غذائية">مواد غذائية</option>
-
-<option value="عطور">عطور</option>
-
-<option value="زيوت">زيوت</option>
-
-<option value="ملابس">ملابس</option>
-
-<option value="أخرى">أخرى</option>
+<option>مواد غذائية</option>
+<option>عطور</option>
+<option>زيوت</option>
+<option>ملابس</option>
+<option>أخرى</option>
 
 </select>
 
+
 <input id="image" placeholder="رابط الصورة">
+
 
 <input id="qty" type="number" placeholder="الكمية">
 
-<button id="saveBtn">حفظ المنتج</button>
 
-<button id="logoutBtn">تسجيل الخروج</button>
+<button id="saveBtn">
+
+حفظ المنتج
+
+</button>
+
+
+<button id="logoutBtn">
+
+تسجيل الخروج
+
+</button>
+
 
 <hr>
 
+
 <div id="products"></div>
 
-</div>
 
 </div>
 
-<script type="module">
+
+</div>
+  <script type="module">
 
 import { auth, db } from "./firebase.js";
+
 
 import {
 signInWithEmailAndPassword,
 signOut,
 onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+} 
+from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+
 
 import {
 collection,
@@ -144,159 +179,239 @@ addDoc,
 getDocs,
 deleteDoc,
 doc
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+}
+from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
+
 
 const productsRef = collection(db,"products");
 
+
+
 const loginBox = document.getElementById("loginBox");
+
 const adminBox = document.getElementById("adminBox");
 
+
 const email = document.getElementById("email");
+
 const password = document.getElementById("password");
 
-const name = document.getElementById("name");
-const price = document.getElementById("price");
-const city = document.getElementById("city");
-const category = document.getElementById("category");
-const image = document.getElementById("image");
-const qty = document.getElementById("qty");
+
 
 const loginBtn = document.getElementById("loginBtn");
+
 const logoutBtn = document.getElementById("logoutBtn");
+
+
+
 const saveBtn = document.getElementById("saveBtn");
+
 const products = document.getElementById("products");
 
-loginBtn.onclick = async () => {
+
+
+loginBtn.onclick = async()=>{
+
 
 try{
 
+
 await signInWithEmailAndPassword(
+
 auth,
+
 email.value,
+
 password.value
+
 );
+
+
 
 }catch(e){
 
+
 alert(e.message);
+
 
 }
 
+
 };
+
+
 
 logoutBtn.onclick = async()=>{
 
+
 await signOut(auth);
+
 
 };
 
+
+
 onAuthStateChanged(auth,(user)=>{
+
 
 if(user){
 
+
 loginBox.style.display="none";
+
 adminBox.style.display="block";
 
-loadProducts();
 
 }else{
 
+
 loginBox.style.display="block";
+
 adminBox.style.display="none";
+
 
 }
 
+
 });
-async function loadProducts(){
 
-products.innerHTML="";
 
-const snap = await getDocs(productsRef);
-
-snap.forEach((d)=>{
-
-const data = d.data();
-
-products.innerHTML += `
-<div class="product">
-<b>${data.name}</b><br>
-السعر: ${data.price}<br>
-المدينة: ${data.city}<br>
-القسم: ${data.category}<br>
-الكمية: ${data.qty}<br><br>
-
-<button onclick="deleteProduct('${d.id}')">
-حذف
-</button>
-
-</divsaveBtn.onclick = async()=>{
+    saveBtn.onclick = async()=>{
 
 try{
 
+
 const check = await getDocs(productsRef);
+
 
 let exists = false;
 
+
 check.forEach((d)=>{
+
 
 const p = d.data();
 
+
 if(
-p.name.trim() == name.value.trim() &&
-p.city.trim() == city.value.trim()
+p.name.trim() === name.value.trim() &&
+p.city.trim() === city.value.trim()
 ){
+
 exists = true;
+
 }
 
+
 });
+
 
 if(exists){
 
 alert("المنتج موجود مسبقاً");
+
 return;
 
 }
 
+
+
 await addDoc(productsRef,{
 
 name:name.value,
+
 price:Number(price.value),
+
 city:city.value,
+
 category:category.value,
+
 image:image.value,
+
 qty:Number(qty.value)
 
 });
-}
+
+
+
 alert("تم حفظ المنتج");
 
+
+
 name.value="";
+
 price.value="";
+
 city.value="";
-category.value="";
+
 image.value="";
+
 qty.value="";
 
+
+
 loadProducts();
+
+
 
 }catch(e){
 
+
 alert(e.message);
+
 
 }
 
-};
-
-window.deleteProduct = async(id)=>{
-
-if(!confirm("حذف المنتج؟")) return;
-
-await deleteDoc(doc(db,"products",id));
-
-loadProducts();
 
 };
-</script>
 
-</body>
-</html>
+    async function loadProducts(){
+
+products.innerHTML="";
+
+
+const snap = await getDocs(productsRef);
+
+
+snap.forEach((d)=>{
+
+
+const data = d.data();
+
+
+
+products.innerHTML += `
+
+<div class="product">
+
+
+${data.image ? 
+`<img src="${data.image}" style="width:100%;border-radius:8px">`
+: ""}
+
+
+
+<br>
+
+<b>${data.name}</b><br>
+
+السعر: ${data.price}<br>
+
+المدينة: ${data.city}<br>
+
+القسم: ${data.category}<br>
+
+الكمية: ${data.qty}<br>
+
+
+
+</div>
+
+`;
+
+
+});
+
+
+    }
