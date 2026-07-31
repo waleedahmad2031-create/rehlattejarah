@@ -130,7 +130,13 @@ display:none;
   <script type="module">
 
 import {db,auth} from "./firebase.js";
+catch(e){
 
+console.log(e);
+
+$("msg").innerHTML=e.message;
+
+}
 
 import {
 collection,
