@@ -1,54 +1,71 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>إدارة المنتجات</title>
 
 <style>
+
 body{
 font-family:Tahoma;
 background:#f5f5f5;
 margin:0;
-padding:20px
+padding:20px;
 }
+
 .box{
 max-width:700px;
 margin:auto;
 background:#fff;
 padding:20px;
-border-radius:12px
+border-radius:12px;
 }
+
 input,select,button{
 width:100%;
 padding:10px;
-margin:8px 0
+margin:8px 0;
 }
+
 button{
 cursor:pointer;
 }
+
 .item{
 border:1px solid #ddd;
 padding:10px;
-margin-top:10px
+margin-top:10px;
 }
+
 img{
 width:100px;
 height:100px;
-object-fit:cover
+object-fit:cover;
 }
+
 #admin{
 display:none;
 }
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <div class="box">
 
+
 <!-- تسجيل الدخول -->
+
 <div id="login">
+
 <h2>دخول الإدارة</h2>
 
 <input id="email" type="email" placeholder="📧 البريد الإلكتروني">
@@ -58,15 +75,19 @@ display:none;
 <button id="loginBtn">تسجيل الدخول</button>
 
 <p id="msg"></p>
+
 </div>
 
 
+
 <!-- لوحة الإدارة -->
+
 <div id="admin">
 
 <h2>لوحة إدارة سوق مباشر</h2>
 
 <button id="logout">تسجيل الخروج</button>
+
 
 <input id="name" placeholder="اسم المنتج">
 
@@ -78,241 +99,31 @@ display:none;
 
 <input id="image" placeholder="رابط الصورة">
 
+
 <select id="category">
+
 <option value="">اختر القسم</option>
+
 <option>مواد غذائية</option>
+
 <option>خضروات وفواكه</option>
+
 <option>زيوت</option>
+
 <option>عطور</option>
+
 <option>أخرى</option>
+
 </select>
+
 
 <button id="save">حفظ المنتج</button>
 
+
 <div id="products"></div>
 
-</div>
 
 </div>
 
 
-<script type="module">
-
-import {db,auth} from "./firebase.js";
-
-import {
-collection,
-getDocs,
-addDoc,
-updateDoc,
-deleteDoc,
-doc
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-import {
-signInWithEmailAndPassword,
-signOut,
-onAuthStateChanged
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-
-const ref=collection(db,"products");
-
-let editId=null;
-
-const $=id=>document.getElementById(id);
-
-
-// تسجيل الدخول
-
-$("loginBtn").onclick=async()=>{
-
-try{
-
-await signInWithEmailAndPassword(
-auth,
-$("email").value,
-$("password").value
-);
-
-$("msg").innerHTML="تم الدخول";
-
-}
-
-catch(e){
-
-$("msg").innerHTML="البريد أو كلمة المرور خطأ";
-
-}
-
-};
-
-
-// متابعة حالة المستخدم
-
-onAuthStateChanged(auth,(user)=>{
-
-if(user){
-
-$("login").style.display="none";
-
-$("admin").style.display="block";
-
-load();
-
-}else{
-
-$("login").style.display="block";
-
-$("admin").style.display="none";
-
-}
-
-});
-
-
-// تسجيل الخروج
-
-$("logout").onclick=()=>{
-
-signOut(auth);
-
-};
-
-
-// عرض المنتجات
-
-async function load(){
-
-const box=$("products");
-
-box.innerHTML="";
-
-const snap=await getDocs(ref);
-
-
-snap.forEach(d=>{
-
-const p=d.data();
-
-const div=document.createElement("div");
-
-div.className="item";
-
-
-div.innerHTML=`
-
-<img src="${p.image||""}">
-
-<h3>${p.name||""}</h3>
-
-<p>${p.price||0} ريال</p>
-
-<p>${p.city||""}</p>
-
-<p>${p["الكميه"]||""}</p>
-
-<button class="e">تعديل</button>
-
-<button class="x">حذف</button>
-
-`;
-
-
-div.querySelector(".e").onclick=()=>{
-
-editId=d.id;
-
-$("name").value=p.name||"";
-$("price").value=p.price||"";
-$("city").value=p.city||"";
-$("qty").value=p["الكميه"]||"";
-$("image").value=p.image||"";
-$("category").value=p.category||"";
-
-};
-
-
-div.querySelector(".x").onclick=async()=>{
-
-if(confirm("حذف المنتج؟")){
-
-await deleteDoc(doc(db,"products",d.id));
-
-load();
-
-}
-
-};
-
-
-box.appendChild(div);
-
-
-});
-
-}
-
-
-// حفظ المنتج
-
-$("save").onclick=async()=>{
-
-
-const data={
-
-name:$("name").value,
-
-price:Number($("price").value),
-
-city:$("city").value,
-
-category:$("category").value,
-
-image:$("image").value,
-
-"الكميه":$("qty").value
-
-};
-
-
-
-if(editId){
-
-await updateDoc(
-doc(db,"products",editId),
-data
-);
-
-editId=null;
-
-
-}else{
-
-
-await addDoc(ref,data);
-
-
-}
-
-
-["name","price","city","qty","image"]
-.forEach(id=>$(id).value="");
-
-
-$("category").value="";
-
-
-load();
-
-
-};
-
-
-</script>
-
-</body>
-</html>
+</div>
