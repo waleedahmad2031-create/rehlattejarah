@@ -33,17 +33,12 @@ margin:8px 0;
 
 button{
 cursor:pointer;
-background:#198754;
-color:white;
-border:0;
-border-radius:8px;
 }
 
 .item{
 border:1px solid #ddd;
 padding:10px;
 margin-top:10px;
-border-radius:8px;
 }
 
 img{
@@ -60,7 +55,6 @@ display:none;
 
 </head>
 
-
 <body>
 
 
@@ -71,9 +65,9 @@ display:none;
 
 <h2>دخول الإدارة</h2>
 
-<input id="email" type="email" placeholder="📧 البريد الإلكتروني">
+<input id="email" type="email" placeholder="البريد الإلكتروني">
 
-<input id="password" type="password" placeholder="🔑 كلمة المرور">
+<input id="password" type="password" placeholder="كلمة المرور">
 
 <button id="loginBtn">تسجيل الدخول</button>
 
@@ -88,7 +82,6 @@ display:none;
 <h2>لوحة إدارة سوق مباشر</h2>
 
 <button id="logout">تسجيل الخروج</button>
-
 
 <input id="name" placeholder="اسم المنتج">
 
@@ -128,10 +121,9 @@ display:none;
 
 
 </div>
-  <script type="module">
+<script type="module">
 
 import {db,auth} from "./firebase.js";
-
 
 import {
 collection,
@@ -152,14 +144,12 @@ onAuthStateChanged
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-
-const ref = collection(db,"products");
-
+const productsRef = collection(db,"products");
 
 let editId = null;
 
 
-const $ = id => document.getElementById(id);
+const $ = (id)=>document.getElementById(id);
 
 
 
@@ -167,54 +157,38 @@ const $ = id => document.getElementById(id);
 
 $("loginBtn").onclick = async()=>{
 
-
 try{
 
-
 await signInWithEmailAndPassword(
-
 auth,
-
 $("email").value,
-
 $("password").value
-
 );
-
 
 $("msg").innerHTML="تم الدخول بنجاح";
 
 
-}
+}catch(error){
 
-catch(e){
-
-
-$("msg").innerHTML="البريد أو كلمة المرور خطأ";
-
+$("msg").innerHTML="خطأ في البريد أو كلمة المرور";
 
 }
-
 
 };
 
 
 
-
-// مراقبة تسجيل الدخول
+// متابعة حالة الدخول
 
 onAuthStateChanged(auth,(user)=>{
 
-
 if(user){
-
 
 $("login").style.display="none";
 
 $("admin").style.display="block";
 
-
-load();
+loadProducts();
 
 
 }else{
@@ -227,9 +201,7 @@ $("admin").style.display="none";
 
 }
 
-
 });
-
 
 
 
@@ -237,42 +209,36 @@ $("admin").style.display="none";
 
 $("logout").onclick=()=>{
 
-
 signOut(auth);
-
 
 };
 
 
 
+// عرض المنتجات
 
-// تحميل المنتجات
-
-async function load(){
+async function loadProducts(){
 
 
 const box=$("products");
 
-
 box.innerHTML="";
 
 
-const snap=await getDocs(ref);
+const snap=await getDocs(productsRef);
 
 
 
-snap.forEach((d)=>{
+snap.forEach((item)=>{
 
 
-const p=d.data();
+const p=item.data();
 
 
 
 const div=document.createElement("div");
 
-
 div.className="item";
-
 
 
 div.innerHTML=`
@@ -287,18 +253,18 @@ div.innerHTML=`
 
 <p>الكمية: ${p["الكميه"] || ""}</p>
 
-<button class="e">تعديل</button>
+<button class="edit">تعديل</button>
 
-<button class="x">حذف</button>
+<button class="delete">حذف</button>
 
 `;
 
 
 
-div.querySelector(".e").onclick=()=>{
+div.querySelector(".edit").onclick=()=>{
 
 
-editId=d.id;
+editId=item.id;
 
 
 $("name").value=p.name || "";
@@ -318,16 +284,16 @@ $("category").value=p.category || "";
 
 
 
-div.querySelector(".x").onclick=async()=>{
+div.querySelector(".delete").onclick=async()=>{
 
 
-if(confirm("حذف المنتج؟")){
+if(confirm("هل تريد حذف المنتج؟")){
 
 
-await deleteDoc(doc(db,"products",d.id));
+await deleteDoc(doc(db,"products",item.id));
 
 
-load();
+loadProducts();
 
 
 }
@@ -336,33 +302,26 @@ load();
 };
 
 
-
 box.appendChild(div);
-  // حفظ المنتج
+
+// حفظ المنتج
 
 $("save").onclick = async()=>{
 
 
 const data = {
 
+name: $("name").value,
 
-name:$("name").value,
+price: Number($("price").value),
 
+city: $("city").value,
 
-price:Number($("price").value),
+category: $("category").value,
 
+image: $("image").value,
 
-city:$("city").value,
-
-
-category:$("category").value,
-
-
-image:$("image").value,
-
-
-"الكميه":$("qty").value
-
+"الكميه": $("qty").value
 
 };
 
@@ -386,14 +345,20 @@ editId=null;
 }else{
 
 
-await addDoc(ref,data);
+await addDoc(
+
+productsRef,
+
+data
+
+);
 
 
 }
 
 
 
-// تفريغ الحقول
+// تنظيف الحقول
 
 $("name").value="";
 
@@ -409,11 +374,10 @@ $("category").value="";
 
 
 
-load();
+loadProducts();
 
 
 };
-
 
 
 </script>
@@ -422,10 +386,7 @@ load();
 </body>
 
 </html>
+});
 
 
-
-
-
-
-
+}
