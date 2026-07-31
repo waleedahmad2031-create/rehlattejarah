@@ -404,7 +404,9 @@ ${data.image ?
 
 الكمية: ${data.qty}<br>
 
-
+<button onclick="deleteProduct('${d.id}')">
+حذف
+</button>
 
 </div>
 
@@ -415,3 +417,22 @@ ${data.image ?
 
 
     }
+    window.deleteProduct = async(id)=>{
+
+
+if(!confirm("حذف المنتج؟")) return;
+
+
+await deleteDoc(doc(db,"products",id));
+
+
+loadProducts();
+
+
+};
+    </script>
+
+</body>
+
+</html>
+    
