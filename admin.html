@@ -229,32 +229,55 @@ products.innerHTML += `
 حذف
 </button>
 
-</div>
+</divsaveBtn.onclick = async()=>{
+
+try{
+
+const check = await getDocs(productsRef);
+
+let exists = false;
+
+check.forEach((d)=>{
+
+const p = d.data();
+
+if(
+p.name.trim() == name.value.trim() &&
+p.city.trim() == city.value.trim()
+){
+exists = true;
+}
+
+});
+
+if(exists){
+
+alert("المنتج موجود مسبقاً");
+return;
+
+}
+
+await addDoc(productsRef,{
+
+name:name.value,
+price:Number(price.value),
+city:city.value,
+category:category.value,
+image:image.value,
+qty:Number(qty.value)
+
+});
 `;
 
 });
 
 }
 
-saveBtn.onclick = async()=>{
 
-try{
 
-await addDoc(productsRef,{
 
-name:name.value,
 
-price:Number(price.value),
 
-city:city.value,
-
-category:category.value,
-
-image:image.value,
-
-qty:Number(qty.value)
-
-});
 
 alert("تم حفظ المنتج");
 
