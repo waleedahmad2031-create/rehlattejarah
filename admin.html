@@ -304,6 +304,11 @@ loadProducts();
 
 box.appendChild(div);
 
+});
+
+}
+
+
 // حفظ المنتج
 
 $("save").onclick = async()=>{
@@ -326,52 +331,33 @@ image: $("image").value,
 };
 
 
-
 if(editId){
 
-
 await updateDoc(
-
 doc(db,"products",editId),
-
 data
-
 );
-
 
 editId=null;
 
 
 }else{
 
-
 await addDoc(
-
 productsRef,
-
 data
-
 );
-
 
 }
 
 
 
-// تنظيف الحقول
-
 $("name").value="";
-
 $("price").value="";
-
 $("city").value="";
-
 $("qty").value="";
-
 $("image").value="";
-
 $("category").value="";
-
 
 
 loadProducts();
@@ -386,7 +372,3 @@ loadProducts();
 </body>
 
 </html>
-});
-
-
-}
