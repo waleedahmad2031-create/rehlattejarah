@@ -6,7 +6,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>السلة</title>
+<title>سلة المشتريات</title>
+
 
 <style>
 
@@ -16,37 +17,53 @@ background:#f5f5f5;
 padding:15px;
 }
 
+
 h1{
 text-align:center;
 color:#198754;
 }
 
+
 .item{
+
 background:white;
 padding:15px;
-margin:10px;
+margin:10px 0;
 border-radius:10px;
+
 }
+
 
 .total{
-background:#fff;
+
+background:white;
 padding:15px;
+border-radius:10px;
 font-size:20px;
 font-weight:bold;
+margin-top:15px;
+
 }
 
+
 button{
+
+width:100%;
 background:#198754;
 color:white;
 border:0;
-padding:12px;
-border-radius:8px;
-width:100%;
+padding:15px;
+border-radius:10px;
+font-size:18px;
+margin-top:15px;
+
 }
+
 
 </style>
 
 </head>
+
 
 
 <body>
@@ -55,16 +72,26 @@ width:100%;
 <h1>🛒 سلة المشتريات</h1>
 
 
-<div id="cart"></div>
+<div id="cart">
 
-
-<div class="total">
-المجموع: <span id="total">0</span> ريال
 </div>
 
 
+
+<div class="total">
+
+المجموع:
+<span id="total">0</span>
+ريال
+
+</div>
+
+
+
 <button onclick="checkout()">
+
 إتمام الطلب
+
 </button>
 
 
@@ -72,7 +99,9 @@ width:100%;
 <script>
 
 
-let cart=JSON.parse(localStorage.getItem("cart")) || [];
+let cart =
+JSON.parse(localStorage.getItem("cart")) || [];
+
 
 
 let box=document.getElementById("cart");
@@ -80,47 +109,100 @@ let box=document.getElementById("cart");
 let total=0;
 
 
+
 cart.forEach(item=>{
 
 
-total += item.price;
+total += Number(item.price);
+
 
 
 box.innerHTML += `
 
+
 <div class="item">
+
 
 <h3>${item.name}</h3>
 
-<p>${item.price} ريال</p>
+
+<p>
+السعر: ${item.price} ريال
+</p>
+
 
 </div>
 
+
 `;
 
+
 });
+
 
 
 document.getElementById("total").innerHTML=total;
 
 
 
+
 function checkout(){
+
 
 
 if(total < 50){
 
+
 alert("الحد الأدنى للطلب 50 ريال");
+
 
 return;
 
-}
-
-
-alert("يمكنك إكمال الطلب");
-
 
 }
+
+
+
+let message =
+"السلام عليكم، أريد طلب المنتجات:\n\n";
+
+
+
+cart.forEach(item=>{
+
+
+message +=
+"- "+item.name+
+" : "+item.price+
+" ريال\n";
+
+
+});
+
+
+
+message +=
+"\nالمجموع: "+
+total+
+" ريال";
+
+
+
+let phone="966500000000";
+
+
+
+window.open(
+
+"https://wa.me/"+phone+
+"?text="+encodeURIComponent(message)
+
+);
+
+
+
+}
+
 
 
 </script>
@@ -129,3 +211,4 @@ alert("يمكنك إكمال الطلب");
 </body>
 
 </html>
+
