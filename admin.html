@@ -4,51 +4,245 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>لوحة إدارة سوق مباشر</title>
+
 <style>
-body{font-family:Tahoma,Arial,sans-serif;background:#f5f5f5;margin:0;padding:20px}
-.container{max-width:700px;margin:auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 0 10px rgba(0,0,0,.15)}
-input,select,button{width:100%;padding:12px;margin:8px 0;box-sizing:border-box}
-button{background:#198754;color:#fff;border:none;border-radius:8px;cursor:pointer}
-.product{border:1px solid #ddd;padding:10px;border-radius:8px;margin-top:10px}
-.product img{width:100%;max-height:220px;object-fit:cover;border-radius:8px;margin-bottom:10px}
-#adminBox{display:none}
+body{
+font-family:Tahoma,Arial,sans-serif;
+background:#f5f5f5;
+margin:0;
+padding:20px;
+}
+
+.container{
+max-width:700px;
+margin:auto;
+background:#fff;
+padding:20px;
+border-radius:12px;
+box-shadow:0 0 10px rgba(0,0,0,.15);
+}
+
+input,
+select,
+button{
+width:100%;
+padding:12px;
+margin:8px 0;
+box-sizing:border-box;
+}
+
+button{
+background:#198754;
+color:#fff;
+border:none;
+border-radius:8px;
+cursor:pointer;
+}
+
+.product{
+border:1px solid #ddd;
+padding:10px;
+border-radius:8px;
+margin-top:10px;
+}
+
+.product img{
+width:100%;
+max-height:220px;
+object-fit:cover;
+border-radius:8px;
+margin-bottom:10px;
+}
+
+#adminBox{
+display:none;
+}
 </style>
+
 </head>
+
 <body>
+
 <div class="container">
+
 <div id="loginBox">
+
 <h2>تسجيل الدخول</h2>
+
 <input id="email" type="email" placeholder="البريد الإلكتروني">
+
 <input id="password" type="password" placeholder="كلمة المرور">
+
 <button id="loginBtn">دخول</button>
+
 </div>
+
 <div id="adminBox">
+
 <h2>إضافة منتج</h2>
+
 <input id="name" placeholder="اسم المنتج">
+
 <input id="price" type="number" placeholder="السعر">
+
 <input id="city" placeholder="المدينة">
+
 <select id="category">
-<option>مواد غذائية</option><option>عطور</option><option>زيوت</option><option>ملابس</option><option>أخرى</option>
+
+<option value="الكتب - المنتجات المكتبية - الألعاب - الأم والطفل">📚 الكتب - المنتجات المكتبية - الألعاب - الأم والطفل</option>
+
+<option value="أدوات الحدائق - تحسين المنزل - السيارات">🏡 أدوات الحدائق - تحسين المنزل - السيارات</option>
+
+<option value="الإلكترونيات">💻 الإلكترونيات</option>
+
+<option value="الأحذية - الحقائب">👟 الأحذية - الحقائب</option>
+
+<option value="الإكسسوارات - الساعات - النظارات">⌚ الإكسسوارات - الساعات - النظارات</option>
+
+    <option value="المنسوجات">🧵 المنسوجات</option>
+
+<option value="مستحضرات التجميل - الجمال - العناية الشخصية">
+💄 مستحضرات التجميل - الجمال - العناية الشخصية
+</option>
+
+<option value="الأثاث">
+🛋️ الأثاث
+</option>
+
+<option value="السوبرماركت - مستلزمات الحيوانات الأليفة - الصحة">
+🛒 السوبرماركت - مستلزمات الحيوانات الأليفة - الصحة
+</option>
+
+<option value="المنسوجات المنزلية - الزينة - المطبخ">
+🏠 المنسوجات المنزلية - الزينة - المطبخ
+</option>
+
 </select>
+
 <input id="image" placeholder="رابط الصورة">
+
 <input id="qty" type="number" placeholder="الكمية">
+
 <button id="saveBtn">حفظ المنتج</button>
+
 <button id="logoutBtn">تسجيل الخروج</button>
+
 <div id="products"></div>
-</div></div>
+
+</div>
+
+</div>
+
 <script type="module">
-import {auth,db} from "./firebase.js";
-import {signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
-import {collection,addDoc,getDocs,deleteDoc,doc} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
-const productsRef=collection(db,"products");
-const $=id=>document.getElementById(id);
-$("loginBtn").onclick=async()=>{try{await signInWithEmailAndPassword(auth,$("email").value,$("password").value);}catch(e){alert(e.message)}};
-$("logoutBtn").onclick=()=>signOut(auth);
-onAuthStateChanged(auth,u=>{if(u){loginBox.style.display="none";adminBox.style.display="block";loadProducts()}else{loginBox.style.display="block";adminBox.style.display="none";}});
-$("saveBtn").onclick=async()=>{await addDoc(productsRef,{name:$("name").value,price:Number($("price").value),city:$("city").value,category:$("category").value,image:$("image").value,qty:Number($("qty").value)});loadProducts();};
-async function loadProducts(){products.innerHTML="";const s=await getDocs(productsRef);s.forEach(d=>{const x=d.data();products.innerHTML+=`<div class="product">${x.image?`<img src="${x.image}" loading="lazy" decoding="async">`:""}<b>${x.name}</b><br>السعر: ${x.price}<br>المدينة: ${x.city}<br>القسم: ${x.category}<br>الكمية: ${x.qty}<br><button onclick="deleteProduct('${d.id}')">حذف</button></div>`})}
-window.deleteProduct=async(id)=>{await deleteDoc(doc(db,"products",id));loadProducts();}
-</script>
-</body></html
     
+    import {auth,db} from "./firebase.js";
+
+import {
+signInWithEmailAndPassword,
+signOut,
+onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+
+import {
+collection,
+addDoc,
+getDocs,
+deleteDoc,
+doc
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
+const productsRef=collection(db,"products");
+
+const $=id=>document.getElementById(id);
+
+$("loginBtn").onclick=async()=>{
+try{
+await signInWithEmailAndPassword(
+auth,
+$("email").value,
+$("password").value
+);
+}catch(e){
+alert(e.message);
+}
+};
+
+$("logoutBtn").onclick=()=>signOut(auth);
+
+onAuthStateChanged(auth,u=>{
+if(u){
+loginBox.style.display="none";
+adminBox.style.display="block";
+loadProducts();
+}else{
+loginBox.style.display="block";
+adminBox.style.display="none";
+}
+});
+
+$("saveBtn").onclick=async()=>{
+
+await addDoc(productsRef,{
+name:$("name").value,
+price:Number($("price").value),
+city:$("city").value,
+category:$("category").value,
+image:$("image").value,
+qty:Number($("qty").value)
+});
+
+loadProducts();
+
+};
+
+async function loadProducts(){
+
+products.innerHTML="";
+
+const s=await getDocs(productsRef);
+
+s.forEach(d=>{
+
+const x=d.data();
+
+products.innerHTML+=`
+
+<div class="product">
+
+${x.image?`<img src="${x.image}" loading="lazy" decoding="async">`:""}
+
+<b>${x.name}</b><br>
+
+السعر: ${x.price}<br>
+
+المدينة: ${x.city}<br>
+
+القسم: ${x.category}<br>
+
+الكمية: ${x.qty}<br>
+
+<button onclick="deleteProduct('${d.id}')">
+حذف
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+window.deleteProduct=async(id)=>{
+
+await deleteDoc(doc(db,"products",id));
+
+loadProducts();
+
+};
+
+    </script>
+
+</body>
+</html>
     
