@@ -47,6 +47,15 @@ transition:.3s;
 background:#157347;
 }
 
+#category{
+width:100%;
+padding:12px;
+font-size:16px;
+margin:15px 0;
+border-radius:10px;
+border:1px solid #ccc;
+}
+
 #products{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
@@ -115,29 +124,38 @@ background:#157347;
 </head>
 
 <body>
-</head>
-
-<body>
 
 <div style="background:#fff3cd;color:#856404;padding:12px;margin-bottom:15px;border-radius:8px;text-align:center;font-weight:bold;border:1px solid #ffeeba;">
 🎉 أهلاً بكم في <b>سوق مباشر</b><br>
 📍 الخدمة متوفرة حاليًا في <b>حي منفوحة – الرياض</b>، ونعمل على التوسع قريبًا لخدمة جميع الأحياء.
 </div>
+
 <h1>🛒 سوق مباشر</h1>
+
 <p style="text-align:center;color:#198754;font-weight:bold;">
 🚚 التوصيل إلى باب بيتك بـ 5 ريال فقط
 </p>
 
 <a class="cart" href="cart.html">
-🛍️ بعد ان تختار المنتجات اضغط هناء 
+🛍️ بعد أن تختار المنتجات اضغط هنا
 </a>
+
+<select id="category">
+<option value="">📦 جميع الأقسام</option>
+<option value="عطور">🌸 عطور</option>
+<option value="زيوت">🛢️ زيوت</option>
+<option value="مواد غذائية">🛒 مواد غذائية</option>
+<option value="خضروات وفواكة">🥬 خضروات وفواكة</option>
+<option value="أخرى">📦 أخرى</option>
+</select>
 
 <div id="products">
 جاري تحميل المنتجات...
 </div>
-<script type="module">
 
-import { db } from "./firebase.js";
+<script type="module">
+    
+    import { db } from "./firebase.js";
 
 import {
 collection,
@@ -145,6 +163,7 @@ getDocs
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
 const box=document.getElementById("products");
+const categorySelect=document.getElementById("category");
 
 async function loadProducts(){
 
@@ -153,6 +172,8 @@ try{
 const snap=await getDocs(collection(db,"products"));
 
 box.innerHTML="";
+
+const selected=categorySelect.value;
 
 snap.forEach((doc)=>{
 
@@ -163,6 +184,11 @@ const city=p.city || "";
 const image=p.image || "";
 const price=p.price || "";
 const qty=p.qty || "";
+const category=p.category || "";
+
+if(selected!=="" && category!==selected){
+return;
+}
 
 box.innerHTML+=`
 
@@ -173,6 +199,8 @@ box.innerHTML+=`
 <h3>${name}</h3>
 
 <p class="price">${price} ريال</p>
+
+<p>📂 ${category}</p>
 
 <p>📍 ${city}</p>
 
@@ -188,6 +216,10 @@ box.innerHTML+=`
 
 });
 
+if(box.innerHTML===""){
+box.innerHTML="<h3 style='text-align:center;'>لا توجد منتجات في هذا القسم</h3>";
+}
+
 }catch(e){
 
 box.innerHTML="حدث خطأ: "+e.message;
@@ -195,6 +227,8 @@ box.innerHTML="حدث خطأ: "+e.message;
 }
 
 }
+
+categorySelect.addEventListener("change",loadProducts);
 
 window.addCart=function(name,price){
 
@@ -213,8 +247,7 @@ alert("✅ تمت إضافة المنتج إلى السلة");
 
 loadProducts();
 
-</script>
+    </script>
 
 </body>
 </html>
-    
