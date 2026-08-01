@@ -8,46 +8,36 @@
 
 <title>سلة المشتريات</title>
 
-
 <style>
 
 body{
-font-family:Tahoma;
+font-family:Tahoma,Arial,sans-serif;
 background:#f5f5f5;
 padding:15px;
 }
-
 
 h1{
 text-align:center;
 color:#198754;
 }
 
-
 .item{
-
 background:white;
 padding:15px;
 margin:10px 0;
 border-radius:10px;
-
 }
 
-
 .total{
-
 background:white;
 padding:15px;
 border-radius:10px;
 font-size:20px;
 font-weight:bold;
 margin-top:15px;
-
 }
 
-
 button{
-
 width:100%;
 background:#198754;
 color:white;
@@ -56,153 +46,126 @@ padding:15px;
 border-radius:10px;
 font-size:18px;
 margin-top:15px;
-
 }
-
 
 </style>
 
 </head>
 
-
-
 <body>
-
 
 <h1>🛒 سلة المشتريات</h1>
 
-
-<div id="cart">
-
-</div>
-
-
+<div id="cart"></div>
 
 <div class="total">
-
 المجموع:
 <span id="total">0</span>
 ريال
-
 </div>
 
-
-
 <button onclick="checkout()">
-
 إتمام الطلب
-
 </button>
-
-
-
 <script>
-
 
 let cart =
 JSON.parse(localStorage.getItem("cart")) || [];
 
 
+let box = document.getElementById("cart");
 
-let box=document.getElementById("cart");
-
-let total=0;
-
+let total = 0;
 
 
-cart.forEach(item=>{
-
+cart.forEach(item => {
 
 total += Number(item.price);
 
 
-
 box.innerHTML += `
-
 
 <div class="item">
 
-
 <h3>${item.name}</h3>
-
 
 <p>
 السعر: ${item.price} ريال
 </p>
 
-
 </div>
 
-
 `;
-
 
 });
 
 
-
-document.getElementById("total").innerHTML=total;
-
-
+document.getElementById("total").innerHTML = total;
 
 
 function checkout(){
 
 
-
 if(total < 50){
-
 
 alert("الحد الأدنى للطلب 50 ريال");
 
-
 return;
 
-
 }
-
 
 
 let message =
 "السلام عليكم، أريد طلب المنتجات:\n\n";
 
 
-
-cart.forEach(item=>{
-
+cart.forEach(item => {
 
 message +=
-"- "+item.name+
-" : "+item.price+
+"- " + item.name +
+" : " + item.price +
 " ريال\n";
-
 
 });
 
 
-
 message +=
-"\nالمجموع: "+
-total+
+"\nالمجموع: " +
+total +
 " ريال";
 
 
-
-let phone="966550496391";
-
+let phone = "966550496391";
 
 
 window.open(
 
-"https://wa.me/"+phone+
-"?text="+encodeURIComponent(message)
+"https://wa.me/" +
+phone +
+"?text=" +
+encodeURIComponent(message),
+
+"_blank"
 
 );
+ 
+// تفريغ السلة بعد إتمام الطلب
 
+cart = [];
+
+localStorage.removeItem("cart");
+
+
+// تحديث المجموع والواجهة
+
+setTimeout(() => {
+
+location.reload();
+
+}, 500);
 
 
 }
-
 
 
 </script>
