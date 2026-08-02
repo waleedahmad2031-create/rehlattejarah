@@ -4,6 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>إدارة سوق مباشر</title>
@@ -11,76 +12,154 @@
 <style>
 
 body{
+
 font-family:Tahoma,Arial,sans-serif;
+
 background:#f5f5f5;
+
 margin:0;
+
 padding:20px;
+
 }
 
 .container{
-max-width:800px;
+
+max-width:900px;
+
 margin:auto;
+
 background:#fff;
+
 padding:20px;
+
 border-radius:12px;
+
 box-shadow:0 0 10px rgba(0,0,0,.15);
+
+}
+
+h2{
+
+text-align:center;
+
+color:#198754;
+
 }
 
 input,
+
 select,
+
 button{
+
 width:100%;
+
 padding:12px;
+
 margin:8px 0;
+
 box-sizing:border-box;
+
+border-radius:8px;
+
+}
+
+input,
+
+select{
+
+border:1px solid #ccc;
+
 }
 
 button{
+
 background:#198754;
-color:#fff;
+
+color:white;
+
 border:none;
-border-radius:8px;
-font-size:16px;
+
 cursor:pointer;
+
+font-size:16px;
+
 }
 
 button:hover{
+
 background:#157347;
+
 }
 
 .product{
+
 border:1px solid #ddd;
-padding:10px;
-margin-top:10px;
+
 border-radius:10px;
+
+padding:10px;
+
+margin-top:12px;
+
 }
 
 .product img{
-width:100%;
-max-height:220px;
-object-fit:contain;
-margin-bottom:10px;
-}
 
-#adminBox{
-display:none;
+width:100%;
+
+max-height:220px;
+
+object-fit:contain;
+
+margin-bottom:10px;
+
 }
 
 .offer{
+
 color:red;
+
 font-weight:bold;
+
 font-size:18px;
+
 }
 
 .old{
+
 text-decoration:line-through;
+
 color:#777;
+
+}
+
+.actions{
+
+display:flex;
+
+gap:10px;
+
+margin-top:10px;
+
+}
+
+.actions button{
+
+flex:1;
+
+}
+
+#adminBox{
+
+display:none;
+
 }
 
 </style>
 
 </head>
-
 <body>
 
 <div class="container">
@@ -101,7 +180,7 @@ color:#777;
 
 <div id="adminBox">
 
-<h2>إدارة المنتجات</h2>
+<h2>📦 إدارة المنتجات</h2>
 
 <input id="name" placeholder="اسم المنتج">
 
@@ -111,11 +190,17 @@ color:#777;
 
 <select id="discount">
 
-<option value="0">بدون عرض</option>
+<option value="0">بدون خصم</option>
+
+<option value="10">🔥 خصم 10%</option>
 
 <option value="20">🔥 خصم 20%</option>
 
 <option value="30">🔥 خصم 30%</option>
+
+<option value="40">🔥 خصم 40%</option>
+
+<option value="50">🔥 خصم 50%</option>
 
 </select>
 
@@ -123,52 +208,33 @@ color:#777;
 
 <select id="category">
 
-<option value="الكتب - المنتجات المكتبية - الألعاب - الأم والطفل">
-📚 الكتب - المنتجات المكتبية - الألعاب - الأم والطفل
-</option>
+<option value="الكتب - المنتجات المكتبية - الألعاب - الأم والطفل">📚 الكتب - المنتجات المكتبية - الألعاب - الأم والطفل</option>
 
-<option value="أدوات الحدائق - تحسين المنزل - السيارات">
-🏡 أدوات الحدائق - تحسين المنزل - السيارات
-</option>
+<option value="أدوات الحدائق - تحسين المنزل - السيارات">🏡 أدوات الحدائق - تحسين المنزل - السيارات</option>
 
-<option value="الإلكترونيات">
-💻 الإلكترونيات
-</option>
+<option value="الإلكترونيات">💻 الإلكترونيات</option>
 
-<option value="الأحذية - الحقائب">
-👟 الأحذية - الحقائب
-</option>
+<option value="الأحذية - الحقائب">👟 الأحذية - الحقائب</option>
 
-<option value="الإكسسوارات - الساعات - النظارات">
-⌚ الإكسسوارات - الساعات - النظارات
-</option>
+<option value="الإكسسوارات - الساعات - النظارات">⌚ الإكسسوارات - الساعات - النظارات</option>
 
-<option value="المنسوجات">
-🧵 المنسوجات
-</option>
+<option value="المنسوجات">🧵 المنسوجات</option>
 
-<option value="مستحضرات التجميل - الجمال - العناية الشخصية">
-💄 مستحضرات التجميل - الجمال - العناية الشخصية
-</option>
+<option value="مستحضرات التجميل - الجمال - العناية الشخصية">💄 مستحضرات التجميل - الجمال - العناية الشخصية</option>
 
-<option value="الأثاث">
-🛋️ الأثاث
-</option>
+<option value="الأثاث">🛋️ الأثاث</option>
 
-<option value="السوبرماركت - الخضروات">
-🛒 السوبرماركت - الخضروات
-</option>
+<option value="السوبرماركت - الخضروات">🛒 السوبرماركت - الخضروات</option>
 
-<option value="المنسوجات المنزلية - الزينة - المطبخ">
-🏠 المنسوجات المنزلية - الزينة - المطبخ
-</option>
+<option value="المنسوجات المنزلية - الزينة - المطبخ">🏠 المنسوجات المنزلية - الزينة - المطبخ</option>
 
 </select>
 
 <input id="image" placeholder="رابط الصورة">
 
 <input id="qty" type="number" placeholder="الكمية">
-  <button id="saveBtn">
+
+<button id="saveBtn">
 💾 حفظ المنتج
 </button>
 
@@ -180,7 +246,7 @@ color:#777;
 
 <div id="products"></div>
 
-<hr style="margin:25px 0;">
+<hr>
 
 <h2>📋 الطلبات</h2>
 
@@ -191,7 +257,6 @@ color:#777;
 </div>
 
 </div>
-
 <script type="module">
 
 import { auth, db } from "./firebase.js";
@@ -207,6 +272,7 @@ collection,
 addDoc,
 getDocs,
 deleteDoc,
+updateDoc,
 doc
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
@@ -214,14 +280,22 @@ const $ = id => document.getElementById(id);
 
 const productsRef = collection(db,"products");
 
+let editId = null;
+
+// تسجيل الدخول
+
 $("loginBtn").onclick = async()=>{
 
 try{
 
 await signInWithEmailAndPassword(
+
 auth,
+
 $("email").value,
+
 $("password").value
+
 );
 
 }catch(error){
@@ -232,13 +306,17 @@ alert(error.message);
 
 };
 
-$("logoutBtn").onclick=()=>{
+// تسجيل الخروج
+
+$("logoutBtn").onclick = ()=>{
 
 signOut(auth);
 
 };
 
-onAuthStateChanged(auth,user=>{
+// التحقق من المستخدم
+
+onAuthStateChanged(auth,(user)=>{
 
 if(user){
 
@@ -253,13 +331,13 @@ loadProducts();
 $("loginBox").style.display="block";
 
 $("adminBox").style.display="none";
-  
 
 }
 
 });
-  
-  $("saveBtn").onclick = async()=>{
+// حفظ أو تعديل المنتج
+
+$("saveBtn").onclick = async()=>{
 
 const oldPrice = Number($("oldPrice").value) || 0;
 const discount = Number($("discount").value);
@@ -267,7 +345,9 @@ const discount = Number($("discount").value);
 let finalPrice = Number($("price").value);
 
 if(discount > 0 && oldPrice > 0){
+
 finalPrice = Math.round(oldPrice - (oldPrice * discount / 100));
+
 }
 
 const data = {
@@ -290,14 +370,35 @@ qty: Number($("qty").value)
 
 };
 
+if(editId){
+
+await updateDoc(doc(db,"products",editId),data);
+
+alert("✅ تم تعديل المنتج");
+
+editId = null;
+
+$("saveBtn").innerHTML="💾 حفظ المنتج";
+
+}else{
+
 await addDoc(productsRef,data);
 
 alert("✅ تم حفظ المنتج");
 
+}
+
+$("name").value="";
+$("price").value="";
+$("oldPrice").value="";
+$("city").value="";
+$("image").value="";
+$("qty").value="";
+$("discount").value="0";
+
 loadProducts();
 
 };
-
 async function loadProducts(){
 
 const box = $("products");
@@ -331,9 +432,17 @@ ${p.discount > 0 ? `
 
 <div>📦 الكمية: ${p.qty}</div>
 
+<div class="actions">
+
+<button onclick="editProduct('${item.id}')">
+✏️ تعديل
+</button>
+
 <button onclick="deleteProduct('${item.id}')">
 🗑️ حذف
 </button>
+
+</div>
 
 </div>
 
@@ -353,11 +462,15 @@ loadProducts();
 
 };
 
-loadProducts();
+window.editProduct = async(id)=>{
+
+alert("ميزة التعديل سنكملها في الجزء الأخير.");
+
+};
 
 </script>
 
-
+<script type="module" src="admin-orders.js"></script>
 
 </body>
 
