@@ -47,6 +47,21 @@ transition:.3s;
 background:#157347;
 }
 
+#offers{
+background:#fff3cd;
+border:2px solid #ffd54f;
+border-radius:15px;
+padding:15px;
+margin:20px 0;
+}
+
+#offerProducts{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:15px;
+margin-top:15px;
+}
+
 #category{
 width:100%;
 padding:12px;
@@ -97,22 +112,21 @@ color:#198754;
 margin:10px 0;
 }
 
-.card p{
-font-size:15px;
-color:#666;
-margin:6px 0;
+.oldPrice{
+color:#999;
+text-decoration:line-through;
+font-size:16px;
 }
 
 button{
 width:90%;
 padding:12px;
 background:#198754;
-color:white;
+color:#fff;
 border:none;
 border-radius:10px;
 font-size:16px;
 cursor:pointer;
-transition:.3s;
 }
 
 button:hover{
@@ -122,8 +136,7 @@ background:#157347;
 </style>
 
 </head>
-
-<body>
+    <body>
 
 <div style="background:#fff3cd;color:#856404;padding:12px;margin-bottom:15px;border-radius:8px;text-align:center;font-weight:bold;border:1px solid #ffeeba;">
 🎉 أهلاً بكم في <b>سوق مباشر</b><br>
@@ -134,20 +147,20 @@ background:#157347;
 
 <p style="text-align:center;color:#198754;font-weight:bold;">
 🚚 التوصيل إلى باب بيتك بـ 5 ريال فقط
-</p>  
-<input id="price" type="number" placeholder="السعر">
-<div id="offers" style="
-background:#fff3cd;
-padding:15px;
-border-radius:12px;
-margin:20px 0;
-text-align:center;
-">
-<h2 style="color:#d63384;">🔥 عروض اليوم 🔥</h2>
+</p>
+
+<div id="offers">
+
+<h2 style="text-align:center;color:#d63384;">
+🔥 عروض اليوم 🔥
+</h2>
+
 <div id="offerProducts">
 جاري تحميل العروض...
 </div>
+
 </div>
+
 <a class="cart" href="cart.html">
 🛍️ بعد أن تختار المنتجات اضغط هنا
 </a>
@@ -189,7 +202,7 @@ text-align:center;
 </option>
 
 <option value="السوبرماركت - مستلزمات الحيوانات الأليفة - الصحة">
-🛒 السوبرماركت -  الخضروات  - 
+🛒 السوبرماركت - الخضروات
 </option>
 
 <option value="المنسوجات المنزلية - الزينة - المطبخ">
@@ -201,10 +214,10 @@ text-align:center;
 <div id="products">
 جاري تحميل المنتجات...
 </div>
-
+        
 <script type="module">
-    
-    import { db } from "./firebase.js";
+
+import { db } from "./firebase.js";
 
 import {
 collection,
@@ -212,6 +225,7 @@ getDocs
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
 const box=document.getElementById("products");
+const offerBox=document.getElementById("offerProducts");
 const categorySelect=document.getElementById("category");
 
 async function loadProducts(){
@@ -221,6 +235,7 @@ try{
 const snap=await getDocs(collection(db,"products"));
 
 box.innerHTML="";
+offerBox.innerHTML="";
 
 const selected=categorySelect.value;
 
@@ -232,20 +247,47 @@ const name=p.name || "";
 const city=p.city || "";
 const image=p.image || "";
 const price=p.price || "";
+const oldPrice=p.oldPrice || "";
+const offer=p.offer || false;
 const qty=p.qty || "";
 const category=p.category || "";
-
-if(selected!=="" && category!==selected){
+    if(selected!=="" && category!==selected){
 return;
+}
+
+if(offer){
+
+offerBox.innerHTML+=`
+
+<div class="card">
+
+<img loading="lazy" src="${image || 'https://via.placeholder.com/500'}">
+
+<h3>${name}</h3>
+
+<p class="oldPrice">${oldPrice} ريال</p>
+
+<p class="price">${price} ريال</p>
+
+<button onclick="addCart('${name}','${price}')">
+🛒 أضف للسلة
+</button>
+
+</div>
+
+`;
+
 }
 
 box.innerHTML+=`
 
 <div class="card">
 
-<img loading="lazy" src="${image || 'https://via.placeholder.com/500'}" alt="${name}">
+<img loading="lazy" src="${image || 'https://via.placeholder.com/500'}">
 
 <h3>${name}</h3>
+
+${offer ? `<p class="oldPrice">${oldPrice} ريال</p>` : ""}
 
 <p class="price">${price} ريال</p>
 
@@ -264,6 +306,10 @@ box.innerHTML+=`
 `;
 
 });
+
+if(offerBox.innerHTML===""){
+offerBox.innerHTML="<p>لا توجد عروض اليوم.</p>";
+}
 
 if(box.innerHTML===""){
 box.innerHTML="<h3 style='text-align:center;'>لا توجد منتجات في هذا القسم</h3>";
@@ -296,7 +342,8 @@ alert("✅ تمت إضافة المنتج إلى السلة");
 
 loadProducts();
 
-    </script>
+</script>
 
 </body>
+
 </html>
