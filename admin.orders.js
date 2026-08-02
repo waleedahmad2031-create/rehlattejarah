@@ -1,180 +1,58 @@
-// admin-orders.js
-
-
 import { db } from "./firebase.js";
 
-
 import {
-
 collection,
-
-getDocs,
-
-updateDoc,
-
-doc,
-
+query,
 orderBy,
-
-query
-
-}
-
-from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
-
-
+onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
 const ordersBox = document.getElementById("orders");
 
+const q = query(
+collection(db,"orders"),
+orderBy("createdAt","desc")
+);
 
-
-async function loadOrders(){
-
-
-if(!ordersBox) return;
-
-
+onSnapshot(q,(snapshot)=>{
 
 ordersBox.innerHTML="";
 
+if(snapshot.empty){
 
+ordersBox.innerHTML="<p>لا توجد طلبات.</p>";
 
-const q = query(
+return;
 
-collection(db,"orders"),
+}
 
-orderBy("createdAt","desc")
+snapshot.forEach(doc=>{
 
-);
-
-
-
-const snap = await getDocs(q);
-
-
-
-snap.forEach(item=>{
-
-
-const order = item.data();
-
-
+const o = doc.data();
 
 ordersBox.innerHTML += `
 
-
 <div class="product">
-
 
 <h3>🛒 طلب جديد</h3>
 
+<p><b>الاسم:</b> ${o.name || "-"}</p>
 
-<p>
-الاسم: ${order.name}
-</p>
+<p><b>الهاتف:</b> ${o.phone || "-"}</p>
 
+<p><b>العنوان:</b> ${o.address || "-"}</p>
 
-<p>
-الجوال: ${order.phone}
-</p>
+<p><b>الطلبات:</b> ${o.products}</p>
 
+<p><b>الإجمالي:</b> ${o.total} ريال</p>
 
-<p>
-العنوان: ${order.address}
-</p>
-
-
-<p>
-الطلبات: ${order.products}
-</p>
-
-
-<p>
-المجموع: ${order.total} ريال
-</p>
-
-
-<p>
-الحالة: ${order.status}
-</p>
-
-
-
-<select onchange="changeStatus('${item.id}',this.value)">
-
-
-<option value="جديد">
-جديد
-</option>
-
-
-<option value="تم التواصل">
-تم التواصل
-</option>
-
-
-<option value="تم التوصيل">
-تم التوصيل
-</option>
-
-
-</select>
-
+<p><b>الحالة:</b> ${o.status || "جديد"}</p>
 
 </div>
 
-
 `;
-
-
 
 });
 
+});;
 
-}
-
-
-
-loadOrders();
-
-
-window.changeStatus = async function(id,status){
-
-
-try{
-
-
-await updateDoc(
-
-doc(db,"orders",id),
-
-{
-
-status:status
-
-}
-
-);
-
-
-
-alert("تم تحديث حالة الطلب");
-
-
-loadOrders();
-
-
-
-}
-
-catch(error){
-
-
-alert(error.message);
-
-
-}
-
-
-
-};
