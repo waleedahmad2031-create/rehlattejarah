@@ -1,24 +1,28 @@
 // firebase.js
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+
 import { getFirestore } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
 import { getAuth } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+
 
 const firebaseConfig = {
 
-  apiKey: "هنا_apiKey_الحقيقي",
+  apiKey: "AIzaSyCt9fXd077nuTZ696hgQaL_gn1vzRY8LHQ",
 
-  authDomain: "هنا_authDomain_الحقيقي",
+  authDomain: "rehlattejarah.firebaseapp.com",
 
-  projectId: "هنا_projectId_الحقيقي",
+  projectId: "rehlattejarah",
 
-  storageBucket: "هنا_storageBucket_الحقيقي",
+  storageBucket: "rehlattejarah.firebasestorage.app",
 
-  messagingSenderId: "هنا_messagingSenderId_الحقيقي",
+  messagingSenderId: "56157415045",
 
-  appId: "هنا_appId_الحقيقي"
+  appId: "1:56157415045:web:34528a4cb34501261e2bec"
 
 };
+
 
 const app = initializeApp(firebaseConfig);
 
