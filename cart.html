@@ -19,7 +19,6 @@ padding:15px;
 h1{
 text-align:center;
 color:#198754;
-margin-bottom:15px;
 }
 
 .item{
@@ -27,36 +26,42 @@ background:white;
 padding:15px;
 margin:10px 0;
 border-radius:10px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
+box-shadow:0 2px 5px #ddd;
 }
 
 .total{
 background:white;
 padding:15px;
+margin-top:15px;
 border-radius:10px;
 font-size:20px;
 font-weight:bold;
-margin-top:15px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
 button{
 width:100%;
-color:white;
-border:0;
 padding:15px;
+border:0;
 border-radius:10px;
 font-size:18px;
+color:white;
 margin-top:15px;
-cursor:pointer;
 }
 
-.checkout-btn{
+.checkout{
 background:#198754;
 }
 
-.cancel-btn{
+.cancel{
 background:#dc3545;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+border-radius:8px;
+border:1px solid #ccc;
 }
 
 </style>
@@ -65,34 +70,62 @@ background:#dc3545;
 
 <body>
 
+
 <h1>🛒 سلة المشتريات</h1>
+
 
 <div id="cart"></div>
 
+
 <div class="total">
+
 المجموع:
 <span id="total">0</span>
 ريال
+
 </div>
 
-<button class="checkout-btn" onclick="checkout()">
-✅ إتمام الطلب
+
+<input id="name" placeholder="الاسم">
+
+<input id="phone" placeholder="رقم الجوال">
+
+<input id="address" placeholder="العنوان">
+
+
+<button class="checkout" onclick="checkout()">
+
+✅ إرسال الطلب
+
 </button>
 
-<button class="cancel-btn" onclick="cancelOrder()">
-❌ إلغاء الطلب
-</button>
 
-<script>
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+<button class="cancel" onclick="cancelOrder()">
+
+❌ إلغاء السلة
+
+</button>
+<script type="module">
+
+import { saveOrder } from "./orders.js";
+
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
 
 let box = document.getElementById("cart");
 
+
 let total = 0;
 
-cart.forEach(item => {
+
+
+cart.forEach(item=>{
+
 
 total += Number(item.price);
+
+
 
 box.innerHTML += `
 
@@ -100,94 +133,169 @@ box.innerHTML += `
 
 <h3>${item.name}</h3>
 
-<p>السعر: ${item.price} ريال</p>
+<p>
+السعر: ${item.price} ريال
+</p>
 
 </div>
 
 `;
 
+
+
 });
+
+
 
 document.getElementById("total").innerHTML = total;
 
 
-// إتمام الطلب
-async function checkout(){
+
+
+window.checkout = async function(){
+
+
 
 if(cart.length === 0){
+
 alert("السلة فارغة");
+
 return;
+
 }
+
+
 
 if(total < 50){
-alert(" لازم تكون المنتجات اكثر من 50ريال");
+
+alert("الحد الأدنى للطلب 50 ريال");
+
 return;
+
 }
 
-if(!confirm("هل تريد إتمام الطلب وإرسال الطلب إلى واتساب؟")){
+
+
+
+let name = document.getElementById("name").value;
+
+let phone = document.getElementById("phone").value;
+
+let address = document.getElementById("address").value;
+
+
+
+
+if(name=="" || phone=="" || address==""){
+
+alert("أكمل بيانات العميل");
+
 return;
+
 }
-let orderData = {
 
-name: "عميل سوق مباشر",
 
-phone: "",
 
-address: "",
 
-products: cart.map(item => item.name).join(" - "),
+let order = {
 
-total: total
+
+name:name,
+
+
+phone:phone,
+
+
+address:address,
+
+
+products:cart.map(x=>x.name).join(" - "),
+
+
+total:total
+
 
 };
 
-await saveOrder(orderData);
-let message = "السلام عليكم، أريد طلب المنتجات:\n\n";
 
-cart.forEach(item => {
 
-message += "- " + item.name + " : " + item.price + " ريال\n";
 
-});
 
-message += "\nالمجموع: " + total + " ريال";
+await saveOrder(order);
 
-let phone = "966550496391";
+
+
+
+
+let message =
+
+"طلب جديد من سوق مباشر\n\n"+
+
+"الاسم: "+name+"\n"+
+
+"الجوال: "+phone+"\n"+
+
+"العنوان: "+address+"\n"+
+
+"الطلبات: "+order.products+"\n"+
+
+"المجموع: "+total+" ريال";
+
+
+
+
 
 window.open(
-"https://wa.me/" +
-phone +
-"?text=" +
+
+"https://wa.me/966550496391?text="+
+
 encodeURIComponent(message),
+
 "_blank"
+
 );
 
-// حذف السلة بعد الإرسال
-cart = [];
+
+
+
+
+cart=[];
+
+
 localStorage.removeItem("cart");
 
-setTimeout(() => {
-location.reload();
-},500);
-
-}
 
 
-// إلغاء الطلب
-function cancelOrder(){
+};
 
-if(confirm("هل تريد إلغاء الطلب وحذف جميع المنتجات من السلة؟")){
 
-cart = [];
+
+
+window.cancelOrder=function(){
+
+
+if(confirm("حذف السلة؟")){
+
+
+cart=[];
+
+
 localStorage.removeItem("cart");
+
+
 location.reload();
 
-}
 
 }
+
+
+};
+
+
 
 </script>
 
+
 </body>
 
-</html>
+</html>>
