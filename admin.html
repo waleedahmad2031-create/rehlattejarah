@@ -4,359 +4,499 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>لوحة إدارة سوق مباشر</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>إدارة سوق مباشر</title>
+
 
 <style>
 
 body{
-font-family:Tahoma,Arial,sans-serif;
+
+font-family:Tahoma,Arial;
+
 background:#f5f5f5;
-margin:0;
-padding:20px;
+
+padding:15px;
+
 }
+
 
 .container{
+
 max-width:700px;
+
 margin:auto;
-background:#fff;
+
+background:white;
+
 padding:20px;
+
 border-radius:12px;
-box-shadow:0 0 10px rgba(0,0,0,.15);
+
 }
 
-input,
-select,
-button{
+
+input,select,button{
+
 width:100%;
+
 padding:12px;
+
 margin:8px 0;
-box-sizing:border-box;
+
 }
+
 
 button{
+
 background:#198754;
-color:#fff;
-border:none;
+
+color:white;
+
+border:0;
+
 border-radius:8px;
-cursor:pointer;
+
 font-size:16px;
+
 }
 
-button:hover{
-background:#157347;
-}
 
 .product{
+
 border:1px solid #ddd;
+
 padding:10px;
-border-radius:8px;
+
 margin-top:10px;
+
+border-radius:10px;
+
 }
+
 
 .product img{
+
 width:100%;
-max-height:220px;
-object-fit:cover;
-border-radius:8px;
-margin-bottom:10px;
+
+height:200px;
+
+object-fit:contain;
+
 }
 
+
 #adminBox{
+
 display:none;
+
 }
 
 </style>
 
+
 </head>
+
 
 <body>
 
+
 <div class="container">
+
+
 
 <div id="loginBox">
 
-<h2>تسجيل الدخول</h2>
+
+<h2>
+
+🔐 دخول الإدارة
+
+</h2>
+
+
 
 <input id="email" type="email" placeholder="البريد الإلكتروني">
 
+
 <input id="password" type="password" placeholder="كلمة المرور">
 
-<button id="loginBtn">دخول</button>
+
+<button id="loginBtn">
+
+دخول
+
+</button>
+
+
 
 </div>
-
 <div id="adminBox">
 
-<h2>إضافة منتج</h2>
+<h2>➕ إضافة منتج</h2>
+
 
 <input id="name" placeholder="اسم المنتج">
 
+
 <input id="price" type="number" placeholder="السعر">
 
-<input id="oldPrice" type="number" placeholder="السعر القديم (للعروض فقط)">
 
-<label style="display:flex;align-items:center;gap:10px;margin:10px 0;">
-<input id="offer" type="checkbox" style="width:auto;">
-🔥 عرض اليوم
-</label>
+<input id="oldPrice" type="number" placeholder="السعر القديم">
 
 
 <input id="city" placeholder="المدينة">
 
+
 <select id="category">
-
-<option value="الكتب - المنتجات المكتبية - الألعاب - الأم والطفل">
-📚 الكتب - المنتجات المكتبية - الألعاب - الأم والطفل
-</option>
-
-<option value="أدوات الحدائق - تحسين المنزل - السيارات">
-🏡 أدوات الحدائق - تحسين المنزل - السيارات
-</option>
 
 <option value="الإلكترونيات">
 💻 الإلكترونيات
 </option>
 
-<option value="الأحذية - الحقائب">
-👟 الأحذية - الحقائب
+
+<option value="العطور">
+🌸 العطور
 </option>
 
-<option value="الإكسسوارات - الساعات - النظارات">
-⌚ الإكسسوارات - الساعات - النظارات
+
+<option value="المواد الغذائية">
+🛒 المواد الغذائية
 </option>
 
-<option value="المنسوجات">
-🧵 المنسوجات
+
+<option value="الملابس">
+👕 الملابس
 </option>
 
-<option value="مستحضرات التجميل - الجمال - العناية الشخصية">
-💄 مستحضرات التجميل - الجمال - العناية الشخصية
+
+<option value="أخرى">
+📦 أخرى
 </option>
 
-<option value="الأثاث">
-🛋️ الأثاث
-</option>
-
-<option value="السوبرماركت - الخضروات">
-🛒 السوبرماركت - الخضروات
-</option>
-
-<option value="المنسوجات المنزلية - الزينة - المطبخ">
-🏠 المنسوجات المنزلية - الزينة - المطبخ
-</option>
 
 </select>
 
+
 <input id="image" placeholder="رابط الصورة">
+
 
 <input id="qty" type="number" placeholder="الكمية">
 
-<button id="saveBtn">حفظ المنتج</button>
 
-<button id="logoutBtn">تسجيل الخروج</button>
+<button id="saveBtn">
 
-<div id="products"></div>
+💾 حفظ المنتج
+
+</button>
+
+
+<button id="logoutBtn">
+
+🚪 تسجيل الخروج
+
+</button>
+
+
+<div id="products">
+
+</div>
+<h2>📦 الطلبات</h2>
+
+<div id="orders"></div>
 
 </div>
 
-</div>
 
+</div>
 <script type="module">
+
 
 import { auth, db } from "./firebase.js";
 
+
 import {
+
 signInWithEmailAndPassword,
+
 signOut,
+
 onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+
+}
+
+from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+
+
 
 import {
-collection,
-addDoc,
-getDocs,
-deleteDoc,
-updateDoc,
-doc
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
-const productsRef = collection(db,"products");
+collection,
+
+addDoc,
+
+getDocs,
+
+deleteDoc,
+
+doc
+
+}
+
+from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
+
+
+
 
 const $ = id => document.getElementById(id);
 
-let editId = null;
+
+
+const productsRef = collection(db,"products");
+
+
+
+
+
+// تسجيل الدخول
+
+
 $("loginBtn").onclick = async()=>{
+
 
 try{
 
+
 await signInWithEmailAndPassword(
+
 auth,
+
 $("email").value,
+
 $("password").value
+
 );
 
-}catch(e){
 
-alert(e.message);
 
 }
+
+catch(error){
+
+
+alert(error.message);
+
+
+}
+
 
 };
-console.log("admin يعمل");
-$("logoutBtn").onclick = ()=>signOut(auth);
 
-onAuthStateChanged(auth,u=>{
 
-if(u){
 
-loginBox.style.display="none";
-adminBox.style.display="block";
+
+
+// تسجيل الخروج
+
+
+$("logoutBtn").onclick = ()=>{
+
+
+signOut(auth);
+
+
+};
+
+
+
+
+
+// مراقبة الدخول
+
+
+onAuthStateChanged(auth,user=>{
+
+
+if(user){
+
+
+$("loginBox").style.display="none";
+
+
+$("adminBox").style.display="block";
+
+
 loadProducts();
 
-}else{
-
-loginBox.style.display="block";
-adminBox.style.display="none";
 
 }
+
+
+else{
+
+
+$("loginBox").style.display="block";
+
+
+$("adminBox").style.display="none";
+
+
+}
+
+
 
 });
 
+
+
+
+
+// حفظ المنتج
+
+
 $("saveBtn").onclick = async()=>{
 
-const data={
+
+
+let data={
+
 
 name:$("name").value,
+
+
 price:Number($("price").value),
-oldPrice:Number($("oldPrice").value)||0,
-offer:$("offer").checked,
+
+
+oldPrice:Number($("oldPrice").value),
+
+
 city:$("city").value,
+
+
 category:$("category").value,
+
+
 image:$("image").value,
+
+
 qty:Number($("qty").value)
+
 
 };
 
-if(editId){
 
-await updateDoc(doc(db,"products",editId),data);
 
-editId=null;
 
-$("saveBtn").textContent="حفظ المنتج";
-
-}else{
 
 await addDoc(productsRef,data);
 
-}
 
-$("name").value="";
-$("price").value="";
-$("oldPrice").value="";
-$("offer").checked=false;
-$("city").value="";
-$("image").value="";
-$("qty").value="";
+
+
+alert("تم حفظ المنتج");
+
+
 
 loadProducts();
 
+
 };
+
+
+
+
 
 async function loadProducts(){
 
-products.innerHTML="";
 
-const s=await getDocs(productsRef);
+let box=$("products");
 
-s.forEach(d=>{
 
-const x=d.data();
+box.innerHTML="";
 
-products.innerHTML+=`
+
+
+const snap=await getDocs(productsRef);
+
+
+
+snap.forEach(item=>{
+
+
+let p=item.data();
+
+
+
+box.innerHTML+=`
 
 <div class="product">
 
-${x.image ? `<img src="${x.image}" loading="lazy">` : ""}
 
-<b>${x.name}</b><br>
+${p.image ? `<img src="${p.image}">`:""}
 
-السعر: ${x.price} ريال<br>
 
-${x.offer ? `
-<span style="color:red;font-weight:bold;">
-🔥 عرض اليوم
-</span><br>
-السعر القديم:
-<s>${x.oldPrice} ريال</s><br>
-` : ""}
+<h3>${p.name}</h3>
 
-المدينة: ${x.city}<br>
 
-القسم: ${x.category}<br>
+<p>
+السعر: ${p.price} ريال
+</p>
 
-الكمية: ${x.qty}<br><br>
 
-<button onclick="editProduct('${d.id}')">
-✏️ تعديل
-</button>
+<p>
+القسم: ${p.category}
+</p>
 
-<button onclick="deleteProduct('${d.id}')">
+
+
+<button onclick="deleteProduct('${item.id}')">
+
 🗑️ حذف
+
 </button>
+
 
 </div>
 
 `;
 
-});
 
-}
-
-window.editProduct = async(id)=>{
-
-const s=await getDocs(productsRef);
-
-s.forEach(d=>{
-
-if(d.id===id){
-
-const x=d.data();
-
-$("name").value=x.name;
-$("price").value=x.price;
-$("oldPrice").value=x.oldPrice || "";
-$("offer").checked=x.offer || false;
-$("city").value=x.city;
-$("category").value=x.category;
-$("image").value=x.image;
-$("qty").value=x.qty;
-
-editId=id;
-
-$("saveBtn").textContent="💾 حفظ التعديلات";
-
-}
 
 });
 
-};
 
-window.deleteProduct = async(id)=>{
+}
 
-if(!confirm("هل تريد حذف المنتج؟")) return;
+
+
+
+
+window.deleteProduct = async function(id){
+
+
+
+if(confirm("حذف المنتج؟")){
+
 
 await deleteDoc(doc(db,"products",id));
 
+
 loadProducts();
 
-};
+
+}
+
 
 };
+
+
 
 </script>
 
+<script type="module" src="admin-orders.js"></script>
 </body>
+
 </html>
