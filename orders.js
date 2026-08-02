@@ -8,32 +8,33 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
-
-// حفظ الطلب في قاعدة البيانات
+// حفظ الطلب
 export async function saveOrder(order){
 
-try{
+  try{
 
-await addDoc(
-collection(db,"طلبات"),
-{
-name: order.name,
-phone: order.phone,
-address: order.address,
-products: order.products,
-total: order.total,
-status:"جديد",
-createdAt: serverTimestamp()
-}
-);
+    await addDoc(
+      collection(db,"orders"),
+      {
+        name: order.name,
+        phone: order.phone,
+        address: order.address,
+        products: order.products,
+        total: order.total,
+        status: "جديد",
+        createdAt: serverTimestamp()
+      }
+    );
 
-alert("✅ تم حفظ الطلب");
+    return true;
 
-}catch(error){
+  }catch(error){
 
-alert("خطأ: " + error.message);
-console.log(error);
+    console.error(error);
+    alert("تعذر حفظ الطلب: " + error.message);
 
-}
+    return false;
+
+  }
 
 }
