@@ -241,19 +241,18 @@ const selected=categorySelect.value;
 
 snap.forEach((doc)=>{
 
-const p=doc.data();
+const data={
 
-const name=p.name || "";
-const city=p.city || "";
-const image=p.image || "";
-const price=p.price || "";
-const oldPrice=p.oldPrice || "";
-const offer=p.offer || false;
-const qty=p.qty || "";
-const category=p.category || "";
-    if(selected!=="" && category!==selected){
-return;
-}
+name:$("name").value,
+price:Number($("price").value),
+oldPrice:Number($("oldPrice").value),
+offer:$("offer").checked,
+city:$("city").value,
+category:$("category").value,
+image:$("image").value,
+qty:Number($("qty").value)
+
+};
 
 if(offer){
 
