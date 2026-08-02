@@ -149,7 +149,8 @@ background:#157347;
 </style>
 
 </head>
-    <body>
+
+<body>
 
 <div class="notice">
 🎉 أهلاً بكم في <b>سوق مباشر</b><br>
@@ -225,7 +226,8 @@ background:#157347;
 <div id="products">
 جاري تحميل المنتجات...
 </div>
-        <script type="module">
+
+    <script type="module">
 
 import { db } from "./firebase.js";
 
@@ -255,18 +257,18 @@ const p = doc.data();
 
 const name = p.name || "";
 const price = p.price || 0;
-const oldPrice = p.oldPrice || "";
+const oldPrice = p.oldPrice || 0;
 const offer = p.offer || false;
 const city = p.city || "";
-const image = p.image || "";
-const qty = p.qty || "";
 const category = p.category || "";
+const image = p.image || "";
+const qty = p.qty || 0;
 
 if(selected !== "" && category !== selected){
 return;
 }
 
-    if(offer){
+if(offer){
 
 offerBox.innerHTML += `
 
