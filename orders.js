@@ -1,42 +1,44 @@
+// orders.js
+
 import { db } from "./firebase.js";
 
 import {
   collection,
-  onSnapshot
+  addDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
-const ordersBox = document.getElementById("orders");
+// حفظ الطلب
+export async function saveOrder(order) {
 
-onSnapshot(collection(db, "طلبات"), (snapshot) => {
+  try {
 
-  ordersBox.innerHTML = "";
+    await addDoc(collection(db, "orders"), {
 
-  if (snapshot.empty) {
-    ordersBox.innerHTML = "<p>لا توجد طلبات.</p>";
-    return;
+      name: order.name,
+      phone: order.phone,
+      address: order.address,
+
+      products: order.products,
+
+      total: Number(order.total),
+
+      status: "جديد",
+
+      createdAt: serverTimestamp()
+
+    });
+
+    return true;
+
+  } catch (error) {
+
+    console.error("خطأ حفظ الطلب:", error);
+
+    alert("حدث خطأ أثناء حفظ الطلب");
+
+    return false;
+
   }
 
-  snapshot.forEach((doc) => {
-
-    const o = doc.data();
-
-    ordersBox.innerHTML += `
-      <div class="product">
-        <h3>🛒 طلب جديد</h3>
-        <p><b>الاسم:</b> ${o.name || "-"}</p>
-        <p><b>الهاتف:</b> ${o.phone || "-"}</p>
-        <p><b>العنوان:</b> ${o.address || "-"}</p>
-        <p><b>الطلبات:</b> ${o.products || "-"}</p>
-        <p><b>الإجمالي:</b> ${o.total || 0} ريال</p>
-        <p><b>الحالة:</b> ${o.status || "جديد"}</p>
-      </div>
-    `;
-
-  });
-
-}, (error) => {
-
-  ordersBox.innerHTML = "❌ " + error.message;
-  console.error(error);
-
-});
+}
