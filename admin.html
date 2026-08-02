@@ -102,8 +102,10 @@ display:none;
 🔥 عرض اليوم
 </label>
 
+
 <input id="city" placeholder="المدينة">
-    <select id="category">
+
+<select id="category">
 
 <option value="الكتب - المنتجات المكتبية - الألعاب - الأم والطفل">
 📚 الكتب - المنتجات المكتبية - الألعاب - الأم والطفل
@@ -160,25 +162,7 @@ display:none;
 </div>
 
 </div>
-<h2>📦 الطلبات</h2>
 
-<table border="1" width="100%">
-
-<thead>
-<tr>
-<th>العميل</th>
-<th>الهاتف</th>
-<th>الطلبات</th>
-<th>المبلغ</th>
-<th>الحالة</th>
-</tr>
-</thead>
-
-<tbody id="ordersList">
-
-</tbody>
-
-</table>
 <script type="module">
 
 import { auth, db } from "./firebase.js";
@@ -203,7 +187,6 @@ const productsRef = collection(db,"products");
 const $ = id => document.getElementById(id);
 
 let editId = null;
-    
 $("loginBtn").onclick = async()=>{
 
 try{
@@ -247,7 +230,7 @@ const data={
 
 name:$("name").value,
 price:Number($("price").value),
-oldPrice:Number($("oldPrice").value),
+oldPrice:Number($("oldPrice").value)||0,
 offer:$("offer").checked,
 city:$("city").value,
 category:$("category").value,
@@ -271,10 +254,7 @@ await addDoc(productsRef,data);
 }
 
 $("name").value="";
-$("price").value=""; 
-
-$("oldPrice").value = x.oldPrice || "";
-$("offer").checked = x.offer || false;
+$("price").value="";
 $("oldPrice").value="";
 $("offer").checked=false;
 $("city").value="";
@@ -285,7 +265,7 @@ loadProducts();
 
 };
 
-    async function loadProducts(){
+async function loadProducts(){
 
 products.innerHTML="";
 
@@ -374,10 +354,12 @@ loadProducts();
 
 };
 
-</script>
-    
-<script type="module" src="admin-orders.js"></script>
+<script type="module">
+
+import { saveOrder } from "./orders.js";
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 </body>
 
-</html>
+    </html>
