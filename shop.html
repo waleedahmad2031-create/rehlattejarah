@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>سوق مباشر</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Tahoma,Arial,sans-serif;
+background:#f5f5f5;
+padding:15px;
+}
+
+h1{
+text-align:center;
+color:#198754;
+margin-bottom:15px;
+font-size:32px;
+}
+
+.notice{
+background:#fff3cd;
+color:#856404;
+padding:12px;
+border-radius:10px;
+text-align:center;
+margin-bottom:15px;
+}
+
+.cart{
+display:block;
+background:#198754;
+color:#fff;
+text-decoration:none;
+text-align:center;
+padding:15px;
+border-radius:10px;
+font-size:18px;
+font-weight:bold;
+margin-bottom:20px;
+}
+
+#category{
+width:100%;
+padding:12px;
+margin:15px 0;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+#products{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:15px;
+}
+
+.card{
+background:#fff;
+padding:15px;
+border-radius:12px;
+text-align:center;
+box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+
+.card img{
+width:100%;
+height:220px;
+object-fit:contain;
+}
+
+.price{
+font-size:22px;
+font-weight:bold;
+color:#198754;
+margin:10px 0;
+}
+
+button{
+width:90%;
+padding:12px;
+background:#198754;
+color:#fff;
+border:none;
+border-radius:10px;
+font-size:16px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="notice">
+
+🎉 أهلاً بكم في <b>سوق مباشر</b><br>
+🚚 التوصيل إلى باب بيتك بـ 5 ريال فقط
+
+</div>
+
+<h1>🛒 سوق مباشر</h1>
+
+<a class="cart" href="cart.html">
+
+🛍️ الذهاب إلى السلة
+
+</a>
+
+<select id="category">
+
+<option value="">📦 جميع الأقسام</option>
+
+<option value="الإلكترونيات">💻 الإلكترونيات</option>
+
+<option value="العطور">🌸 العطور</option>
+
+<option value="المواد الغذائية">🛒 المواد الغذائية</option>
+
+<option value="الملابس">👕 الملابس</option>
+
+<option value="أخرى">📦 أخرى</option>
+
+</select>
+
+<div id="products">
+
+جاري تحميل المنتجات...
+
+</div>
+<script type="module">
+
+import { db } from "./firebase.js";
+
+import {
+collection,
+getDocs
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
+const productsBox = document.getElementById("products");
+const category = document.getElementById("category");
+
+async function loadProducts(){
+
+productsBox.innerHTML="";
+
+const snap = await getDocs(collection(db,"products"));
+
+snap.forEach(doc=>{
+
+const p = doc.data();
+
+if(category.value !== "" && p.category !== category.value){
+return;
+}
+
+productsBox.innerHTML += `
+
+<div class="card">
+
+${p.image ? `<img src="${p.image}" alt="${p.name}">` : ""}
+
+<h3>${p.name}</h3>
+
+<p class="price">${p.price} ريال</p>
+
+<p>📍 ${p.city}</p>
+
+<p>📦 الكمية: ${p.qty}</p>
+
+<button onclick="addCart('${p.name}',${p.price})">
+🛒 أضف للسلة
+</button>
+
+</div>
+
+`;
+
+});
+
+if(productsBox.innerHTML===""){
+productsBox.innerHTML="<h3 style='text-align:center'>لا توجد منتجات</h3>";
+}
+
+}
+
+category.onchange = loadProducts;
+
+window.addCart = function(name,price){
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+cart.push({
+name:name,
+price:price
+});
+
+localStorage.setItem("cart",JSON.stringify(cart));
+
+alert("✅ تمت إضافة المنتج إلى السلة");
+
+}
+
+loadProducts();
+
+</script>
+
+</body>
+
+</html>
