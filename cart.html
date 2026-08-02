@@ -84,8 +84,7 @@ background:#dc3545;
 </button>
 
 <script>
- 
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 let box = document.getElementById("cart");
 
@@ -113,7 +112,7 @@ document.getElementById("total").innerHTML = total;
 
 
 // إتمام الطلب
-function checkout(){
+async function checkout(){
 
 if(cart.length === 0){
 alert("السلة فارغة");
@@ -121,14 +120,28 @@ return;
 }
 
 if(total < 50){
-alert("لازم تكون المنتجات اكثر من 50 ريال");
+alert(" لازم تكون المنتجات اكثر من 50ريال");
 return;
 }
 
 if(!confirm("هل تريد إتمام الطلب وإرسال الطلب إلى واتساب؟")){
 return;
 }
+let orderData = {
 
+name: "عميل سوق مباشر",
+
+phone: "",
+
+address: "",
+
+products: cart.map(item => item.name).join(" - "),
+
+total: total
+
+};
+
+await saveOrder(orderData);
 let message = "السلام عليكم، أريد طلب المنتجات:\n\n";
 
 cart.forEach(item => {
@@ -173,9 +186,10 @@ location.reload();
 
 }
 
-</script>
+<script type="module">
+import { saveOrder } from "./orders.js";
 
 </body>
 
-</html>
+</html
 
