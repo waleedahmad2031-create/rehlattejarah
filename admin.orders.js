@@ -10,7 +10,7 @@ onSnapshot
 const ordersBox = document.getElementById("orders");
 
 const q = query(
-collection(db,"orders"),
+collection(db,"طلبات"),
 orderBy("createdAt","desc")
 );
 
