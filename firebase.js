@@ -1,45 +1,27 @@
 // firebase.js
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
 
-import { 
-getFirestore 
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
-
-
-import {
-getAuth
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
-
-
-// إعدادات Firebase
 const firebaseConfig = {
 
-apiKey: "ضع_apiKey_هنا",
+  apiKey: "هنا_apiKey_الحقيقي",
 
-authDomain: "ضع_authDomain_هنا",
+  authDomain: "هنا_authDomain_الحقيقي",
 
-projectId: "ضع_projectId_هنا",
+  projectId: "هنا_projectId_الحقيقي",
 
-storageBucket: "ضع_storageBucket_هنا",
+  storageBucket: "هنا_storageBucket_الحقيقي",
 
-messagingSenderId: "ضع_messagingSenderId_هنا",
+  messagingSenderId: "هنا_messagingSenderId_الحقيقي",
 
-appId: "ضع_appId_هنا"
+  appId: "هنا_appId_الحقيقي"
 
 };
 
-
-// تشغيل Firebase
-
 const app = initializeApp(firebaseConfig);
 
-
-// قاعدة البيانات
-
 export const db = getFirestore(app);
-
-
-// تسجيل الدخول
 
 export const auth = getAuth(app);
