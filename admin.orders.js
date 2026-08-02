@@ -1,43 +1,71 @@
+// admin-orders.js
+
 import { db } from "./firebase.js";
 
 import {
-collection,
-onSnapshot
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+  doc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
 const ordersBox = document.getElementById("orders");
 
-function loadOrders(name){
+const ordersRef = collection(db, "orders");
 
-onSnapshot(collection(db, name), (snapshot)=>{
+const q = query(ordersRef, orderBy("createdAt", "desc"));
 
-if(!snapshot.empty){
+onSnapshot(q, (snapshot) => {
 
-ordersBox.innerHTML = "";
+  ordersBox.innerHTML = "";
 
-snapshot.forEach(doc=>{
+  if (snapshot.empty) {
+    ordersBox.innerHTML = "<p>لا توجد طلبات حالياً.</p>";
+    return;
+  }
 
-const o = doc.data();
+  snapshot.forEach((item) => {
 
-ordersBox.innerHTML += `
-<div class="product">
-<h3>🛒 طلب جديد</h3>
-<p><b>الاسم:</b> ${o.name || "-"}</p>
-<p><b>الهاتف:</b> ${o.phone || "-"}</p>
-<p><b>العنوان:</b> ${o.address || "-"}</p>
-<p><b>الطلبات:</b> ${o.products || "-"}</p>
-<p><b>الإجمالي:</b> ${o.total || 0} ريال</p>
-<p><b>الحالة:</b> ${o.status || "جديد"}</p>
-</div>
-`;
+    const o = item.data();
+
+    ordersBox.innerHTML += `
+
+    <div class="product">
+
+      <h3>🛒 طلب جديد</h3>
+
+      <p><b>الاسم:</b> ${o.name || "-"}</p>
+
+      <p><b>الجوال:</b> ${o.phone || "-"}</p>
+
+      <p><b>العنوان:</b> ${o.address || "-"}</p>
+
+      <p><b>الطلبات:</b> ${o.products || "-"}</p>
+
+      <p><b>الإجمالي:</b> ${o.total || 0} ريال</p>
+
+      <p><b>الحالة:</b> ${o.status || "جديد"}</p>
+
+      <button onclick="changeStatus('${item.id}')">
+      ✅ تم التوصيل
+      </button>
+
+    </div>
+
+    `;
+
+  });
 
 });
 
-}
+window.changeStatus = async function(id){
 
-});
+  await updateDoc(doc(db,"orders",id),{
 
-}
+    status:"تم التوصيل"
 
-loadOrders("orders");
-loadOrders("طلبات");
+  });
+
+};
