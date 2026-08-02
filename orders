@@ -1,0 +1,38 @@
+import { saveOrder } from "./orders.js";
+async function sendOrder(){
+
+let order = {
+
+name: document.getElementById("name").value,
+
+phone: document.getElementById("phone").value,
+
+address: document.getElementById("address").value,
+
+products: cart.map(item => item.name).join(" - "),
+
+total: totalPrice
+
+};
+
+
+// حفظ الطلب في Firebase
+await saveOrder(order);
+
+
+// إرسال واتساب
+let message =
+"طلب جديد من سوق مباشر%0A%0A" +
+"الاسم: " + order.name + "%0A" +
+"الهاتف: " + order.phone + "%0A" +
+"العنوان: " + order.address + "%0A" +
+"الطلبات: " + order.products + "%0A" +
+"المجموع: " + order.total + " ريال";
+
+
+window.open(
+"https://wa.me/966550496391?text=" + message,
+"_blank"
+);
+
+}
