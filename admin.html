@@ -229,7 +229,7 @@ const data={
 
 name:$("name").value,
 price:Number($("price").value),
-oldPrice:Number($("oldPrice").value)||0,
+oldPrice:Number($("oldPrice").value),
 offer:$("offer").checked,
 city:$("city").value,
 category:$("category").value,
@@ -253,7 +253,10 @@ await addDoc(productsRef,data);
 }
 
 $("name").value="";
-$("price").value="";
+$("price").value=""; 
+
+$("oldPrice").value = x.oldPrice || "";
+$("offer").checked = x.offer || false;
 $("oldPrice").value="";
 $("offer").checked=false;
 $("city").value="";
