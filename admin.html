@@ -93,6 +93,7 @@ display:none;
 
 <input id="name" placeholder="اسم المنتج">
 
+<input id="price" type="number" placeholder="السعر"
 <input id="oldPrice" type="number" placeholder="السعر القديم (للعروض فقط)">
 
 <label>
@@ -231,9 +232,7 @@ price:Number($("price").value),
 city:$("city").value,
 category:$("category").value,
 image:$("image").value,
-    qty:Number($("qty").value),
-oldPrice:Number($("oldPrice").value),
-offer:$("offer").checked
+qty:Number($("qty").value)
 
 };
 
@@ -312,8 +311,7 @@ $("price").value=x.price;
 $("city").value=x.city;
 $("category").value=x.category;
 $("image").value=x.image;
-$("oldPrice").value=x.oldPrice || "";
-$("offer").checked=x.offer || false;
+$("qty").value=x.qty;
 
 editId=id;
 
