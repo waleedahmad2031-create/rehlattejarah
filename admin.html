@@ -103,8 +103,7 @@ display:none;
 </label>
 
 <input id="city" placeholder="المدينة">
-
-<select id="category">
+    <select id="category">
 
 <option value="الكتب - المنتجات المكتبية - الألعاب - الأم والطفل">
 📚 الكتب - المنتجات المكتبية - الألعاب - الأم والطفل
@@ -162,7 +161,7 @@ display:none;
 
 </div>
 
-    <script type="module">
+<script type="module">
 
 import { auth, db } from "./firebase.js";
 
@@ -186,7 +185,7 @@ const productsRef = collection(db,"products");
 const $ = id => document.getElementById(id);
 
 let editId = null;
-
+    
 $("loginBtn").onclick = async()=>{
 
 try{
@@ -253,11 +252,19 @@ await addDoc(productsRef,data);
 
 }
 
+$("name").value="";
+$("price").value="";
+$("oldPrice").value="";
+$("offer").checked=false;
+$("city").value="";
+$("image").value="";
+$("qty").value="";
+
 loadProducts();
 
 };
 
-        async function loadProducts(){
+    async function loadProducts(){
 
 products.innerHTML="";
 
@@ -275,7 +282,15 @@ ${x.image ? `<img src="${x.image}" loading="lazy">` : ""}
 
 <b>${x.name}</b><br>
 
-السعر: ${x.price}<br>
+السعر: ${x.price} ريال<br>
+
+${x.offer ? `
+<span style="color:red;font-weight:bold;">
+🔥 عرض اليوم
+</span><br>
+السعر القديم:
+<s>${x.oldPrice} ريال</s><br>
+` : ""}
 
 المدينة: ${x.city}<br>
 
@@ -301,7 +316,7 @@ ${x.image ? `<img src="${x.image}" loading="lazy">` : ""}
 
 window.editProduct = async(id)=>{
 
-const s = await getDocs(productsRef);
+const s=await getDocs(productsRef);
 
 s.forEach(d=>{
 
@@ -341,5 +356,5 @@ loadProducts();
 </script>
 
 </body>
-</html>
 
+</html>
