@@ -10,31 +10,30 @@ import {
 
 
 // حفظ الطلب في قاعدة البيانات
-export async function saveOrder(orderData) {
+export async function saveOrder(order){
 
-  try {
+try{
 
-    await addDoc(collection(db, "طلبات"), {
+await addDoc(
+collection(db,"طلبات"),
+{
+name: order.name,
+phone: order.phone,
+address: order.address,
+products: order.products,
+total: order.total,
+status:"جديد",
+createdAt: serverTimestamp()
+}
+);
 
-      name: orderData.name,
-      phone: orderData.phone,
-      address: orderData.address,
-      products: orderData.products,
-      total: orderData.total,
+alert("✅ تم حفظ الطلب");
 
-      status: "جديد",
+}catch(error){
 
-      createdAt: serverTimestamp()
+alert("خطأ: " + error.message);
+console.log(error);
 
-    });
-
-
-    console.log("تم حفظ الطلب بنجاح");
-
-  } catch (error) {
-
-    console.log("خطأ في حفظ الطلب:", error);
-
-  }
+}
 
 }
