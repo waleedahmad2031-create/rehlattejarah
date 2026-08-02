@@ -311,6 +311,8 @@ const x=d.data();
 
 $("name").value=x.name;
 $("price").value=x.price;
+$("oldPrice").value=x.oldPrice || "";
+$("offer").checked=x.offer || false;
 $("city").value=x.city;
 $("category").value=x.category;
 $("image").value=x.image;
