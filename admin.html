@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>لوحة إدارة سوق مباشر</title>
 
 <style>
+
 body{
 font-family:Tahoma,Arial,sans-serif;
 background:#f5f5f5;
@@ -37,6 +41,11 @@ color:#fff;
 border:none;
 border-radius:8px;
 cursor:pointer;
+font-size:16px;
+}
+
+button:hover{
+background:#157347;
 }
 
 .product{
@@ -57,6 +66,7 @@ margin-bottom:10px;
 #adminBox{
 display:none;
 }
+
 </style>
 
 </head>
@@ -86,20 +96,32 @@ display:none;
 <input id="price" type="number" placeholder="السعر">
 
 <input id="city" placeholder="المدينة">
+    
+    <select id="category">
 
-<select id="category">
+<option value="الكتب - المنتجات المكتبية - الألعاب - الأم والطفل">
+📚 الكتب - المنتجات المكتبية - الألعاب - الأم والطفل
+</option>
 
-<option value="الكتب - المنتجات المكتبية - الألعاب - الأم والطفل">📚 الكتب - المنتجات المكتبية - الألعاب - الأم والطفل</option>
+<option value="أدوات الحدائق - تحسين المنزل - السيارات">
+🏡 أدوات الحدائق - تحسين المنزل - السيارات
+</option>
 
-<option value="أدوات الحدائق - تحسين المنزل - السيارات">🏡 أدوات الحدائق - تحسين المنزل - السيارات</option>
+<option value="الإلكترونيات">
+💻 الإلكترونيات
+</option>
 
-<option value="الإلكترونيات">💻 الإلكترونيات</option>
+<option value="الأحذية - الحقائب">
+👟 الأحذية - الحقائب
+</option>
 
-<option value="الأحذية - الحقائب">👟 الأحذية - الحقائب</option>
+<option value="الإكسسوارات - الساعات - النظارات">
+⌚ الإكسسوارات - الساعات - النظارات
+</option>
 
-<option value="الإكسسوارات - الساعات - النظارات">⌚ الإكسسوارات - الساعات - النظارات</option>
-
-    <option value="المنسوجات">🧵 المنسوجات</option>
+<option value="المنسوجات">
+🧵 المنسوجات
+</option>
 
 <option value="مستحضرات التجميل - الجمال - العناية الشخصية">
 💄 مستحضرات التجميل - الجمال - العناية الشخصية
@@ -109,8 +131,8 @@ display:none;
 🛋️ الأثاث
 </option>
 
-<option value="السوبرماركت - مستلزمات الحيوانات الأليفة - الصحة">
-🛒 السوبرماركت -   الخضروات - 
+<option value="السوبرماركت - الخضروات">
+🛒 السوبرماركت - الخضروات
 </option>
 
 <option value="المنسوجات المنزلية - الزينة - المطبخ">
@@ -133,9 +155,9 @@ display:none;
 
 </div>
 
-<script type="module">
-    
-    import {auth,db} from "./firebase.js";
+    <script type="module">
+
+import { auth, db } from "./firebase.js";
 
 import {
 signInWithEmailAndPassword,
@@ -148,54 +170,85 @@ collection,
 addDoc,
 getDocs,
 deleteDoc,
+updateDoc,
 doc
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
-const productsRef=collection(db,"products");
+const productsRef = collection(db,"products");
 
-const $=id=>document.getElementById(id);
+const $ = id => document.getElementById(id);
 
-$("loginBtn").onclick=async()=>{
+let editId = null;
+
+$("loginBtn").onclick = async()=>{
+
 try{
+
 await signInWithEmailAndPassword(
 auth,
 $("email").value,
 $("password").value
 );
+
 }catch(e){
+
 alert(e.message);
+
 }
+
 };
 
-$("logoutBtn").onclick=()=>signOut(auth);
+$("logoutBtn").onclick = ()=>signOut(auth);
 
 onAuthStateChanged(auth,u=>{
+
 if(u){
+
 loginBox.style.display="none";
 adminBox.style.display="block";
 loadProducts();
+
 }else{
+
 loginBox.style.display="block";
 adminBox.style.display="none";
+
 }
+
 });
 
-$("saveBtn").onclick=async()=>{
+$("saveBtn").onclick = async()=>{
 
-await addDoc(productsRef,{
+const data={
+
 name:$("name").value,
 price:Number($("price").value),
 city:$("city").value,
 category:$("category").value,
 image:$("image").value,
 qty:Number($("qty").value)
-});
+
+};
+
+if(editId){
+
+await updateDoc(doc(db,"products",editId),data);
+
+editId=null;
+
+$("saveBtn").textContent="حفظ المنتج";
+
+}else{
+
+await addDoc(productsRef,data);
+
+}
 
 loadProducts();
 
 };
 
-async function loadProducts(){
+        async function loadProducts(){
 
 products.innerHTML="";
 
@@ -209,7 +262,7 @@ products.innerHTML+=`
 
 <div class="product">
 
-${x.image?`<img src="${x.image}" loading="lazy" decoding="async">`:""}
+${x.image ? `<img src="${x.image}" loading="lazy">` : ""}
 
 <b>${x.name}</b><br>
 
@@ -219,10 +272,14 @@ ${x.image?`<img src="${x.image}" loading="lazy" decoding="async">`:""}
 
 القسم: ${x.category}<br>
 
-الكمية: ${x.qty}<br>
+الكمية: ${x.qty}<br><br>
+
+<button onclick="editProduct('${d.id}')">
+✏️ تعديل
+</button>
 
 <button onclick="deleteProduct('${d.id}')">
-حذف
+🗑️ حذف
 </button>
 
 </div>
@@ -233,7 +290,36 @@ ${x.image?`<img src="${x.image}" loading="lazy" decoding="async">`:""}
 
 }
 
-window.deleteProduct=async(id)=>{
+window.editProduct = async(id)=>{
+
+const s = await getDocs(productsRef);
+
+s.forEach(d=>{
+
+if(d.id===id){
+
+const x=d.data();
+
+$("name").value=x.name;
+$("price").value=x.price;
+$("city").value=x.city;
+$("category").value=x.category;
+$("image").value=x.image;
+$("qty").value=x.qty;
+
+editId=id;
+
+$("saveBtn").textContent="💾 حفظ التعديلات";
+
+}
+
+});
+
+};
+
+window.deleteProduct = async(id)=>{
+
+if(!confirm("هل تريد حذف المنتج؟")) return;
 
 await deleteDoc(doc(db,"products",id));
 
@@ -241,8 +327,8 @@ loadProducts();
 
 };
 
-    </script>
+</script>
 
 </body>
 </html>
-    
+
