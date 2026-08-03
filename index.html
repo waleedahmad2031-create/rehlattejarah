@@ -160,6 +160,29 @@ status:"جديد",
 createdAt:serverTimestamp()
 });
 
+
+let message = `
+🚗 طلب مشوار جديد
+
+👤 الاسم: ${name}
+
+📞 الجوال: ${phone}
+
+📍 من: ${from}
+
+🎯 إلى: ${to}
+
+🚗 الخدمة: ${service}
+`;
+
+
+let whatsapp = "966550496391";
+
+window.open(
+"https://wa.me/" + whatsapp + "?text=" + encodeURIComponent(message),
+"_blank"
+);
+
 alert("✅ تم إرسال الطلب بنجاح");
 
 document.getElementById("name").value="";
