@@ -1,4 +1,4 @@
-orders.js
+// orders.js
 
 import { db } from "./firebase.js";
 
@@ -8,11 +8,10 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
-// حفظ الطلب
 export async function saveOrder(order) {
 
   try {
-    const orderNumber = "SM-" + Math.floor(100000 + Math.random() * 900000);
+
     await addDoc(collection(db, "orders"), {
 
       products: order.products,
@@ -29,8 +28,12 @@ export async function saveOrder(order) {
 
   } catch (error) {
 
-    console.error("خطأ حفظ الطلب:", error);
+    console.error(error);
 
-    alert("حدث خطأ أثناء حفظ الطلب");
+    alert(error.message);
 
-    return false
+    return false;
+
+  }
+
+}
