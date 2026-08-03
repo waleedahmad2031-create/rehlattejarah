@@ -113,135 +113,58 @@ font-size:16px;
 
 import { db } from "./firebase.js";
 
-
 import {
 collection,
-getDocs
+addDoc,
+serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
+document.getElementById("sendOrder").onclick = async () => {
 
-const productsBox = document.getElementById("products");
+const name = document.getElementById("name").value;
+const phone = document.getElementById("phone").value;
+const from = document.getElementById("from").value;
+const to = document.getElementById("to").value;
+const service = document.getElementById("service").value;
+const notes = document.getElementById("notes").value;
 
-
-
-async function loadProducts(){
+if(!name || !phone || !from || !to){
+alert("يرجى تعبئة جميع الحقول المطلوبة");
+return;
+}
 
 try{
 
+await addDoc(collection(db,"orders"),{
 
-const snap = await getDocs(collection(db,"products"));
-
-
-productsBox.innerHTML = "";
-
-
-snap.forEach((doc)=>{
-
-
-const p = doc.data();
-
-
-
-productsBox.innerHTML += `
-
-<div class="card">
-
-${p.image ? 
-`<img src="${p.image}" loading="lazy">`
-:
-""}
-
-
-<h3>${p.name || ""}</h3>
-
-
-<p>
-💰 السعر:
-${p.price || 0}
-ريال
-</p>
-
-
-<p>
-📍 ${p.city || ""}
-</p>
-
-
-<p>
-📦 الكمية:
-${p.qty || 0}
-</p>
-
-
-<button onclick="addCart('${p.name}','${p.price}')">
-
-🛒 أضف للسلة
-
-</button>
-
-
-</div>
-
-
-`;
-
+name,
+phone,
+from,
+to,
+service,
+notes,
+status:"جديد",
+createdAt:serverTimestamp()
 
 });
 
+alert("✅ تم إرسال الطلب بنجاح");
 
-if(productsBox.innerHTML===""){
+document.getElementById("name").value="";
+document.getElementById("phone").value="";
+document.getElementById("from").value="";
+document.getElementById("to").value="";
+document.getElementById("notes").value="";
 
-productsBox.innerHTML="لا توجد منتجات حاليا";
+}catch(err){
 
-}
-
-
-}catch(error){
-
-productsBox.innerHTML=error.message;
-
-}
-
+alert(err.message);
 
 }
-
-
-
-window.addCart=function(name,price){
-
-
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-
-cart.push({
-
-name:name,
-
-price:Number(price)
-
-});
-
-
-localStorage.setItem(
-
-"cart",
-
-JSON.stringify(cart)
-
-);
-
-
-alert("✅ تمت إضافة المنتج إلى السلة");
-
 
 };
 
-
-
-loadProducts();
-
-
-</script>
+  </script>
 
 
 </body>
