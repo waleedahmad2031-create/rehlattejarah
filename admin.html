@@ -557,9 +557,7 @@ box.innerHTML += `
 
 <div>📈 الربح: ${a.profit} ريال</div>
 
-<button onclick="deleteAccount('${item.id}')">
-🗑️ حذف الحساب
-</button>
+
 
 </div>
 
@@ -571,7 +569,25 @@ box.innerHTML += `
 
 loadAccounts();
 </script>
+window.deleteAccount = async(id)=>{
 
+try{
+
+await deleteDoc(doc(db,"accounts",id));
+
+alert("✅ تم حذف الحساب");
+
+loadAccounts();
+<button onclick="deleteAccount('${item.id}')">
+🗑️ حذف الحساب
+</button>
+}catch(error){
+
+alert(error.message);
+
+}
+
+};
 <script type="module" src="admin-orders.js"></script>
 
 </body>
