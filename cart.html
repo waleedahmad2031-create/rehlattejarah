@@ -86,11 +86,11 @@ border:1px solid #ccc;
 </div>
 
 
-<input id="name" placeholder="الاسم">
 
-<input id="phone" placeholder="رقم الجوال">
 
-<input id="address" placeholder="العنوان">
+
+
+
 
 
 <button class="checkout" onclick="checkout()">
@@ -105,7 +105,7 @@ border:1px solid #ccc;
 ❌ إلغاء السلة
 
 </button>
-  <script type="module">
+<script type="module">
 
 import { saveOrder } from "./orders.js";
 
@@ -177,27 +177,6 @@ return;
 
 }
 
-
-
-let name = document.getElementById("name").value;
-
-let phone = document.getElementById("phone").value;
-
-let address = document.getElementById("address").value;
-
-
-
-
-if(name=="" || phone=="" || address==""){
-
-alert("أكمل بيانات العميل");
-
-return;
-
-}
-
-
-
 let order = {
 
 
@@ -261,12 +240,9 @@ cart=[];
 localStorage.removeItem("cart");
 
 
-  
 
 };
-
-
-    window.cancelOrder = function(){
+window.cancelOrder = function(){
 
 
 if(confirm("حذف السلة؟")){
