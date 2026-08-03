@@ -253,7 +253,24 @@ display:none;
 <div id="orders">
 جاري تحميل الطلبات...
 </div>
+<hr>
 
+<h2>📒 حسابات سوق مباشر</h2>
+
+<input id="accountProduct" placeholder="اسم المنتج">
+
+<input id="accountShop" placeholder="اسم المحل">
+
+<input id="buyPrice" type="number" placeholder="سعر المحل">
+
+<input id="sellPrice" type="number" placeholder="سعر البيع">
+
+<button id="saveAccount">
+💾 حفظ الحساب
+</button>
+
+<div id="accounts">
+</div>
 </div>
 
 </div>
@@ -279,7 +296,7 @@ doc
 const $ = id => document.getElementById(id);
 
 const productsRef = collection(db,"products");
-
+const accountsRef = collection(db,"accounts");
 let editId = null;
 
 // تسجيل الدخول
@@ -467,7 +484,41 @@ window.editProduct = async(id)=>{
 alert("ميزة التعديل سنكملها في الجزء الأخير.");
 
 };
+$("saveAccount").onclick = async()=>{
 
+let buy = Number($("buyPrice").value);
+
+let sell = Number($("sellPrice").value);
+
+let data = {
+
+product: $("accountProduct").value,
+
+shop: $("accountShop").value,
+
+buyPrice: buy,
+
+sellPrice: sell,
+
+profit: sell - buy,
+
+date: new Date()
+
+};
+
+
+await addDoc(accountsRef,data);
+
+
+alert("✅ تم حفظ الحساب");
+
+
+$("accountProduct").value="";
+$("accountShop").value="";
+$("buyPrice").value="";
+$("sellPrice").value="";
+
+};
 </script>
 
 <script type="module" src="admin-orders.js"></script>
