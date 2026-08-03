@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>إدارة وصلني</title>
@@ -12,154 +10,62 @@
 <style>
 
 body{
-
 font-family:Tahoma,Arial,sans-serif;
-
 background:#f5f5f5;
-
 margin:0;
-
 padding:20px;
-
 }
 
 .container{
-
 max-width:900px;
-
 margin:auto;
-
 background:#fff;
-
 padding:20px;
-
 border-radius:12px;
-
 box-shadow:0 0 10px rgba(0,0,0,.15);
-
 }
 
 h2{
-
 text-align:center;
-
 color:#198754;
-
 }
 
-input,
-
-select,
-
-button{
-
+input,button{
 width:100%;
-
 padding:12px;
-
 margin:8px 0;
-
 box-sizing:border-box;
-
 border-radius:8px;
-
 }
 
-input,
-
-select{
-
+input{
 border:1px solid #ccc;
-
 }
 
 button{
-
 background:#198754;
-
 color:white;
-
 border:none;
-
 cursor:pointer;
-
 font-size:16px;
-
 }
 
-button:hover{
-
-background:#157347;
-
-}
-
-.product{
-
+.order{
 border:1px solid #ddd;
-
+padding:12px;
 border-radius:10px;
-
-padding:10px;
-
-margin-top:12px;
-
-}
-
-.product img{
-
-width:100%;
-
-max-height:220px;
-
-object-fit:contain;
-
-margin-bottom:10px;
-
-}
-
-.offer{
-
-color:red;
-
-font-weight:bold;
-
-font-size:18px;
-
-}
-
-.old{
-
-text-decoration:line-through;
-
-color:#777;
-
-}
-
-.actions{
-
-display:flex;
-
-gap:10px;
-
 margin-top:10px;
-
-}
-
-.actions button{
-
-flex:1;
-
+background:#fafafa;
 }
 
 #adminBox{
-
 display:none;
-
 }
 
 </style>
 
 </head>
+
 <body>
 
 <div class="container">
@@ -182,107 +88,14 @@ display:none;
 
 <h2>🚗 إدارة طلبات وصلني</h2>
 
-<input id="name" placeholder="اسم المنتج">
-
-<input id="price" type="number" placeholder="السعر الحالي">
-
-<input id="oldPrice" type="number" placeholder="السعر قبل الخصم">
-
-<select id="discount">
-
-<option value="0">بدون خصم</option>
-
-<option value="10">🔥 خصم 10%</option>
-
-<option value="20">🔥 خصم 20%</option>
-
-<option value="30">🔥 خصم 30%</option>
-
-<option value="40">🔥 خصم 40%</option>
-
-<option value="50">🔥 خصم 50%</option>
-
-</select>
-
-<input id="city" placeholder="المدينة">
-
-<select id="category">
-
-<option value="الكتب - المنتجات المكتبية - الألعاب - الأم والطفل">📚 الكتب - المنتجات المكتبية - الألعاب - الأم والطفل</option>
-
-<option value="أدوات الحدائق - تحسين المنزل - السيارات">🏡 أدوات الحدائق - تحسين المنزل - السيارات</option>
-
-<option value="الإلكترونيات">💻 الإلكترونيات</option>
-
-<option value="الأحذية - الحقائب">👟 الأحذية - الحقائب</option>
-
-<option value="الإكسسوارات - الساعات - النظارات">⌚ الإكسسوارات - الساعات - النظارات</option>
-
-<option value="المنسوجات">🧵 المنسوجات</option>
-
-<option value="مستحضرات التجميل - الجمال - العناية الشخصية">💄 مستحضرات التجميل - الجمال - العناية الشخصية</option>
-
-<option value="الأثاث">🛋️ الأثاث</option>
-
-<option value="السوبرماركت - الخضروات">🛒 السوبرماركت - الخضروات</option>
-
-<option value="المنسوجات المنزلية - الزينة - المطبخ">🏠 المنسوجات المنزلية - الزينة - المطبخ</option>
-
-</select>
-
-<input id="image" placeholder="رابط الصورة">
-
-<input id="qty" type="number" placeholder="الكمية">
-
-<button id="saveBtn">
-💾 حفظ المنتج
-</button>
-
 <button id="logoutBtn">
 🚪 تسجيل الخروج
 </button>
 
-<h2>📦 المنتجات</h2>
-<a href="#accounts" style="
-display:block;
-background:#198754;
-color:white;
-padding:12px;
-text-align:center;
-border-radius:8px;
-text-decoration:none;
-margin:10px 0;
-font-weight:bold;
-">
-📒 الذهاب إلى الحسابات
-</a>
-<div id="products"></div>
-
-<hr>
-
-<h2>📋 طلبات العملاء</h2>
-
 <div id="orders">
 جاري تحميل الطلبات...
 </div>
-<hr>
 
-<h2>📒 حسابات سوق مباشر</h2>
-
-<input id="accountProduct" placeholder="اسم المنتج">
-
-<input id="accountShop" placeholder="اسم المحل">
-
-<input id="buyPrice" type="number" placeholder="سعر المحل">
-
-<input id="sellPrice" type="number" placeholder="سعر البيع">
-
-<button id="saveAccount">
-💾 حفظ الحساب
-</button>
-
-<div id="accounts">
-</div>
 </div>
 
 </div>
@@ -298,301 +111,97 @@ onAuthStateChanged
 
 import {
 collection,
-addDoc,
-getDocs,
-deleteDoc,
-updateDoc,
-doc
+getDocs
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
-const $ = id => document.getElementById(id);
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const loginBox = document.getElementById("loginBox");
+const adminBox = document.getElementById("adminBox");
+const ordersBox = document.getElementById("orders");
 
-const productsRef = collection(db,"products");
-const accountsRef = collection(db,"accounts");
-let editId = null;
-
-// تسجيل الدخول
-
-$("loginBtn").onclick = async()=>{
+loginBtn.onclick = async()=>{
 
 try{
 
 await signInWithEmailAndPassword(
-
 auth,
-
-$("email").value,
-
-$("password").value
-
+email.value,
+password.value
 );
 
-}catch(error){
+}catch(err){
 
-alert(error.message);
+alert(err.message);
 
 }
 
 };
 
-// تسجيل الخروج
-
-$("logoutBtn").onclick = ()=>{
+logoutBtn.onclick=()=>{
 
 signOut(auth);
 
 };
 
-// التحقق من المستخدم
-
 onAuthStateChanged(auth,(user)=>{
 
 if(user){
 
-$("loginBox").style.display="none";
+loginBox.style.display="none";
+adminBox.style.display="block";
 
-$("adminBox").style.display="block";
+loadOrders();
 
-loadProducts();
-import("./admin-orders.js");
 }else{
 
-$("loginBox").style.display="block";
-
-$("adminBox").style.display="none";
+loginBox.style.display="block";
+adminBox.style.display="none";
 
 }
 
 });
-// حفظ أو تعديل المنتج
 
-$("saveBtn").onclick = async()=>{
+async function loadOrders(){
 
-const oldPrice = Number($("oldPrice").value) || 0;
-const discount = Number($("discount").value);
+ordersBox.innerHTML="";
 
-let finalPrice = Number($("price").value);
+const snap = await getDocs(collection(db,"orders"));
 
-if(discount > 0 && oldPrice > 0){
+snap.forEach(doc=>{
 
-finalPrice = Math.round(oldPrice - (oldPrice * discount / 100));
+const o = doc.data();
 
-}
+ordersBox.innerHTML += `
+<div class="order">
 
-const data = {
+<h3>🚗 ${o.service}</h3>
 
-name: $("name").value,
+<p>👤 ${o.name}</p>
 
-price: finalPrice,
+<p>📞 ${o.phone}</p>
 
-oldPrice: oldPrice,
+<p>📍 من: ${o.from}</p>
 
-discount: discount,
+<p>🎯 إلى: ${o.to}</p>
 
-city: $("city").value,
+<p>📝 ${o.notes || "-"}</p>
 
-category: $("category").value,
-
-image: $("image").value,
-
-qty: Number($("qty").value)
-
-};
-
-if(editId){
-
-await updateDoc(doc(db,"products",editId),data);
-
-alert("✅ تم تعديل المنتج");
-
-editId = null;
-
-$("saveBtn").innerHTML="💾 حفظ المنتج";
-
-}else{
-
-await addDoc(productsRef,data);
-
-alert("✅ تم حفظ المنتج");
-
-}
-
-$("name").value="";
-$("price").value="";
-$("oldPrice").value="";
-$("city").value="";
-$("image").value="";
-$("qty").value="";
-$("discount").value="0";
-
-loadProducts();
-
-};
-async function loadProducts(){
-
-const box = $("products");
-
-box.innerHTML = "";
-
-const snap = await getDocs(productsRef);
-
-snap.forEach(item=>{
-
-const p = item.data();
-
-box.innerHTML += `
-
-<div class="product">
-
-${p.image ? `<img src="${p.image}">` : ""}
-
-<h3>${p.name}</h3>
-
-${p.discount > 0 ? `
-<div class="offer">🔥 خصم ${p.discount}%</div>
-<div class="old">${p.oldPrice} ريال</div>
-` : ""}
-
-<div><b>${p.price} ريال</b></div>
-
-<div>📂 ${p.category}</div>
-
-<div>📍 ${p.city}</div>
-
-<div>📦 الكمية: ${p.qty}</div>
-
-<div class="actions">
-
-<button onclick="editProduct('${item.id}')">
-✏️ تعديل
-</button>
-
-<button onclick="deleteProduct('${item.id}')">
-🗑️ حذف
-</button>
+<p>✅ الحالة: ${o.status}</p>
 
 </div>
-
-</div>
-
 `;
 
 });
 
+if(ordersBox.innerHTML==""){
+ordersBox.innerHTML="لا توجد طلبات.";
 }
 
-window.deleteProduct = async(id)=>{
-
-if(!confirm("هل تريد حذف المنتج؟")) return;
-
-await deleteDoc(doc(db,"products",id));
-
-loadProducts();
-
-};
-
-window.editProduct = async(id)=>{
-
-alert("ميزة التعديل سنكملها في الجزء الأخير.");
-
-};
-$("saveAccount").onclick = async()=>{
-
-try{
-
-let buy = Number($("buyPrice").value);
-let sell = Number($("sellPrice").value);
-
-await addDoc(accountsRef,{
-
-product: $("accountProduct").value,
-
-shop: $("accountShop").value,
-
-buyPrice: buy,
-
-sellPrice: sell,
-
-profit: sell - buy
-
-});
-
-alert("✅ تم حفظ الحساب");
-
-$("accountProduct").value="";
-$("accountShop").value="";
-$("buyPrice").value="";
-$("sellPrice").value="";
-
-}catch(error){
-
-alert("خطأ: " + error.message);
-
 }
-
-};
-  async function loadAccounts(){
-
-const box = $("accounts");
-
-box.innerHTML="";
-
-const snap = await getDocs(accountsRef);
-
-snap.forEach(item=>{
-
-const a = item.data();
-
-box.innerHTML += `
-
-<div class="product">
-
-<h3>📦 ${a.product}</h3>
-
-<div>🏪 ${a.shop}</div>
-
-<div>💰 سعر المحل: ${a.buyPrice} ريال</div>
-
-<div>💵 سعر البيع: ${a.sellPrice} ريال</div>
-
-<div>📈 الربح: ${a.profit} ريال</div>
-
-<button onclick="deleteAccount('${item.id}')">
-🗑️ حذف الحساب
-</button>
-
-</div>
-
-`;
-
-});
-
-}
-
-loadAccounts();
-window.deleteAccount = async(id)=>{
-
-try{
-
-await deleteDoc(doc(db,"accounts",id));
-
-alert("✅ تم حذف الحساب");
-
-loadAccounts();
-
-}catch(error){
-
-alert(error.message);
-
-}
-
-};  
-  
 
 </script>
-
-<script type="module" src="admin-orders.js"></script>
-
 </body>
-
 </html>
