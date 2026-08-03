@@ -15,10 +15,6 @@ export async function saveOrder(order) {
 
     await addDoc(collection(db, "orders"), {
 
-      name: order.name,
-      phone: order.phone,
-      address: order.address,
-
       products: order.products,
 
       total: Number(order.total),
