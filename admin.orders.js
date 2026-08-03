@@ -1,71 +1,87 @@
 // admin-orders.js
 
 import { db } from "./firebase.js";
-console.log("admin orders اشتغل");
+
 import {
-  collection,
-  query,
-  orderBy,
-  onSnapshot,
-  doc,
-  updateDoc
+collection,
+query,
+orderBy,
+onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
 
 const ordersBox = document.getElementById("orders");
 
-const ordersRef = collection(db, "orders");
 
-const q = query(ordersRef, orderBy("createdAt", "desc"));
+if(!ordersBox){
 
-onSnapshot(q, (snapshot) => {
+alert("لم يتم العثور على صندوق الطلبات");
 
-  ordersBox.innerHTML = "";
+}else{
 
-  if (snapshot.empty) {
-    ordersBox.innerHTML = "<p>لا توجد طلبات حالياً.</p>";
-    return;
-  }
 
-  snapshot.forEach((item) => {
+const ordersRef = collection(db,"orders");
 
-    const o = item.data();
 
-    ordersBox.innerHTML += `
+const q = query(
+ordersRef,
+orderBy("createdAt","desc")
+);
 
-    <div class="product">
 
-      <h3>🛒 طلب جديد</h3>
+onSnapshot(q,(snapshot)=>{
 
-      <p><b>الاسم:</b> ${o.name || "-"}</p>
 
-      <p><b>الجوال:</b> ${o.phone || "-"}</p>
+ordersBox.innerHTML="";
 
-      <p><b>العنوان:</b> ${o.address || "-"}</p>
 
-      <p><b>الطلبات:</b> ${o.products || "-"}</p>
+if(snapshot.empty){
 
-      <p><b>الإجمالي:</b> ${o.total || 0} ريال</p>
+ordersBox.innerHTML="<p>لا توجد طلبات</p>";
 
-      <p><b>الحالة:</b> ${o.status || "جديد"}</p>
+return;
 
-      <button onclick="changeStatus('${item.id}')">
-      ✅ تم التوصيل
-      </button>
+}
 
-    </div>
 
-    `;
+snapshot.forEach((d)=>{
 
-  });
+
+let o=d.data();
+
+
+ordersBox.innerHTML += `
+
+<div class="product">
+
+<h3>🛒 طلب جديد</h3>
+
+<p>الاسم: ${o.name || ""}</p>
+
+<p>الجوال: ${o.phone || ""}</p>
+
+<p>العنوان: ${o.address || ""}</p>
+
+<p>الطلبات: ${o.products || ""}</p>
+
+<p>المجموع: ${o.total || 0} ريال</p>
+
+</div>
+
+`;
 
 });
 
-window.changeStatus = async function(id){
 
-  await updateDoc(doc(db,"orders",id),{
+},(error)=>{
 
-    status:"تم التوصيل"
 
-  });
+ordersBox.innerHTML=
 
-};
+"خطأ: "+error.message;
+
+
+});
+
+
+}
