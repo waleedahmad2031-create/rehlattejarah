@@ -51,7 +51,7 @@ ordersBox.innerHTML += `
 
 <div class="product">
 
-<h3>🛒 طلب جديد</h3>
+
 
 <p>الاسم: ${o.name || ""}</p>
 
@@ -63,7 +63,7 @@ ordersBox.innerHTML += `
 
 <p>المجموع: ${o.total || 0} ريال</p>
 
-</div>
+</d<h3>🛒 ${o.orderNumber}</h3>iv>
 
 `;
 
