@@ -131,7 +131,49 @@ margin-top:10px;
 button:hover{
 background:#157347;
 }
+.whatsapp-float{
 
+position:fixed;
+
+bottom:20px;
+
+left:20px;
+
+width:60px;
+
+height:60px;
+
+background:#25D366;
+
+color:white;
+
+border-radius:50%;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:30px;
+
+text-decoration:none;
+
+box-shadow:0 4px 10px rgba(0,0,0,.3);
+
+z-index:9999;
+
+transition:.3s;
+
+}
+
+.whatsapp-float:hover{
+
+transform:scale(1.1);
+
+background:#1ebe5d;
+
+}
 </style>
 
 </head>
@@ -262,7 +304,13 @@ alert("✅ تمت إضافة المنتج إلى السلة");
 loadProducts();
 
 </script>
+<a href="https://wa.me/966550496391"
+class="whatsapp-float"
+target="_blank">
 
+💬
+
+</a>
 </body>
 </html>
 
