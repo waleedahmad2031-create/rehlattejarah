@@ -108,12 +108,15 @@ signInWithEmailAndPassword,
 signOut,
 onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
-import {
+  import {
 collection,
 getDocs,
 query,
-orderBy
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";  
+orderBy,
+doc,
+deleteDoc,
+updateDoc
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
 const email = document.getElementById("email");
 const password = document.getElementById("password");
@@ -193,10 +196,16 @@ ordersBox.innerHTML += `
 
 <p>🚗 الخدمة: ${o.service || "غير محددة"}</p>
 
-<p>📝 ملاحظات: ${o.notes || "لا يوجد"}</p>
+
 
 <p>✅ الحالة: ${o.status || "جديد"}</p>
+<button onclick="completeOrder('${doc.id}')">
+✅ تم التسليم
+</button>
 
+<button onclick="removeOrder('${doc.id}')">
+🗑️ حذف الطلب
+</button>
 </div>
 `;
 
@@ -207,7 +216,32 @@ ordersBox.innerHTML="لا توجد طلبات.";
 }
 
 }
+window.completeOrder = async(id)=>{
 
+await updateDoc(doc(db,"orders",id),{
+status:"تم التسليم"
+});
+
+alert("✅ تم تحديث حالة الطلب");
+
+loadOrders();
+
+};
+
+
+window.removeOrder = async(id)=>{
+
+if(confirm("هل تريد حذف الطلب؟")){
+
+await deleteDoc(doc(db,"orders",id));
+
+alert("🗑️ تم حذف الطلب");
+
+loadOrders();
+
+}
+
+};
 </script>
 </body>
 </html>
