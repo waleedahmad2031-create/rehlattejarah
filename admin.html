@@ -177,19 +177,19 @@ const o = doc.data();
 ordersBox.innerHTML += `
 <div class="order">
 
-<h3>🚗 ${o.service}</h3>
+<p>👤 الاسم: ${o.name || "غير موجود"}</p>
 
-<p>👤 ${o.name}</p>
+<p>📞 الجوال: ${o.phone || "غير موجود"}</p>
 
-<p>📞 ${o.phone}</p>
+<p>📍 من: ${o.from || "غير موجود"}</p>
 
-<p>📍 من: ${o.from}</p>
+<p>🎯 إلى: ${o.to || "غير موجود"}</p>
 
-<p>🎯 إلى: ${o.to}</p>
+<p>🚗 الخدمة: ${o.service || "غير محددة"}</p>
 
-<p>📝 ${o.notes || "-"}</p>
+<p>📝 ملاحظات: ${o.notes || "لا يوجد"}</p>
 
-<p>✅ الحالة: ${o.status}</p>
+<p>✅ الحالة: ${o.status || "جديد"}</p>
 
 </div>
 `;
