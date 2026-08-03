@@ -557,7 +557,9 @@ box.innerHTML += `
 
 <div>📈 الربح: ${a.profit} ريال</div>
 
-
+<button onclick="deleteAccount('${item.id}')">
+🗑️ حذف الحساب
+</button>
 
 </div>
 
@@ -582,9 +584,7 @@ alert("✅ تم حذف الحساب");
 
 loadAccounts();
   
-<button onclick="deleteAccount('${item.id}')">
-🗑️ حذف الحساب
-</button>
+
 }catch(error){
 
 alert(error.message);
