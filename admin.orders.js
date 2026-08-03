@@ -1,7 +1,7 @@
 // admin-orders.js
 
 import { db } from "./firebase.js";
-alert("admin-orders.js يعمل");
+console.log("admin orders اشتغل");
 import {
   collection,
   query,
