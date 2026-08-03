@@ -77,20 +77,37 @@ font-size:16px;
 </head>
 
 <body>
-
 <div class="notice">
-🎉 أهلاً بكم في <b>سوق مباشر</b><br>
-🚚 التوصيل إلى باب بيتك بـ 5 ريال فقط
+🚗 أهلاً بكم في <b>وصلني</b><br>
+⚡ احجز مشوار أو اطلب خدمة توصيل بكل سهولة
 </div>
 
-<h1>🛒 سوق مباشر</h1>
+<h1>🚗 وصلني</h1>
 
-<a class="cart" href="cart.html">
-🛍️ الذهاب إلى السلة
-</a>
+<div class="card">
+<h3>📋 اطلب الخدمة</h3>
 
-<div id="products">
-جاري تحميل المنتجات...
+<input id="name" type="text" placeholder="الاسم" style="width:95%;padding:10px;margin:5px;border-radius:8px;">
+
+<input id="phone" type="text" placeholder="رقم الجوال" style="width:95%;padding:10px;margin:5px;border-radius:8px;">
+
+<input id="from" type="text" placeholder="موقع الانطلاق" style="width:95%;padding:10px;margin:5px;border-radius:8px;">
+
+<input id="to" type="text" placeholder="الوجهة" style="width:95%;padding:10px;margin:5px;border-radius:8px;">
+
+<select id="service" style="width:95%;padding:10px;margin:5px;border-radius:8px;">
+<option>🚗 مشوار</option>
+<option>🛵 توصيل طلبات</option>
+<option>📦 توصيل طرود</option>
+<option>💊 توصيل أدوية</option>
+</select>
+
+<textarea id="notes" placeholder="ملاحظات" style="width:95%;padding:10px;margin:5px;border-radius:8px;"></textarea>
+
+<button id="sendOrder">
+📨 إرسال الطلب
+</button>
+
 </div>
 <script type="module">
 
