@@ -23,10 +23,7 @@ alert("لم يتم العثور على صندوق الطلبات");
 const ordersRef = collection(db,"orders");
 
 
-const q = query(
-ordersRef,
-orderBy("createdAt","desc")
-);
+const q = query(ordersRef);
 
 
 onSnapshot(q,(snapshot)=>{
