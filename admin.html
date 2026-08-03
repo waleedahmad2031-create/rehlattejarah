@@ -570,10 +570,6 @@ box.innerHTML += `
 }
 
 loadAccounts();
-  
-  
-
-</script>
 window.deleteAccount = async(id)=>{
 
 try{
@@ -583,7 +579,6 @@ await deleteDoc(doc(db,"accounts",id));
 alert("✅ تم حذف الحساب");
 
 loadAccounts();
-  
 
 }catch(error){
 
@@ -591,7 +586,11 @@ alert(error.message);
 
 }
 
-};
+};  
+  
+
+</script>
+
 <script type="module" src="admin-orders.js"></script>
 
 </body>
