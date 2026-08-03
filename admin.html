@@ -108,11 +108,12 @@ signInWithEmailAndPassword,
 signOut,
 onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
-
 import {
 collection,
-getDocs
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+getDocs,
+query,
+orderBy
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";  
 
 const email = document.getElementById("email");
 const password = document.getElementById("password");
@@ -168,7 +169,12 @@ async function loadOrders(){
 
 ordersBox.innerHTML="";
 
-const snap = await getDocs(collection(db,"orders"));
+const q = query(
+collection(db,"orders"),
+orderBy("createdAt","desc")
+);
+
+const snap = await getDocs(q);
 
 snap.forEach(doc=>{
 
