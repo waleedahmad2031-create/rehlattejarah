@@ -519,6 +519,41 @@ $("buyPrice").value="";
 $("sellPrice").value="";
 
 };
+  async function loadAccounts(){
+
+const box = $("accounts");
+
+box.innerHTML="";
+
+const snap = await getDocs(accountsRef);
+
+snap.forEach(item=>{
+
+const a = item.data();
+
+box.innerHTML += `
+
+<div class="product">
+
+<h3>📦 ${a.product}</h3>
+
+<div>🏪 ${a.shop}</div>
+
+<div>💰 سعر المحل: ${a.buyPrice} ريال</div>
+
+<div>💵 سعر البيع: ${a.sellPrice} ريال</div>
+
+<div>📈 الربح: ${a.profit} ريال</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+loadAccounts();
 </script>
 
 <script type="module" src="admin-orders.js"></script>
