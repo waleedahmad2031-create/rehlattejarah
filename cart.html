@@ -105,9 +105,13 @@ border:1px solid #ccc;
 ❌ إلغاء السلة
 
 </button>
-<script type="module">
+  <script type="module">
 
 import { saveOrder } from "./orders.js";
+
+import {
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -151,7 +155,6 @@ document.getElementById("total").innerHTML = total;
 
 
 
-
 window.checkout = async function(){
 
 
@@ -176,7 +179,6 @@ return;
 
 
 
-
 let name = document.getElementById("name").value;
 
 let phone = document.getElementById("phone").value;
@@ -196,7 +198,6 @@ return;
 
 
 
-
 let order = {
 
 
@@ -212,18 +213,17 @@ address:address,
 products:cart.map(x=>x.name).join(" - "),
 
 
-total:total
+total:total,
+
+
+createdAt: serverTimestamp()
 
 
 };
 
 
 
-
-
 await saveOrder(order);
-
-
 
 
 
@@ -243,8 +243,6 @@ let message =
 
 
 
-
-
 window.open(
 
 "https://wa.me/966550496391?text="+
@@ -257,21 +255,18 @@ encodeURIComponent(message),
 
 
 
-
-
 cart=[];
 
 
 localStorage.removeItem("cart");
 
 
+  
 
 };
 
 
-
-
-window.cancelOrder=function(){
+    window.cancelOrder = function(){
 
 
 if(confirm("حذف السلة؟")){
@@ -290,7 +285,6 @@ location.reload();
 
 
 };
-
 
 
 </script>
