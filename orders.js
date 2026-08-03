@@ -12,7 +12,7 @@ import {
 export async function saveOrder(order) {
 
   try {
-
+    const orderNumber = "SM-" + Math.floor(100000 + Math.random() * 900000);
     await addDoc(collection(db, "orders"), {
 
       products: order.products,
