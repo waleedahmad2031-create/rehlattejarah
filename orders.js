@@ -1,4 +1,4 @@
-// orders.js
+orders.js
 
 import { db } from "./firebase.js";
 
@@ -33,8 +33,4 @@ export async function saveOrder(order) {
 
     alert("حدث خطأ أثناء حفظ الطلب");
 
-    return false;
-
-  }
-
-}
+    return false
