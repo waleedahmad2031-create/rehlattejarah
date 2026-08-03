@@ -189,7 +189,21 @@ ordersBox.innerHTML += `
 <p>👤 الاسم: ${o.name || "غير موجود"}</p>
 
 <p>📞 الجوال: ${o.phone || "غير موجود"}</p>
-
+<a 
+href="https://wa.me/${o.phone}" 
+target="_blank"
+style="
+display:block;
+background:#25D366;
+color:white;
+padding:12px;
+border-radius:8px;
+text-decoration:none;
+margin-top:10px;
+font-weight:bold;
+">
+💬 واتساب العميل
+</a>
 <p>📍 من: ${o.from || "غير موجود"}</p>
 
 <p>🎯 إلى: ${o.to || "غير موجود"}</p>
