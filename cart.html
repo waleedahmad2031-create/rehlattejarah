@@ -179,24 +179,11 @@ return;
 
 let order = {
 
-
-name:name,
-
-
-phone:phone,
-
-
-address:address,
-
-
 products:cart.map(x=>x.name).join(" - "),
-
 
 total:total,
 
-
 createdAt: serverTimestamp()
-
 
 };
 
@@ -208,17 +195,17 @@ await saveOrder(order);
 
 let message =
 
-"طلب جديد من سوق مباشر\n\n"+
+"🛒 طلب جديد من سوق مباشر\n\n"+
 
-"الاسم: "+name+"\n"+
+"الطلبات:\n"+order.products+"\n\n"+
 
-"الجوال: "+phone+"\n"+
+"المجموع: "+total+" ريال\n\n"+
 
-"العنوان: "+address+"\n"+
+"الرجاء إرسال:\n"+
 
-"الطلبات: "+order.products+"\n"+
+"• الاسم\n"+
 
-"المجموع: "+total+" ريال";
+"• العنوان";
 
 
 
