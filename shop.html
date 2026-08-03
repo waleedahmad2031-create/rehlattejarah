@@ -220,7 +220,15 @@ background:#1ebe5d;
 <option value="المنسوجات المنزلية - الزينة - المطبخ">🏠 المنسوجات المنزلية - الزينة - المطبخ</option>
 
 </select>
+<div style="text-align:center;margin-bottom:20px;">
 
+<button onclick="sortProducts('new')">🆕 الأحدث</button>
+
+<button onclick="sortProducts('cheap')">💰 الأرخص</button>
+
+<button onclick="sortProducts('expensive')">💎 الأغلى</button>
+
+</div>
 <div id="products">
 جاري تحميل المنتجات...
 </div>
@@ -236,16 +244,20 @@ getDocs
 const productsBox = document.getElementById("products");
 const category = document.getElementById("category");
 
+let allProducts = [];
+
+
 async function loadProducts(){
 
 productsBox.innerHTML="";
 
 const snap = await getDocs(collection(db,"products"));
 
+allProducts = [];
 snap.forEach(doc=>{
 
 const p = doc.data();
-
+allProducts.push(p);
 if(category.value!=="" && p.category!==category.value){
 return;
 }
@@ -285,7 +297,67 @@ productsBox.innerHTML="<h3 style='text-align:center'>لا توجد منتجات<
 }
 
 category.onchange=loadProducts;
+category.onchange=loadProducts;
+    function showProducts(products){
 
+productsBox.innerHTML="";
+
+products.forEach(p=>{
+
+productsBox.innerHTML += `
+
+<div class="card">
+
+${p.image ? `<img src="${p.image}" alt="${p.name}">` : ""}
+
+${p.discount>0 ? `<div class="discount">🔥 خصم ${p.discount}%</div>` : ""}
+
+<h3>${p.name}</h3>
+
+${p.discount>0 ? `<div class="oldPrice">${p.oldPrice} ريال</div>` : ""}
+
+<div class="price">${p.price} ريال</div>
+
+<p>📍 ${p.city}</p>
+
+<p>📦 الكمية: ${p.qty}</p>
+
+<button onclick="addCart('${p.name}',${p.price})">
+🛒 أضف إلى السلة
+</button>
+
+</div>
+
+`;
+
+});
+
+if(productsBox.innerHTML===""){
+productsBox.innerHTML="<h3 style='text-align:center'>لا توجد منتجات</h3>";
+}
+
+}
+
+
+window.sortProducts=function(type){
+
+let sorted=[...allProducts];
+
+if(type==="cheap"){
+sorted.sort((a,b)=>Number(a.price)-Number(b.price));
+}
+
+if(type==="expensive"){
+sorted.sort((a,b)=>Number(b.price)-Number(a.price));
+}
+
+if(type==="new"){
+sorted.reverse();
+}
+
+showProducts(sorted);
+
+};
 window.addCart=function(name,price){
 
 let cart=JSON.parse(localStorage.getItem("cart"))||[];
