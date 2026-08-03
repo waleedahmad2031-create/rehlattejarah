@@ -568,6 +568,11 @@ box.innerHTML += `
 }
 
 loadAccounts();
+  
+  
+<button onclick="deleteAccount('${item.id}')">
+🗑️ حذف الحساب
+</button>
 </script>
 window.deleteAccount = async(id)=>{
 
@@ -578,9 +583,6 @@ await deleteDoc(doc(db,"accounts",id));
 alert("✅ تم حذف الحساب");
 
 loadAccounts();
-<button onclick="deleteAccount('${item.id}')">
-🗑️ حذف الحساب
-</button>
 }catch(error){
 
 alert(error.message);
