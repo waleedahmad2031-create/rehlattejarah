@@ -486,11 +486,12 @@ alert("ميزة التعديل سنكملها في الجزء الأخير.");
 };
 $("saveAccount").onclick = async()=>{
 
-let buy = Number($("buyPrice").value);
+try{
 
+let buy = Number($("buyPrice").value);
 let sell = Number($("sellPrice").value);
 
-let data = {
+await addDoc(accountsRef,{
 
 product: $("accountProduct").value,
 
@@ -500,23 +501,22 @@ buyPrice: buy,
 
 sellPrice: sell,
 
-profit: sell - buy,
+profit: sell - buy
 
-date: new Date()
-
-};
-
-
-await addDoc(accountsRef,data);
-
+});
 
 alert("✅ تم حفظ الحساب");
-
 
 $("accountProduct").value="";
 $("accountShop").value="";
 $("buyPrice").value="";
 $("sellPrice").value="";
+
+}catch(error){
+
+alert("خطأ: " + error.message);
+
+}
 
 };
   async function loadAccounts(){
