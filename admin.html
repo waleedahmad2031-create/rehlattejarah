@@ -273,6 +273,71 @@ loadOrders();
 }
 
 };
+  const accountsRef = collection(db,"accounts");
+
+document.getElementById("saveAccount").onclick = async()=>{
+
+const trip = Number(document.getElementById("tripAmount").value) || 0;
+
+const expenses = Number(document.getElementById("expenses").value) || 0;
+
+const profit = trip - expenses;
+
+await addDoc(accountsRef,{
+
+trip,
+
+expenses,
+
+profit,
+
+date:new Date().toLocaleDateString("ar-YE")
+
+});
+
+alert("✅ تم حفظ العملية");
+
+document.getElementById("tripAmount").value="";
+
+document.getElementById("expenses").value="";
+
+loadAccounts();
+
+};
+
+async function loadAccounts(){
+
+const box = document.getElementById("accounts");
+
+box.innerHTML="";
+
+const snap = await getDocs(accountsRef);
+
+snap.forEach(doc=>{
+
+const a = doc.data();
+
+box.innerHTML += `
+
+<div class="order">
+
+💰 قيمة المشوار: ${a.trip} ريال<br>
+
+💸 المصروفات: ${a.expenses} ريال<br>
+
+📈 الربح: ${a.profit} ريال<br>
+
+📅 ${a.date}
+
+</div>
+
+`;
+
+});
+
+}
+
+loadAccounts();
 </script>
 </body>
 </html>
