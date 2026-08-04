@@ -122,16 +122,15 @@ signInWithEmailAndPassword,
 signOut,
 onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
-  import {
+import {
 collection,
 getDocs,
 query,
 orderBy,
 doc,
-deleteDoc,
 updateDoc,
-addDoc
-  }
+deleteDoc
+}
 from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
 const email = document.getElementById("email");
