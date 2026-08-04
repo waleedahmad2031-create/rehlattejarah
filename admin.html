@@ -1,157 +1,233 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>لوحة إدارة | Yemen Ride | يمن رايد</title>
 
 <style>
 
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
 body{
 font-family:Tahoma,Arial,sans-serif;
 background:#f5f5f5;
-margin:0;
-padding:20px;
+padding:15px;
 }
 
 .container{
-max-width:900px;
+max-width:600px;
 margin:auto;
 background:#fff;
 padding:20px;
 border-radius:12px;
-box-shadow:0 0 10px rgba(0,0,0,.15);
+box-shadow:0 2px 10px rgba(0,0,0,.15);
 }
 
-h2{
+.notice{
+background:#d1e7dd;
+color:#0f5132;
+padding:12px;
+border-radius:10px;
+text-align:center;
+margin-bottom:20px;
+font-weight:bold;
+}
+
+h1{
 text-align:center;
 color:#198754;
+margin-bottom:20px;
 }
 
-input,button{
+input,
+select,
+button{
 width:100%;
 padding:12px;
 margin:8px 0;
-box-sizing:border-box;
 border-radius:8px;
-}
-
-input{
 border:1px solid #ccc;
+font-size:16px;
 }
 
 button{
 background:#198754;
-color:white;
+color:#fff;
 border:none;
 cursor:pointer;
-font-size:16px;
 }
 
-.order{
-border:1px solid #ddd;
-padding:12px;
-border-radius:10px;
-margin-top:10px;
-background:#fafafa;
+button:hover{
+background:#157347;
 }
 
-#adminBox{
-display:none;
+.locationBtn{
+background:#0d6efd;
 }
 
+.locationBtn:hover{
+background:#0b5ed7;
+}
+
+.whatsapp{
+position:fixed;
+bottom:20px;
+left:20px;
+width:60px;
+height:60px;
+background:#25D366;
+color:#fff;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+text-decoration:none;
+box-shadow:0 4px 10px rgba(0,0,0,.3);
+}
+.banner{
+background:linear-gradient(90deg,#198754,#20c997);
+color:#fff;
+padding:15px;
+border-radius:12px;
+margin:15px 0;
+text-align:center;
+font-size:18px;
+font-weight:bold;
+box-shadow:0 4px 10px rgba(0,0,0,.2);
+overflow:hidden;
+}
+
+#bannerText{
+display:block;
+}
 </style>
 
 </head>
-
-<body>
+  <body>
 
 <div class="container">
 
-<div id="loginBox">
 
-<h2>🔐 دخول الإدارة</h2>
 
-<input id="email" type="email" placeholder="البريد الإلكتروني">
 
-<input id="password" type="password" placeholder="كلمة المرور">
 
-<button id="loginBtn">
-دخول
-</button>
-
-</div>
-
-<div id="adminBox">
-
-<h1>🚗 Yemen Ride</h1>
-<h3 style="text-align:center;color:#198754;">
+<h2>🚗 لوحة إدارة Yemen Ride</h2>
+<p style="text-align:center;color:#198754;font-weight:bold;">
 يمن رايد
-</h3>
-<button id="logoutBtn">
-🚪 تسجيل الخروج
+</p>
+
+
+<input id="name" placeholder="الاسم">
+
+<input id="phone" placeholder="رقم الجوال">
+
+<input id="from" placeholder="من أين المشوار؟">
+
+<input id="to" placeholder="إلى أين المشوار؟">
+
+<select id="service">
+
+<option>🚗 مشوار</option>
+<option>🛵 توصيل طلبات</option>
+<option>📦 توصيل طرود</option>
+<option>💊 توصيل أدوية</option>
+
+</select>
+
+<button id="sendOrder">
+📨 إرسال الطلب
 </button>
-<hr>
+  
 
-<h2>📒 الحسابات اليومية</h2>
 
-<input id="tripAmount" type="number" placeholder="قيمة المشوار">
+  </div>
 
-<input id="expenses" type="number" placeholder="المصروفات">
-
-<button id="saveAccount">
-💾 حفظ العملية
-</button>
-
-<div id="accounts"></div>
-
-<hr>
-<div id="orders">
-جاري تحميل الطلبات...
-</div>
-
-</div>
-
-</div>
 <script type="module">
 
-import { auth, db } from "./firebase.js";
+import { db } from "./firebase.js";
 
-import {
-signInWithEmailAndPassword,
-signOut,
-onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
 import {
 collection,
-getDocs,
-query,
-orderBy,
-doc,
-updateDoc,
-deleteDoc
+addDoc,
+serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
+const sendBtn = document.getElementById("sendOrder");
+
+
+
+sendBtn.onclick = async()=>{
+
+const name = document.getElementById("name").value.trim();
+
+const phone = document.getElementById("phone").value.trim();
+
+const from = document.getElementById("from").value.trim();
+
+const to = document.getElementById("to").value.trim();
+
+const service = document.getElementById("service").value;
+
+if(!name || !phone || !from || !to){
+
+alert("يرجى تعبئة جميع الحقول");
+
+return;
+
 }
-from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
-
-const email = document.getElementById("email");
-const password = document.getElementById("password");
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const loginBox = document.getElementById("loginBox");
-const adminBox = document.getElementById("adminBox");
-const ordersBox = document.getElementById("orders");
-
-loginBtn.onclick = async()=>{
 
 try{
 
-await signInWithEmailAndPassword(
-auth,
-email.value,
-password.value
+await addDoc(collection(db,"orders"),{
+
+name,
+
+phone,
+
+from,
+
+to,
+
+service,
+
+status:"جديد",
+
+createdAt:serverTimestamp()
+  
+
+});
+  
+let whatsapp = "966550496391"; // غيّر هذا إلى رقم واتساب الإدارة في اليمن
+
+let message =
+`🚗 طلب جديد
+
+👤 الاسم: ${name}
+📞 الجوال: ${phone}
+🚗 من أين المشوار: ${from}
+📍 إلى أين المشوار: ${to}
+🛵 الخدمة: ${service}`;
+
+window.open(
+"https://wa.me/"+whatsapp+"?text="+encodeURIComponent(message),
+"_blank"
 );
+
+alert("✅ تم إرسال الطلب بنجاح");
+
+document.getElementById("name").value="";
+document.getElementById("phone").value="";
+document.getElementById("from").value="";
+document.getElementById("to").value="";
+document.getElementById("service").selectedIndex=0;
 
 }catch(err){
 
@@ -161,207 +237,36 @@ alert(err.message);
 
 };
 
-logoutBtn.onclick=()=>{
-
-signOut(auth);
-
-};
-
-onAuthStateChanged(auth,(user)=>{
-
-if(user){
-
-loginBox.style.display="none";
-adminBox.style.display="block";
-
-loadOrders();
-
-}else{
-
-loginBox.style.display="block";
-adminBox.style.display="none";
-
-}
-
-});
-
-async function loadOrders(){
-
-ordersBox.innerHTML="";
-
-const q = query(
-collection(db,"orders"),
-orderBy("createdAt","desc")
-);
-
-const snap = await getDocs(q);
-
-snap.forEach(doc=>{
-
-const o = doc.data();
-
-ordersBox.innerHTML += `
-<div class="order">
-
-<p>👤 الاسم: ${o.name || "غير موجود"}</p>
-
-<p>📞 الجوال: ${o.phone || "غير موجود"}</p>
-<a 
-href="https://wa.me/${o.phone.startsWith('0') ? '967'+o.phone.substring(1) : '967'+o.phone}" 
-target="_blank"
-style="
-display:block;
-background:#25D366;
-color:white;
-padding:12px;
-border-radius:8px;
-text-decoration:none;
-margin-top:10px;
-font-weight:bold;">
-💬 واتساب العميل
-</a>
-<p>🚗 من أين المشوار: ${o.from || "غير موجود"}</p>
-
-<p>📍 إلى أين المشوار: ${o.to || "غير موجود"}</p>
-
-
-
-<p>🚗 الخدمة: ${o.service || "غير محددة"}</p>
-
-
-
-<p>✅ الحالة: ${o.status || "جديد"}</p>
-
-<button onclick="completeOrder('${doc.id}')">
-✅ تم التسليم
-</button>
-
-<button onclick="removeOrder('${doc.id}')">
-🗑️ حذف الطلب
-</button>
-</div>
-`;
-
-});
-
-if(ordersBox.innerHTML==""){
-ordersBox.innerHTML="لا توجد طلبات.";
-}
-
-}
-window.completeOrder = async(id)=>{
-
-await updateDoc(doc(db,"orders",id),{
-status:"تم التسليم"
-});
-
-alert("✅ تم تحديث حالة الطلب");
-
-loadOrders();
-
-};
-
-
-window.removeOrder = async(id)=>{
-
-if(confirm("هل تريد حذف الطلب؟")){
-
-await deleteDoc(doc(db,"orders",id));
-
-alert("🗑️ تم حذف الطلب");
-
-loadOrders();
-
-}
-
-};
-  const accountsRef = collection(db,"accounts");
-
-document.getElementById("saveAccount").onclick = async()=>{
-
-const trip = Number(document.getElementById("tripAmount").value) || 0;
-
-const expenses = Number(document.getElementById("expenses").value) || 0;
-
-const profit = trip - expenses;
-
-await addDoc(accountsRef,{
-
-trip,
-
-expenses,
-
-profit,
-
-date:new Date().toLocaleDateString("ar-YE")
-
-});
-
-alert("✅ تم حفظ العملية");
-
-document.getElementById("tripAmount").value="";
-
-document.getElementById("expenses").value="";
-
-loadAccounts();
-
-};
-
-async function loadAccounts(){
-
-const box = document.getElementById("accounts");
-
-box.innerHTML="";
-
-const snap = await getDocs(accountsRef);
-
-snap.forEach(doc=>{
-
-const a = doc.data();
-
-box.innerHTML += `
-
-<div class="order">
-
-💰 قيمة المشوار: ${a.trip} ريال<br>
-
-💸 المصروفات: ${a.expenses} ريال<br>
-
-📈 الربح: ${a.profit} ريال<br>
-
-📅 ${a.date}
-<br><br>
-
-<button onclick="deleteAccount('${doc.id}')">
-🗑️ حذف الحساب
-</button>
-</div>
-
-`;
-
-});
-
-}
-
-loadAccounts();
-  window.deleteOrder = async(id)=>{
-
-if(!confirm("هل تريد حذف هذا الطلب؟")) return;
-
-await deleteDoc(doc(db,"orders",id));
-
-loadOrders();
-
-};
-  window.deleteAccount = async(id)=>{
-
-if(!confirm("هل تريد حذف هذا الحساب؟")) return;
-
-await deleteDoc(doc(db,"accounts",id));
-
-loadAccounts();
-
-};
 </script>
+
+<a href="https://wa.me/966550496391" class="whatsapp">
+💬
+</a>
+<script>
+const ads = [
+
+"🎉 أول مشوار؟ اسأل عن العروض",
+
+"🚗 مشاوير داخل المدينة بسرعة وأمان",
+
+"📦 توصيل الطرود إلى باب البيت",
+
+"💊 توصيل الأدوية في أسرع وقت",
+
+"📞 خدمة عملاء عبر واتساب 24 ساعة"
+
+];
+
+let i = 0;
+
+setInterval(()=>{
+
+i = (i + 1) % ads.length;
+
+document.getElementById("bannerText").innerHTML = ads[i];
+
+},3000);
+</script>
+
 </body>
 </html>
