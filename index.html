@@ -103,7 +103,9 @@ text-decoration:none;
 <input id="name" placeholder="الاسم">
   
 <input id="from" placeholder="من أين المشوار؟">
-
+<button type="button" id="myLocation">
+📍 استخدام موقعي الحالي
+</button>
 <input id="to" placeholder="إلى أين المشوار؟">
 
 
@@ -136,7 +138,38 @@ serverTimestamp
 const sendBtn = document.getElementById("sendOrder");
 
 sendBtn.onclick = async()=>{
+document.getElementById("myLocation").onclick = ()=>{
 
+if(!navigator.geolocation){
+
+alert("جهازك لا يدعم تحديد الموقع");
+
+return;
+
+}
+
+navigator.geolocation.getCurrentPosition(
+
+(pos)=>{
+
+const lat = pos.coords.latitude;
+
+const lng = pos.coords.longitude;
+
+document.getElementById("from").value =
+"https://maps.google.com/?q=" + lat + "," + lng;
+
+},
+
+()=>{
+
+alert("تعذر الحصول على الموقع");
+
+}
+
+);
+
+};
 const name = document.getElementById("name").value.trim();
 const phone = document.getElementById("phone").value.trim();
 const from = document.getElementById("from").value.trim();
