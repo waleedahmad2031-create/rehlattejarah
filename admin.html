@@ -91,7 +91,21 @@ display:none;
 <button id="logoutBtn">
 🚪 تسجيل الخروج
 </button>
+<hr>
 
+<h2>📒 الحسابات اليومية</h2>
+
+<input id="tripAmount" type="number" placeholder="قيمة المشوار">
+
+<input id="expenses" type="number" placeholder="المصروفات">
+
+<button id="saveAccount">
+💾 حفظ العملية
+</button>
+
+<div id="accounts"></div>
+
+<hr>
 <div id="orders">
 جاري تحميل الطلبات...
 </div>
@@ -115,8 +129,10 @@ query,
 orderBy,
 doc,
 deleteDoc,
-updateDoc
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+updateDoc,
+addDoc
+  }
+from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
 const email = document.getElementById("email");
 const password = document.getElementById("password");
