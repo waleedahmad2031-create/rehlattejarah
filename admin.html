@@ -127,18 +127,19 @@ placeholder="كلمة المرور">
 
 <div id="orders"></div>
 
-<h2>💰 الحسابات</h2>
-<input id="accName" placeholder="اسم الصنف">
+<h2>💰 حسابات المشاوير</h2>
 
-<input id="buyPrice" type="number" placeholder="سعر الشراء">
+<input id="tripName" placeholder="اسم المشوار أو الخدمة">
 
-<input id="sellPrice" type="number" placeholder="سعر البيع">
+<input id="tripAmount" type="number" placeholder="المبلغ المستلم">
+
+<input id="tripCost" type="number" placeholder="تكلفة المشوار">
 
 <button id="saveAccount">
-💾 حفظ الحساب
+💾 حفظ المشوار
 </button>
-<div id="accounts"></div>
 
+<div id="accounts"></div>
   <script type="module">
 
 import { db, auth } from "./firebase.js";
@@ -160,12 +161,14 @@ doc,
 addDoc,
 serverTimestamp
 }
- from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+
 
 const loginBox = document.getElementById("loginBox");
 const panel = document.getElementById("panel");
 const ordersDiv = document.getElementById("orders");
 const accountsDiv = document.getElementById("accounts");
+
 
 document.getElementById("loginBtn").onclick = async()=>{
 
@@ -185,11 +188,13 @@ alert(e.message);
 
 };
 
+
 document.getElementById("logoutBtn").onclick=()=>{
 
 signOut(auth);
 
 };
+
 
 onAuthStateChanged(auth,user=>{
 
@@ -209,29 +214,50 @@ panel.classList.add("hidden");
 }
 
 });
+
+
+// حفظ المشوار
 document.getElementById("saveAccount").onclick = async()=>{
 
-const name = document.getElementById("accName").value.trim();
-const buy = Number(document.getElementById("buyPrice").value);
-const sell = Number(document.getElementById("sellPrice").value);
+const tripName =
+document.getElementById("tripName").value.trim();
 
-if(!name){
-alert("اكتب اسم الصنف");
+const tripAmount =
+Number(document.getElementById("tripAmount").value);
+
+const tripCost =
+Number(document.getElementById("tripCost").value);
+
+
+if(!tripName){
+
+alert("اكتب اسم المشوار");
 return;
+
 }
 
+
 await addDoc(collection(db,"accounts"),{
-name,
-buy,
-sell,
-profit: sell - buy,
-createdAt: serverTimestamp()
+
+name:tripName,
+amount:tripAmount,
+cost:tripCost,
+profit:tripAmount-tripCost,
+createdAt:serverTimestamp()
+
 });
 
-document.getElementById("accName").value="";
-document.getElementById("buyPrice").value="";
-document.getElementById("sellPrice").value="";
+
+document.getElementById("tripName").value="";
+document.getElementById("tripAmount").value="";
+document.getElementById("tripCost").value="";
+
+
+alert("تم حفظ المشوار بنجاح");
+  
+
 };
+
 function loadOrders(){
 
 const q=query(
@@ -248,19 +274,22 @@ snap.forEach(d=>{
 const o=d.data();
 
 ordersDiv.innerHTML+=`
+
 <div class="order">
 
-<p><b>👤</b> ${o.name}</p>
-<p><b>📞</b> ${o.phone}</p>
-<p><b>🚗</b> ${o.from}</p>
-<p><b>📍</b> ${o.to}</p>
-<p><b>🛵</b> ${o.service}</p>
+<p><b>👤 العميل:</b> ${o.name || ""}</p>
+<p><b>📞 الجوال:</b> ${o.phone || ""}</p>
+<p><b>🚗 من:</b> ${o.from || ""}</p>
+<p><b>📍 إلى:</b> ${o.to || ""}</p>
+<p><b>🛵 الخدمة:</b> ${o.service || ""}</p>
 <p>✅ الحالة: ${o.status || "جديد"}</p>
+
 
 <button class="success"
 onclick="finishOrder('${d.id}')">
 تم التسليم
 </button>
+
 
 <button class="delete"
 onclick="deleteOrder('${d.id}')">
@@ -268,6 +297,7 @@ onclick="deleteOrder('${d.id}')">
 </button>
 
 </div>
+
 `;
 
 });
@@ -275,6 +305,9 @@ onclick="deleteOrder('${d.id}')">
 });
 
 }
+
+
+
 function loadAccounts(){
 
 const q=query(
@@ -282,28 +315,37 @@ collection(db,"accounts"),
 orderBy("createdAt","desc")
 );
 
+
 onSnapshot(q,snap=>{
 
 accountsDiv.innerHTML="";
+
 
 snap.forEach(d=>{
 
 const a=d.data();
 
+
 accountsDiv.innerHTML+=`
+
 <div class="account">
 
-<p><b>📦 الصنف:</b> ${a.name || ""}</p>
-<p><b>💰 سعر الشراء:</b> ${a.buy || ""}</p>
-<p><b>🏷️ سعر البيع:</b> ${a.sell || ""}</p>
-<p><b>📈 الربح:</b> ${a.profit || ""}</p>
+<p><b>🚗 المشوار:</b> ${a.name || ""}</p>
+
+<p><b>💰 المبلغ المستلم:</b> ${a.amount || 0} ريال</p>
+
+<p><b>⛽ تكلفة المشوار:</b> ${a.cost || 0} ريال</p>
+
+<p><b>📈 الربح:</b> ${a.profit || 0} ريال</p>
+
 
 <button class="delete"
 onclick="deleteAccount('${d.id}')">
-حذف الحساب
+حذف المشوار
 </button>
 
 </div>
+
 `;
 
 });
@@ -312,13 +354,21 @@ onclick="deleteAccount('${d.id}')">
 
 }
 
+
+
+
 window.finishOrder = async(id)=>{
 
 await updateDoc(doc(db,"orders",id),{
+
 status:"تم التسليم"
+
 });
 
 };
+
+
+
 
 window.deleteOrder = async(id)=>{
 
@@ -330,9 +380,12 @@ await deleteDoc(doc(db,"orders",id));
 
 };
 
+
+
+
 window.deleteAccount = async(id)=>{
 
-if(confirm("هل تريد حذف الحساب؟")){
+if(confirm("هل تريد حذف المشوار؟")){
 
 await deleteDoc(doc(db,"accounts",id));
 
@@ -340,10 +393,12 @@ await deleteDoc(doc(db,"accounts",id));
 
 };
 
+
 </script>
 
 </div>
 
 </body>
 </html>
+    
     
