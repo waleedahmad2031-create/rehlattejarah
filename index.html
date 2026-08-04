@@ -245,31 +245,27 @@ alert(err.message);
 <a href="https://wa.me/966550496391" class="whatsapp">
 💬
 </a>
+
 <script>
 const ads = [
-
-"🎉 أول مشوار؟ اسأل عن العروض",
-
-"🚗 مشاوير داخل المدينة بسرعة وأمان",
-
-"📦 توصيل الطرود إلى باب البيت",
-
-"💊 توصيل الأدوية في أسرع وقت",
-
-"📞 خدمة عملاء عبر واتساب 24 ساعة"
-
+"🎉 خصومات على المشاوير",
+"🚗 أسرع خدمة مشاوير في اليمن",
+"📦 توصيل الطرود إلى باب المنزل",
+"💊 توصيل الأدوية بسرعة",
+"📞 تواصل معنا عبر واتساب"
 ];
 
 let i = 0;
 
-setInterval(()=>{
-
-i = (i + 1) % ads.length;
-
-document.getElementById("bannerText").innerHTML = ads[i];
-
-},3000);
+setInterval(function () {
+  i++;
+  if (i >= ads.length) i = 0;
+  document.getElementById("bannerText").textContent = ads[i];
+}, 3000);
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
