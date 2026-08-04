@@ -202,9 +202,12 @@ if(user){
 
 loginBox.classList.add("hidden");
 panel.classList.remove("hidden");
-
 loadOrders();
-loadAccounts();
+
+setTimeout(() => {
+    loadAccounts();
+}, 500);
+
 
 }else{
 
