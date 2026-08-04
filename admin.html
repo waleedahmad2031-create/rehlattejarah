@@ -229,6 +229,9 @@ font-weight:bold;">
 
 
 <p>✅ الحالة: ${o.status || "جديد"}</p>
+<button onclick="deleteOrder('${doc.id}')">
+🗑️ حذف الطلب
+</button>
 <button onclick="completeOrder('${doc.id}')">
 ✅ تم التسليم
 </button>
@@ -337,6 +340,15 @@ box.innerHTML += `
 }
 
 loadAccounts();
+  window.deleteOrder = async(id)=>{
+
+if(!confirm("هل تريد حذف هذا الطلب؟")) return;
+
+await deleteDoc(doc(db,"orders",id));
+
+loadOrders();
+
+};
 </script>
 </body>
 </html>
