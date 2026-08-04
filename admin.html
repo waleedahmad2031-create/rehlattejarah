@@ -128,7 +128,15 @@ placeholder="كلمة المرور">
 <div id="orders"></div>
 
 <h2>💰 الحسابات</h2>
+<input id="accName" placeholder="اسم الصنف">
 
+<input id="buyPrice" type="number" placeholder="سعر الشراء">
+
+<input id="sellPrice" type="number" placeholder="سعر البيع">
+
+<button id="saveAccount">
+💾 حفظ الحساب
+</button>
 <div id="accounts"></div>
 
   <script type="module">
@@ -148,8 +156,11 @@ orderBy,
 onSnapshot,
 updateDoc,
 deleteDoc,
-doc
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+doc,
+addDoc,
+serverTimestamp
+}
+ from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
 const loginBox = document.getElementById("loginBox");
 const panel = document.getElementById("panel");
@@ -198,7 +209,29 @@ panel.classList.add("hidden");
 }
 
 });
+document.getElementById("saveAccount").onclick = async()=>{
 
+const name = document.getElementById("accName").value.trim();
+const buy = Number(document.getElementById("buyPrice").value);
+const sell = Number(document.getElementById("sellPrice").value);
+
+if(!name){
+alert("اكتب اسم الصنف");
+return;
+}
+
+await addDoc(collection(db,"accounts"),{
+name,
+buy,
+sell,
+profit: sell - buy,
+createdAt: serverTimestamp()
+});
+
+document.getElementById("accName").value="";
+document.getElementById("buyPrice").value="";
+document.getElementById("sellPrice").value="";
+};
 function loadOrders(){
 
 const q=query(
