@@ -229,9 +229,7 @@ font-weight:bold;">
 
 
 <p>✅ الحالة: ${o.status || "جديد"}</p>
-<button onclick="deleteOrder('${doc.id}')">
-🗑️ حذف الطلب
-</button>
+
 <button onclick="completeOrder('${doc.id}')">
 ✅ تم التسليم
 </button>
@@ -330,7 +328,11 @@ box.innerHTML += `
 📈 الربح: ${a.profit} ريال<br>
 
 📅 ${a.date}
+<br><br>
 
+<button onclick="deleteAccount('${doc.id}')">
+🗑️ حذف الحساب
+</button>
 </div>
 
 `;
@@ -347,6 +349,15 @@ if(!confirm("هل تريد حذف هذا الطلب؟")) return;
 await deleteDoc(doc(db,"orders",id));
 
 loadOrders();
+
+};
+  window.deleteAccount = async(id)=>{
+
+if(!confirm("هل تريد حذف هذا الحساب؟")) return;
+
+await deleteDoc(doc(db,"accounts",id));
+
+loadAccounts();
 
 };
 </script>
