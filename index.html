@@ -10,10 +10,15 @@
 
 <style>
 
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
 body{
 font-family:Tahoma,Arial,sans-serif;
 background:#f5f5f5;
-margin:0;
 padding:15px;
 }
 
@@ -26,13 +31,9 @@ border-radius:12px;
 box-shadow:0 2px 10px rgba(0,0,0,.15);
 }
 
-h1{
-text-align:center;
-color:#198754;
-}
-
 .notice{
 background:#d1e7dd;
+color:#0f5132;
 padding:12px;
 border-radius:10px;
 text-align:center;
@@ -40,33 +41,40 @@ margin-bottom:20px;
 font-weight:bold;
 }
 
+h1{
+text-align:center;
+color:#198754;
+margin-bottom:20px;
+}
+
 input,
 select,
-textarea,
 button{
 width:100%;
 padding:12px;
 margin:8px 0;
 border-radius:8px;
-box-sizing:border-box;
-}
-
-input,
-select,
-textarea{
 border:1px solid #ccc;
+font-size:16px;
 }
 
 button{
 background:#198754;
 color:#fff;
 border:none;
-font-size:17px;
 cursor:pointer;
 }
 
 button:hover{
 background:#157347;
+}
+
+.locationBtn{
+background:#0d6efd;
+}
+
+.locationBtn:hover{
+background:#0b5ed7;
 }
 
 .whatsapp{
@@ -83,6 +91,7 @@ align-items:center;
 justify-content:center;
 font-size:30px;
 text-decoration:none;
+box-shadow:0 4px 10px rgba(0,0,0,.3);
 }
 
 </style>
@@ -94,38 +103,52 @@ text-decoration:none;
 <div class="container">
 
 <div class="notice">
+
 🚗 مرحبًا بك في <b>وصلني</b><br>
-اطلب مشوارك أو خدمة التوصيل بسهولة.
+
+اطلب مشوارك أو خدمة التوصيل بكل سهولة.
+
 </div>
 
 <h1>🚗 وصلني</h1>
 
 <input id="name" placeholder="الاسم">
-  
+
+<input id="phone" placeholder="رقم الجوال">
+
 <input id="from" placeholder="من أين المشوار؟">
-<button type="button" id="myLocation">
+
+<button type="button" id="myLocation" class="locationBtn">
+
 📍 استخدام موقعي الحالي
+
 </button>
+
 <input id="to" placeholder="إلى أين المشوار؟">
 
-
-<input id="to" placeholder="الوجهة">
-
 <select id="service">
+
 <option>🚗 مشوار</option>
+
 <option>🛵 توصيل طلبات</option>
+
 <option>📦 توصيل طرود</option>
+
 <option>💊 توصيل أدوية</option>
+
 </select>
 
-
-
 <button id="sendOrder">
-📨 إرسال الطلب
-</button>
 
-</div>
-  <script type="module">
+📨 إرسال الطلب
+
+</button>
+  
+
+
+  </div>
+
+<script type="module">
 
 import { db } from "./firebase.js";
 
@@ -137,7 +160,6 @@ serverTimestamp
 
 const sendBtn = document.getElementById("sendOrder");
 
-sendBtn.onclick = async()=>{
 document.getElementById("myLocation").onclick = ()=>{
 
 if(!navigator.geolocation){
@@ -157,7 +179,7 @@ const lat = pos.coords.latitude;
 const lng = pos.coords.longitude;
 
 document.getElementById("from").value =
-"https://maps.google.com/?q=" + lat + "," + lng;
+"https://maps.google.com/?q="+lat+","+lng;
 
 },
 
@@ -170,50 +192,61 @@ alert("تعذر الحصول على الموقع");
 );
 
 };
+
+sendBtn.onclick = async()=>{
+
 const name = document.getElementById("name").value.trim();
+
 const phone = document.getElementById("phone").value.trim();
+
 const from = document.getElementById("from").value.trim();
+
 const to = document.getElementById("to").value.trim();
+
 const service = document.getElementById("service").value;
 
-
 if(!name || !phone || !from || !to){
-alert("يرجى تعبئة جميع الحقول المطلوبة");
+
+alert("يرجى تعبئة جميع الحقول");
+
 return;
+
 }
 
 try{
 
 await addDoc(collection(db,"orders"),{
+
 name,
+
 phone,
+
 from,
+
 to,
+
 service,
+
 status:"جديد",
+
 createdAt:serverTimestamp()
+  
+
 });
+  
+let whatsapp = "967771234567"; // غيّر هذا إلى رقم واتساب الإدارة في اليمن
 
-
-let message = `
-🚗 طلب مشوار جديد
+let message =
+`🚗 طلب جديد
 
 👤 الاسم: ${name}
-
 📞 الجوال: ${phone}
-
-📍 من: ${from}
-
-🎯 إلى: ${to}
-
-🚗 الخدمة: ${service}
-`;
-
-
-let whatsapp = "966550496391";
+🚗 من أين المشوار: ${from}
+📍 إلى أين المشوار: ${to}
+🛵 الخدمة: ${service}`;
 
 window.open(
-"https://wa.me/" + whatsapp + "?text=" + encodeURIComponent(message),
+"https://wa.me/"+whatsapp+"?text="+encodeURIComponent(message),
 "_blank"
 );
 
@@ -223,7 +256,7 @@ document.getElementById("name").value="";
 document.getElementById("phone").value="";
 document.getElementById("from").value="";
 document.getElementById("to").value="";
-
+document.getElementById("service").selectedIndex=0;
 
 }catch(err){
 
@@ -235,10 +268,9 @@ alert(err.message);
 
 </script>
 
-<a href="https://wa.me/966550496391" class="whatsapp">
+<a href="https://wa.me/967715693340" class="whatsapp">
 💬
 </a>
 
 </body>
 </html>
-
