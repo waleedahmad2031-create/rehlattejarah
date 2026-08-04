@@ -197,26 +197,7 @@ return;
 
 try{
 
-await addDoc(collection(db,"orders"),{
-
-name,
-
-phone,
-
-from,
-
-to,
-
-service,
-
-status:"جديد",
-
-createdAt:serverTimestamp()
-  
-
-});
-  
-let whatsapp = "966550496391"; // غيّر هذا إلى رقم واتساب الإدارة في اليمن
+let whatsapp = "966550496391";
 
 let message =
 `🚗 طلب جديد
@@ -227,10 +208,43 @@ let message =
 📍 إلى أين المشوار: ${to}
 🛵 الخدمة: ${service}`;
 
+
+// فتح واتساب مباشرة
 window.open(
 "https://wa.me/"+whatsapp+"?text="+encodeURIComponent(message),
 "_blank"
 );
+
+
+// حفظ الطلب في الخلفية
+addDoc(collection(db,"orders"),{
+
+name,
+phone,
+from,
+to,
+service,
+status:"جديد",
+createdAt:serverTimestamp()
+
+});
+
+
+alert("✅ تم إرسال الطلب بنجاح");
+
+
+document.getElementById("name").value="";
+document.getElementById("phone").value="";
+document.getElementById("from").value="";
+document.getElementById("to").value="";
+document.getElementById("service").selectedIndex=0;
+
+
+}catch(err){
+
+alert(err.message);
+
+}
 
 alert("✅ تم إرسال الطلب بنجاح");
 
